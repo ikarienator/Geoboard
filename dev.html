@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="css/index.css" rel="stylesheet" type="text/css" />
+<title>Geoboard 0.1</title>
+<script src="scripts/jq.js"></script>
+<script src="src/main.js"></script>
+<script src="src/json.js"></script>
+<script src="src/GDoc.js"></script>
+<script src="src/Menu.js"></script>
+<script src="src/geoms/Geom.js"></script>
+<script src="src/geoms/GBPoint.js"></script>
+<script src="src/geoms/GBLine.js"></script>
+<script src="src/geoms/GBCircle.js"></script>
+<script src="src/geoms/GBPoO.js"></script>
+<script src="src/geoms/GBMidpoint.js"></script>
+<script src="src/geoms/GBInters.js"></script>
+<script src="src/geoms/GBRay.js"></script>
+<script src="src/geoms/GBXLine.js"></script>
+<script src="src/geoms/GBParaLine.js"></script>
+<script src="src/geoms/GBPerpLine.js"></script>
+<script src="src/geoms/GBLocus.js"></script>
+<script src="src/actions/Action.js"></script>
+<script src="src/actions/SelectionAction.js"></script>
+<script src="src/actions/PointAction.js"></script>
+<script src="src/actions/CircleAction.js"></script>
+<script src="src/actions/LineAction.js"></script>
+<script src="src/command/Command.js"></script>
+<script src="src/command/ConstructPoint.js"></script>
+<script src="src/command/ConstructLine.js"></script>
+<script src="src/command/ConstructPerpLine.js"></script>
+<script src="src/command/ConstructParaLine.js"></script>
+<script src="src/command/ConstructCircle.js"></script>
+<script src="src/command/ConstructPoO.js"></script>
+<script src="src/command/ConstructMidpoint.js"></script>
+<script src="src/command/ConstructIntersection.js"></script>
+<script src="src/command/ConstructLocus.js"></script>
+<script src="src/command/Delete.js"></script>
+<script src="src/command/Translate.js"></script>
+</head>
+<body onload="init()">
+	<div id="header">
+		<ul id="menu" class="menu">
+
+		</ul>
+	</div>
+	<div id="center">
+		<ul id="tools" class="tool">
+			<li id="tools-hider">&nbsp;</li>
+		</ul>
+		<div id="board">
+			<ul id="page-header">
+			</ul>
+			<div id="area"></div>
+		</div>
+	</div>
+</body>
+</html>
