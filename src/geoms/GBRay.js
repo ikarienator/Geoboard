@@ -1,26 +1,26 @@
-var GBRay = gb.geom.ray = function(id, gpo1, gpo2) {
-  this.__id = id;
-  this.gpo1 = gpo1;
-  this.gpo2 = gpo2;
+function GBRay (id, gpo1, gpo2) {
+  GBAbstractLine.apply(this, [ id, [ gpo1, gpo2 ] ]);
 };
 
-GBRay.prototype = new GBLine();
-$.extend(GBRay.prototype, {
-  adjustArg : function(arg) {
-    if (arg < 0)
-      return 0;
-    return arg;
-  },
+GBRay.prototype = new GBAbstractLine();
+GBRay.prototype.adjustArg = function (arg) {
+  if (arg < 0)
+    return 0;
+  return arg;
+};
 
-  legalArg : function(arg) {
-    return arg >= 0;
-  },
+GBRay.prototype.legalArg = function (arg) {
+  return arg >= 0;
+};
 
-  argRange : function(arg) {
-    return [ 0, 100 ];
-  },
-  
-  type : function() {
-    return 'ray';
-  }
-});
+GBRay.prototype.argRange = function (arg) {
+  return [ 0, 100 ];
+};
+
+GBRay.prototype.type = function () {
+  return 'ray';
+};
+
+gb.geom.ray = function (id, gpo1, gpo2) {
+  return new GBRay(id, gpo1, gpo2);
+};

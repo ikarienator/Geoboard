@@ -7,7 +7,7 @@
  * @param tx
  * @param ty
  */
-var TranslateCommand = function(dragList, fx, fy, tx, ty) {
+function TranslateCommand(dragList, fx, fy, tx, ty) {
   this.dragList = dragList;
   this.fx = fx;
   this.fy = fy;

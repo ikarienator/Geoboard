@@ -64,8 +64,8 @@ gb.menu.disp = {
      * @param {GDoc} gdoc
      */
     run : function(gdoc) {
-      this.text(this.show ? 'Hide hiden' : 'Show all hidden');
       gdoc.showHidden = this.show = !this.show;
+      this.text(this.show ? 'Hide hiden' : 'Show all hidden');
       gdoc.draw();
     }
   }
@@ -86,8 +86,8 @@ gb.menu.cons = {
     },
     run : function(gdoc) {
       $.each(gdoc.selection, function(k, v) {
-        var randPoint = v.randPoint();
-        var cmd = new ConstructPoOCommand(v, v.nearestArg(randPoint[0], randPoint[1]));
+        var randPoint = v.randPoint(),
+            cmd = new ConstructPoOCommand(v, v.nearestArg(randPoint[0], randPoint[1]));
         gdoc.run(cmd);
       });
     }

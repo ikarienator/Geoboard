@@ -1,13 +1,10 @@
-function GBPoint(id, x, y) {
-  GBAbstractPoint.apply(this, [ id, [ ], [x, y] ]);
+function GBAbstractPoint() {
+  Geom.apply(this, arguments);
 };
-GBPoint.X = 0;
-GBPoint.Y = 1;
-
-
-GBPoint.prototype = new GBAbstractPoint();
-
-GBPoint.prototype.draw = function(context) {
+GBAbstractPoint.prototype = new Geom();
+GBAbstractPoint.prototype.isPoint = true;
+GBAbstractPoint.prototype.color = '#F00';
+GBAbstractPoint.prototype.draw = function(context) {
   var pos = this.getPosition();
   context.beginPath();
   context.arc(pos[0], pos[1], 3, 0, Math.PI * 2, false);
@@ -19,7 +16,7 @@ GBPoint.prototype.draw = function(context) {
   context.stroke();
 };
 
-GBPoint.prototype.drawSelected = function(context) {
+GBAbstractPoint.prototype.drawSelected = function(context) {
   var pos = this.getPosition();
   this.draw(context);
   context.beginPath();
@@ -30,7 +27,7 @@ GBPoint.prototype.drawSelected = function(context) {
   context.stroke();
 };
 
-GBPoint.prototype.drawHovering = function(context) {
+GBAbstractPoint.prototype.drawHovering = function(context) {
   var pos = this.getPosition();
   context.beginPath();
   context.arc(pos[0], pos[1], 3, 0, Math.PI * 2, false);
@@ -42,31 +39,22 @@ GBPoint.prototype.drawHovering = function(context) {
   context.stroke();
 };
 
-GBPoint.prototype.hitTest = function(x, y) {
-  var pos = this.getPosition(), dx = pos[0] - x, dy = pos[1] - y;
+GBAbstractPoint.prototype.hitTest = function(x, y) {
+  var pos = this.getPosition(), 
+      dx = pos[0] - x, 
+      dy = pos[1] - y;
   return dx * dx + dy * dy < 100;
 };
 
-GBPoint.prototype.crossTest = function(l, t, r, b) {
+GBAbstractPoint.prototype.crossTest = function(l, t, r, b) {
   var pos = this.getPosition();
   return l < pos[0] && pos[0] < r && t < pos[1] && pos[1] < b;
 };
 
-GBPoint.prototype.nearestArg = function(x, y) {
+GBAbstractPoint.prototype.nearestArg = function(x, y) {
   return 0;
 };
 
-GBPoint.prototype.drag = function(from, to) {
-  this.x += to[0] - from[0];
-  this.y += to[1] - from[1];
+GBAbstractPoint.prototype.legalArg = function(arg) {
+  return arg == 0;
 };
-
-GBPoint.prototype.type = function() {
-    return "gpo";
-};
-
-GBPoint.prototype.getPosition = function() {
-  return [ this.__params[GBPoint.X], this.__params[GBPoint.Y] ];
-};
-
-gb.geom.gpo = function(id, x, y) { return new GBPoint(id, x, y); };

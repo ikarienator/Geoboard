@@ -1,4 +1,4 @@
-var LineAction = function() {
+function LineAction() {
   this.init();
 };
 
@@ -6,34 +6,36 @@ LineAction.prototype = new GBAction();
 $.extend(LineAction.prototype, {
   text : '<img src="images/line.svg"/>',
   init : function() {
-    this.pointAction = new PointAction();
     var me = this;
-    this.pointAction.onNewPoint = function(np) {
+    me.pointAction = new PointAction();
+    me.pointAction.onNewPoint = function(np) {
       if (me.status == 0)
         me.p1 = np;
       else if (me.status == 1)
         me.p2 = np;
     };
-    this.reset();
+    me.reset();
   },
   reset : function() {
-    this.status = 0;
-    this.p1 = null;
-    this.p2 = null;
-    this.pointAction.reset();
+    var me = this;
+    me.status = 0;
+    me.p1 = null;
+    me.p2 = null;
+    me.pointAction.reset();
   },
   mouseMove : function(gdoc, x, y) {
-    switch (this.status) {
+    var me = this, con, p1;
+    switch (me.status) {
     case 0:
-      this.pointAction.mouseMove(gdoc, x, y);
+      me.pointAction.mouseMove(gdoc, x, y);
       break;
     case 1:
-      this.pointAction.mouseMove(gdoc, x, y);
-      var con = gdoc.context;
+      me.pointAction.mouseMove(gdoc, x, y);
+      con = gdoc.context;
       con.beginPath();
-      var p1 = this.p1.getPosition();
+      p1 = me.p1.getPosition();
       con.moveTo(p1[0], p1[1]);
-      con.lineTo(this.pointAction.current[0], this.pointAction.current[1]);
+      con.lineTo(me.pointAction.current[0], me.pointAction.current[1]);
       con.closePath();
       con.strokeStyle = "#99d";
       con.lineWidth = 2;
@@ -42,28 +44,28 @@ $.extend(LineAction.prototype, {
     }
   },
   mouseUp : function(gdoc, x, y) {
-    if (this.status == 1) {
-      this.pointAction.mouseDown(gdoc, x, y);
-      if (this.p1 !== this.p2) {
-        var cmd = new ConstructLineCommand(this.p1, this.p2);
-        gdoc.run(cmd);
-        this.status = 0;
+    var me = this;
+    if (me.status == 1) {
+      me.pointAction.mouseDown(gdoc, x, y);
+      if (me.p1 !== me.p2) {
+        gdoc.run(new ConstructLineCommand(me.p1, me.p2));
+        me.status = 0;
       }
     }
   },
   mouseDown : function(gdoc, x, y) {
-    switch (this.status) {
+    var me = this;
+    switch (me.status) {
     case 0:
-      this.pointAction.mouseDown(gdoc, x, y);
-      this.status = 1;
+      me.pointAction.mouseDown(gdoc, x, y);
+      me.status = 1;
       break;
     case 1:
-      this.pointAction.mouseDown(gdoc, x, y);
-      this.status = 0;
-      if (this.p1 === this.p2)
+      me.pointAction.mouseDown(gdoc, x, y);
+      me.status = 0;
+      if (me.p1 === me.p2)
         break;
-      var cmd = new ConstructLineCommand(this.p1, this.p2);
-      gdoc.run(cmd);
+      gdoc.run(new ConstructLineCommand(me.p1, me.p2));
       break;
     }
   }

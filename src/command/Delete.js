@@ -1,4 +1,4 @@
-var DeleteCommand = function(list) {
+function DeleteCommand (list) {
   this.list = list;
 };
 
@@ -13,18 +13,18 @@ $.extend(DeleteCommand.prototype, {
     return any;
   },
   exec : function(gdoc) {
-    var sels = {};
+    var sels = {}, topo, q, qi, curr, list, save;
     $.each(this.list, function(k, v) {
       sels[v.id()] = v;
     });
-    var topo = gdoc.topoSort();
-    var q = [];
+    topo = gdoc.topoSort();
+    q = [];
     $.each(this.list, function(k, v) {
       q.push(v);
     });
-    var qi = 0;
+    qi = 0;
     while (qi < q.length) {
-      var curr = q[qi++];
+      curr = q[qi++];
       if (topo.topo[curr.id()])
         $.each(topo.topo[curr.id()], function(k, v) {
           if (!sels[v.id()]) {
@@ -33,17 +33,17 @@ $.extend(DeleteCommand.prototype, {
           }
         });
     }
-    var list = [];
+    list = [];
     $.each(topo.result, function(k, v) {
       if (sels[v.id()]) {
         list.push(v);
       }
     });
     this.list = list;
-    var save = this.save = [];
+    save = this.save = [];
     $.each(list, function(k, v) {
       save.push({
-        type : v.type(),
+        obj : v,
         json : v.save(gdoc)
       });
     });
@@ -52,18 +52,18 @@ $.extend(DeleteCommand.prototype, {
   undo : function(gdoc) {
     gdoc.selection = {};
     $.each(this.save, function(k, v) {
-      var obj = new gb.geom[v.type]();
+      var obj = v.obj;
+      gdoc.add(obj);
       obj.load(v.json, gdoc);
-      gdoc.entities[obj.id()] = obj;
-      gdoc.selection[obj.id()] = obj;
+    });
+    $.each(this.save, function(k, v) {
+      gdoc.selection[v.id] = gdoc.get(v.id);
     });
   },
   redo : function(gdoc) {
     gdoc.selection = {};
     $.each(this.list.reverse(), function(k, v) {
-      delete gdoc.entities[v.id()];
-      if (gdoc.hovering == v)
-        gdoc.hovering = false;
+      gdoc.del(v);
     });
   }
 });

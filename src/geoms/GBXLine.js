@@ -1,26 +1,29 @@
-var GBXLine = gb.geom.xli = function(id, gpo1, gpo2) {
-  this.__id = id;
-  this.gpo1 = gpo1;
-  this.gpo2 = gpo2;
+function GBXLine (id, gpo1, gpo2) {
+  GBAbstractLine.apply(this, [ id, [ gpo1, gpo2 ] ]);
 };
 
-GBXLine.prototype = new GBLine();
-$.extend(GBXLine.prototype, {
-  adjustArg : function(arg) {
-    return arg;
-  },
-  getParents : function() {
-    return [ this.gpo1, this.gpo2 ];
-  },
-  legalArg : function(arg) {
-    return true;
-  },
+GBXLine.prototype = new GBAbstractLine();
 
-  argRange : function(arg) {
-    return this.crossArg(-800, -600, 1600, 1200);
-  },
+GBXLine.prototype.adjustArg = function (arg) {
+  return arg;
+};
 
-  type : function() {
-    return 'xli';
-  }
-});
+GBXLine.prototype.getParents = function () {
+  return [ this.gpo1, this.gpo2 ];
+};
+
+GBXLine.prototype.legalArg = function (arg) {
+  return true;
+};
+
+GBXLine.prototype.argRange = function (arg) {
+  return this.crossArg(-800, -600, 1600, 1200);
+};
+
+GBXLine.prototype.type = function () {
+  return 'xli';
+};
+
+gb.geom.xli = function (id, gpo1, gpo2) {
+  return new GBXLine(id, gpo1, gpo2);
+};

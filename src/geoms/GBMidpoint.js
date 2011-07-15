@@ -1,39 +1,24 @@
-var GBMidpoint = gb.geom.mpo = function(id, line) {
-  this.__id = id;
-  this.line = line;
+function GBMidpoint (id, line) {
+  GBAbstractPoint.apply(this, [id, [line], []]);
 };
 
-GBMidpoint.prototype = new GBPoint();
-$.extend(GBMidpoint.prototype, {
-  dragInvolve : function() {
-    return this.line.dragInvolve();
-  },
-  drag : function(from, to) {
+GBMidpoint.prototype = new GBAbstractPoint();
+GBMidpoint.prototype.dragInvolve = function () {
+  return this.line.dragInvolve();
+};
 
-  },
-  type : function() {
-    return "mpo";
-  },
-  getParents : function() {
-    return [ this.line ];
-  },
-  getPosition : function() {
-    return this.line.getPosition(0.5);
-  },
-  load : function(json, gdoc) {
-    this.__id = json.id;
-    this.line = gdoc.entities[json.line];
-    this.color = json.color || this.color;
-    this.hidden = json.hidden || this.hidden;
-    this.size = json.size || this.size;
-  },
-  save : function(json, gdoc) {
-    return {
-      id : this.__id,
-      line : this.line.id(),
-      color : this.color,
-      hidden : this.hidden,
-      size : this.size
-    };
-  }
-});
+GBMidpoint.prototype.drag = function (from, to) {
+
+};
+
+GBMidpoint.prototype.type = function () {
+  return "mpo";
+};
+
+GBMidpoint.prototype.getPosition = function () {
+  return this.line.getPosition(0.5);
+};
+
+gb.geom.mpo = function (id, line) {
+  return new GBMidpoint(id, line);
+};

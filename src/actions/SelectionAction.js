@@ -1,4 +1,4 @@
-var SelectionAction = function() {
+function SelectionAction() {
   this.init();
   this.cmd = null;
   this.startDrag = null;
@@ -13,21 +13,22 @@ $.extend(SelectionAction.prototype, {
     this.oldSelection = null;
   },
   mouseMove : function(gdoc, x, y) {
+    var fx, fy, t, di, test;
     if (this.startDrag) {
-      var fx = this.startDrag[0], tx = x;
-      var fy = this.startDrag[1], ty = y;
+      fx = this.startDrag[0], tx = x;
+      fy = this.startDrag[1], ty = y;
       if (fx > tx) {
-        var t = fx;
+        t = fx;
         fx = tx;
         tx = t;
       }
       if (fy > ty) {
-        var t = fy;
+        t = fy;
         fy = ty;
         ty = t;
       }
       gdoc.selection = shallowClone(this.oldSelection);
-      $.each(gdoc.entities, function(k, ent) {
+      gdoc.forEntities(function(k, ent) {
         if (ent.crossTest(fx, fy, tx, ty))
           gdoc.selection[ent.id()] = ent;
       });
@@ -49,7 +50,7 @@ $.extend(SelectionAction.prototype, {
         }
       }
       else {
-        var di = {};
+        di = {};
         $.each(gdoc.selection, function(k, v) {
           $.each(v.dragInvolve(), function(k, t) {
             di[t.id()] = t;
@@ -61,7 +62,7 @@ $.extend(SelectionAction.prototype, {
       }
       gdoc.draw();
     } else {
-      var test = gdoc.hitTest(x, y);
+      test = gdoc.hitTest(x, y);
       if (test.found.length == 1) {
         gdoc.hovering = test.found[0];
       } else
@@ -70,10 +71,10 @@ $.extend(SelectionAction.prototype, {
     }
   },
   mouseDown : function(gdoc, x, y, ev) {
-    var test = gdoc.hitTest(x, y);
+    var test = gdoc.hitTest(x, y), ent;
     if (ev.shiftKey) {
       if (test.found.length == 1) {
-        var ent = test.found[0];
+        ent = test.found[0];
         if (!gdoc.selection[ent.id()]) {
           gdoc.selection[ent.id()] = ent;
         } else
@@ -84,7 +85,7 @@ $.extend(SelectionAction.prototype, {
     } else {
       this.oldSelection = new Object();
       if (test.found.length == 1) {
-        var ent = test.found[0];
+        ent = test.found[0];
         if (!gdoc.selection[ent.id()]) {
           gdoc.selection = {};
           gdoc.selection[ent.id()] = ent;
