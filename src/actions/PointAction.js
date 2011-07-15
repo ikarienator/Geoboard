@@ -63,7 +63,7 @@ PointAction.prototype.mouseDown = function (gdoc, x, y) {
       arg = test.found[0].nearestArg(test.current[0], test.current[1]);
       cmd = new ConstructPoOCommand(test.found[0], arg);
       gdoc.run(cmd);
-      np = this.lastPoint = cmd.np;
+      np = this.lastPoint = cmd.newObject;
       if (this.onNewPoint) {
         if (false == this.onNewPoint(np))
           return;
@@ -73,7 +73,7 @@ PointAction.prototype.mouseDown = function (gdoc, x, y) {
   } else if (test.found.length == 2) {
     cmd = new ConstructIntersectionCommand(test.found[0], test.found[1], test.current[0], test.current[1]);
     gdoc.run(cmd);
-    np = cmd.np;
+    np = cmd.newObject;
     this.lastPoint = np;
     if (this.onNewPoint) {
       if (false == this.onNewPoint(np))
@@ -83,7 +83,7 @@ PointAction.prototype.mouseDown = function (gdoc, x, y) {
   } else if (test.found.length == 0) {
     cmd = new ConstructPointCommand(test.current[0], test.current[1]);
     gdoc.run(cmd);
-    np = cmd.np;
+    np = cmd.newObject;
     this.lastPoint = np;
     if (this.onNewPoint) {
       if (false == this.onNewPoint(np))

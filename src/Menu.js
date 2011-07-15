@@ -56,7 +56,7 @@ gb.menu.edit = {
 };
 gb.menu.disp = {
   text : '<a><span class="ud">D</span>isplay</a>',
-  items : ['sha'], 
+  items : ['sha', 'hide', 'unhide'], 
   sha: {
     text : 'Show all hidden',
     show : false,
@@ -64,9 +64,21 @@ gb.menu.disp = {
      * @param {GDoc} gdoc
      */
     run : function(gdoc) {
-      gdoc.showHidden = this.show = !this.show;
+      gdoc.showHidden = (this.show = !this.show);
       this.text(this.show ? 'Hide hiden' : 'Show all hidden');
       gdoc.draw();
+    }
+  },
+  hide: {
+    text: 'Hide',
+    run : function(gdoc) {
+      gdoc.run(new HideCommand(gdoc.selection, true));
+    }
+  },
+  unhide: {
+    text: 'Unhide',
+    run : function(gdoc) {
+      gdoc.run(new HideCommand(gdoc.selection, false));
     }
   }
 };
@@ -131,7 +143,7 @@ gb.menu.cons = {
           return false;
         }
       });
-      return lines > 0 && points < 2;
+      return lines > 0 && points == 1;
     },
     run : function(gdoc) {
       var lines = [], po = null;
@@ -161,7 +173,7 @@ gb.menu.cons = {
           lines++;
         }
       });
-      return lines > 0 && points < 2;
+      return lines > 0 && points == 1;
     },
     run : function(gdoc) {
       var lines = [], po = null;

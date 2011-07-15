@@ -28,7 +28,7 @@ $.extend(SelectionAction.prototype, {
         ty = t;
       }
       gdoc.selection = shallowClone(this.oldSelection);
-      gdoc.forEntities(function(k, ent) {
+      gdoc.forVisibles(function(k, ent) {
         if (ent.crossTest(fx, fy, tx, ty))
           gdoc.selection[ent.id()] = ent;
       });
@@ -64,10 +64,16 @@ $.extend(SelectionAction.prototype, {
     } else {
       test = gdoc.hitTest(x, y);
       if (test.found.length == 1) {
-        gdoc.hovering = test.found[0];
-      } else
-        gdoc.hovering = null;
-      gdoc.draw();
+        if (gdoc.hovering != test.found[0]) {
+          gdoc.hovering = test.found[0];
+          gdoc.draw();
+        }
+      } else {
+        if (gdoc.hovering != null) {
+          gdoc.hovering = null;
+          gdoc.draw();
+        } 
+      }
     }
   },
   mouseDown : function(gdoc, x, y, ev) {

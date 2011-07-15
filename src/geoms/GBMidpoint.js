@@ -4,7 +4,7 @@ function GBMidpoint (id, line) {
 
 GBMidpoint.prototype = new GBAbstractPoint();
 GBMidpoint.prototype.dragInvolve = function () {
-  return this.line.dragInvolve();
+  return this.getParent(0).dragInvolve();
 };
 
 GBMidpoint.prototype.drag = function (from, to) {
@@ -16,7 +16,7 @@ GBMidpoint.prototype.type = function () {
 };
 
 GBMidpoint.prototype.getPosition = function () {
-  return this.line.getPosition(0.5);
+  return this.getParent(0).getPosition(0.5);
 };
 
 gb.geom.mpo = function (id, line) {

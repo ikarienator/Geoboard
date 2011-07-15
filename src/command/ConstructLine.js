@@ -9,6 +9,6 @@ ConstructLineCommand.prototype.canDo = function(gdoc) {
   return !!(this.gpo1 !== undefined && this.gpo2 !== undefined);
 };
 
-ConstructLineCommand.prototype.createNew = function () {
+ConstructLineCommand.prototype.createNew = function (gdoc) {
   return new GBLine(gdoc.nextId(), this.gpo1, this.gpo2);
 };

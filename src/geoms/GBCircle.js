@@ -15,7 +15,7 @@ function GBCircle (id, center, on) {
 
 GBCircle.prototype = new Geom();
 GBCircle.CENTER = 0;
-GBCircle.ON = 0;
+GBCircle.ON = 1;
 
 GBCircle.prototype.color = '#080';
 GBCircle.prototype.isCircle = true;
@@ -114,12 +114,12 @@ GBCircle.prototype.crossTest = function (l, t, r, b) {
 };
 
 GBCircle.prototype.nearestArg = function (x, y) {
-  var c = this.center.getPosition();
+  var c = this.getParent(GBCircle.CENTER).getPosition();
   return Math.atan2(y - c[1], x - c[0]);
 };
 
 GBCircle.prototype.dragInvolve = function () {
-  return [ this.center, this.getParent(GBCircle.ON) ];
+  return [ this.getParent(GBCircle.CENTER), this.getParent(GBCircle.ON) ];
 };
 
 GBCircle.prototype.drag = function (from, to) {

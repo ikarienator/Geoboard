@@ -128,8 +128,9 @@ function installMenu () {
           return !gb.menu[v][sv].isEnabled ? true : gb.menu[v][sv].isEnabled(gb.currentDoc);
         };
         sitem[0].action = gb.menu[v][sv];
+        sitem[0].action.item = sitem;
         sitem[0].action.text = function (text) {
-          return sitem.text(text);
+          return this.item.html(text);
         };
         sitem.click(function () {
           gb.menu[v][sv].run(gb.currentDoc);
@@ -148,12 +149,14 @@ function installMenu () {
 
 window.init = function () {
   installMenu();
+  var toolids = [];
   $.each(gb.tools, function (k, v) {
     if (!gb.currentTool)
       gb.currentTool = v;
     var li = $('<li class="item" id="tools-' + k + '">' + v.text + '</li>');
     li[0].action = v;
     $('#tools').append(li);
+    toolids.push('tools-' + k);
   });
 
   $('#tools li:nth(1)').addClass('active');
@@ -184,6 +187,16 @@ window.init = function () {
   $(document).keydown(function (ev) {
     var gdoc = gb.currentDoc;
     switch (ev.keyCode) {
+    case 49:
+    case 50:
+    case 51:
+    case 52:
+      if(!ev.metaKey && !ev.shiftKey){
+        ev.preventDefault();
+        ev.stopPropagation();
+        setTool(toolids[ev.keyCode - 49]);
+      }
+      break;
     case 27:
       window.setTool('tools-sel');
       ev.stopPropagation();
@@ -211,9 +224,25 @@ window.init = function () {
           gdoc.redo();
       }
       break;
+    case 72:
+      if (ev.metaKey) {
+        gdoc.run(new HideCommand(gdoc.selection, !ev.shiftKey));
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      break;
+    case 77:
+      if(ev.metaKey) {
+        if(gb.menu.cons.mp.isEnabled(gdoc)) {
+          gb.menu.cons.mp.run(gdoc);
+        }
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      break;
     default:
       $('#menu').removeClass('show-ud');
-      // console.dir(ev);
+      console.dir(ev.keyCode);
       ev.stopPropagation();
     }
   });

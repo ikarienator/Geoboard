@@ -38,7 +38,7 @@ ConstructCommand.prototype.exec = function(gdoc) {
 };
 
 ConstructCommand.prototype.undo = function(gdoc) {
-  gdoc.remove(this.newObject);
+  gdoc.del(this.newObject);
 };
 
 ConstructCommand.prototype.redo = function(gdoc) {

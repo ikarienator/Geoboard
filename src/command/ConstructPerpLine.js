@@ -11,8 +11,8 @@ ConstructPerpLineCommand.prototype.canDo = function(gdoc) {
 };
 
 ConstructPerpLineCommand.prototype.createNew = function(gdoc) {
-  return [new GBPointMark(gdoc.nextId(), this.point, this.line, true),
-  new GBParaLine(gdoc.nextId(), this.point, this.line)];
+  var mark = new GBPointMark(gdoc.nextId(), this.point, this.line, true);
+  return [mark, new GBXLine(gdoc.nextId(), this.point, mark)];
 };
 
 

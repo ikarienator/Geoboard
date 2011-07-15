@@ -195,10 +195,6 @@ GBAbstractLine.prototype.legalArg = function (arg) {
   return true;
 };
 
-GBAbstractLine.prototype.getParents = function () {
-  return [ this.gpo1, this.gpo2 ];
-};
-
 GBAbstractLine.prototype.argRange = function (arg) {
   return [ 0, 1 ];
 };
@@ -259,12 +255,7 @@ GBAbstractLine.prototype.getPosition = function (arg) {
 };
 
 GBAbstractLine.prototype.__getPosition = function (arg) {
-  if (arg == 0)
-    return this.gpo1.getPosition();
-  if (arg == 1)
-    return this.gpo2.getPosition();
-  var p1 = this.gpo1.getPosition(), p2 = this.gpo2.getPosition();
-  return [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ];
+  throw '__gePosition(arg) not implemented';
 };
 
 GBAbstractLine.prototype.randPoint = function () {

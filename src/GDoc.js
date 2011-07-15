@@ -85,7 +85,7 @@ GDoc.prototype.lines = new Object();
 GDoc.prototype.points = new Object();
 
 GDoc.prototype.draw = function () {
-  var me = this, context = me.context;
+  var me = this, context = me.context, start = new Date(), elapse;
   context.fillStyle = "white";
   context.clearRect(0, 0, 800, 600);
   me.forEntities(function (k, v) {
@@ -93,9 +93,18 @@ GDoc.prototype.draw = function () {
       v.drawSelected(context);
     else if (me.hovering === v)
       v.drawHovering(context);
-    else if (!v.hidden || me.showHidden)
+    else if (v.hidden) {
+      if(me.showHidden){
+        context.globalAlpha = 0.3;
+        v.draw(context);
+        context.globalAlpha = 1;
+      }
+    } else
       v.draw(context);
   });
+  elapse = new Date() - start;
+  context.fillStyle = "black";
+  context.fillText((1000 / elapse + 1).toFixed(3) + "fps", 15, 15);
 };
 
 GDoc.prototype.hitTest = function (x, y) {
@@ -104,7 +113,7 @@ GDoc.prototype.hitTest = function (x, y) {
     found : [],
     current : [ NaN, NaN ]
   };
-  me.forEntities(function (k, v) {
+  me.forVisibles(function (k, v) {
     if (v.hitTest(x, y)) {
       p = v.getPosition(v.nearestArg(x, y));
       res.found.push({
@@ -166,9 +175,11 @@ GDoc.prototype.hitTest = function (x, y) {
       res.found = [ min0.obj, min1.obj ];
       $.each(min0.obj.inters(min1.obj), function (k, v) {
         d = dist(v, [ x, y ]);
-        if (k > 0 && d < minid) {
-          minid = d;
-          mini = v;
+        if (k > 0) {
+          if(d < minid) {
+            minid = d;
+            mini = v;
+          }
         } else {
           minid = d;
           mini = v;
@@ -191,8 +202,8 @@ GDoc.prototype.add = function (obj) {
     me.points[obj.id()] = obj;
   else
     me.lines[obj.id()] = obj;
-  gdoc.selection = {};
-  gdoc.selection[this.np.id()] = this.np;
+  me.selection = {};
+  me.selection[obj.id()] = obj;
 };
 
 GDoc.prototype.del = function (obj) {
@@ -201,13 +212,15 @@ GDoc.prototype.del = function (obj) {
     delete me.points[obj.id()];
   else
     delete me.lines[obj.id()];
-  if (me.selection[me.nc.id()])
-    delete me.selection[me.nc.id()];
+  if (me.selection[obj.id()])
+    delete me.selection[obj.id()];
 };
 
 GDoc.prototype.load = function (json) {
   var me = this;
-  me.forEntities(function (k, v) {
+  me.points = {};
+  me.lines = {};
+  $.each(json.entities, function (k, v) {
     var obj = gb.geom[v.type]();
     obj.load(v.data, me);
     if (obj.isPoint)
@@ -250,6 +263,19 @@ GDoc.prototype.forEntities = function (callback) {
     callback(k, v, me);
   });
   $.each(me.points, function (k, v) {
+    callback(k, v, me);
+  });
+};
+
+GDoc.prototype.forVisibles = function (callback) {
+  if (this.showHidden) return this.forEntities(callback);
+  var me = this;
+  $.each(me.lines, function (k, v) {
+    if(v.hidden) return true;
+    callback(k, v, me);
+  });
+  $.each(me.points, function (k, v) {
+    if(v.hidden) return true;
     callback(k, v, me);
   });
 };

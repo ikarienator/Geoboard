@@ -3,7 +3,7 @@ function GBLocus (id, poo, target) {
 };
 
 GBLocus.POO = 0;
-GBLocus.TARGET = 0;
+GBLocus.TARGET = 1;
 
 GBLocus.prototype = new Geom();
 GBLocus.prototype.color = "#880";
@@ -13,13 +13,13 @@ GBLocus.prototype.__curve = function () {
       range = this.getParent(GBLocus.POO).getParent(0).argRange(), start = range[0], stop = range[1];
   for (i = 0; i <= 100; i++) {
     curr1 = start + (stop - start) * 0.01 * i;
-    curr2 = start + ((stop - start) * 0.01) * (i - 0.5);
+    curr2 = start + ((stop - start) * 0.01) * (i + 0.5);
     this.getParent(GBLocus.POO).setParam(0, curr1);
     ps1.push(this.getParent(GBLocus.TARGET).getPosition());
     this.getParent(GBLocus.POO).setParam(0, curr2);
     ps2.push(this.getParent(GBLocus.TARGET).getPosition());
   }
-  this.getParent(GBLocus.POO).arg = arg;
+  this.getParent(GBLocus.POO).setParam(0, arg);
   return [ps1, ps2];
 };
 

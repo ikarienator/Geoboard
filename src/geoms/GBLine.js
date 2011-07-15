@@ -1,10 +1,10 @@
 function GBLine (id, gpo1, gpo2) {
-  GBAbstractLine.apply(this, [id, [gpo1, gpo2]]);
+  GBAbstractLine.apply(this, [id, gpo1, gpo2]);
 };
 
 GBLine.prototype = new GBAbstractLine();
 GBLine.P1 = 0;
-GBLine.P2 = 0;
+GBLine.P2 = 1;
 GBLine.prototype.length = function () {
   var p1 = this.__getPosition(0),
       p2 = this.__getPosition(1),
@@ -15,8 +15,8 @@ GBLine.prototype.length = function () {
 
 GBLine.prototype.dragInvolve = function () {
   var d = {};
-  $.extend(d, a2m(this.getParent[GBLine.P1].dragInvolve()));
-  $.extend(d, a2m(this.getParent[GBLine.P2].dragInvolve()));
+  $.extend(d, a2m(this.getParent(GBLine.P1).dragInvolve()));
+  $.extend(d, a2m(this.getParent(GBLine.P2).dragInvolve()));
   return m2a(d);
 };
 
@@ -46,11 +46,11 @@ GBLine.prototype.adjustArg = function (arg) {
 
 GBLine.prototype.__getPosition = function (arg) {
   if (arg == 0)
-    return this.getParent[GBLine.P1].getPosition();
+    return this.getParent(GBLine.P1).getPosition();
   if (arg == 1)
-    return this.getParent[GBLine.P2].getPosition();
-  var p1 = this.getParent[GBLine.P1].getPosition(),
-      p2 = this.getParent[GBLine.P2].getPosition();
+    return this.getParent(GBLine.P2).getPosition();
+  var p1 = this.getParent(GBLine.P1).getPosition(),
+      p2 = this.getParent(GBLine.P2).getPosition();
   return [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ];
 };
 

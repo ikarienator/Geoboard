@@ -1,5 +1,5 @@
 function GBInters (id, obj1, obj2, idx) {
-  GBPoint.apply(this, [id, [obj1, obj2], [idx]]);
+  GBAbstractPoint.apply(this, [id, [obj1, obj2], [idx]]);
 };
 
 GBInters.prototype = new GBAbstractPoint();
@@ -23,8 +23,8 @@ GBInters.prototype.getPosition = function () {
   var inters = this.getParent(0).inters(this.getParent(1));
   if (inters.length == 0)
     return [ NaN, NaN ];
-  else if (this.idx < inters.length)
-    return inters[this.idx];
+  else if (this.getParam(0) < inters.length)
+    return inters[this.getParam(0)];
   else
     return inters[inters.length - 1];
 };

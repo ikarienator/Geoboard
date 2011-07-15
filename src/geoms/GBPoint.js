@@ -57,8 +57,8 @@ GBPoint.prototype.nearestArg = function(x, y) {
 };
 
 GBPoint.prototype.drag = function(from, to) {
-  this.x += to[0] - from[0];
-  this.y += to[1] - from[1];
+  this.__params[0] += to[0] - from[0];
+  this.__params[1] += to[1] - from[1];
 };
 
 GBPoint.prototype.type = function() {

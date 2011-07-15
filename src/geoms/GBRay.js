@@ -1,5 +1,5 @@
 function GBRay (id, gpo1, gpo2) {
-  GBAbstractLine.apply(this, [ id, [ gpo1, gpo2 ] ]);
+  GBAbstractLine.apply(this, [ id, gpo1, gpo2]);
 };
 
 GBRay.prototype = new GBAbstractLine();

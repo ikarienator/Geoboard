@@ -32,6 +32,7 @@
 				<file name="command/ConstructPoint.js" />
 				<file name="command/ConstructPoO.js" />
 				<file name="command/Delete.js" />
+				<file name="command/Hide.js" />
 				<file name="command/Translate.js" />
 				<file name="actions/Action.js" />
 				<file name="actions/SelectionAction.js" />

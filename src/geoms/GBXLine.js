@@ -1,15 +1,11 @@
 function GBXLine (id, gpo1, gpo2) {
-  GBAbstractLine.apply(this, [ id, [ gpo1, gpo2 ] ]);
+  GBLine.apply(this, [ id, gpo1, gpo2]);
 };
 
-GBXLine.prototype = new GBAbstractLine();
+GBXLine.prototype = new GBLine();
 
 GBXLine.prototype.adjustArg = function (arg) {
   return arg;
-};
-
-GBXLine.prototype.getParents = function () {
-  return [ this.gpo1, this.gpo2 ];
 };
 
 GBXLine.prototype.legalArg = function (arg) {
