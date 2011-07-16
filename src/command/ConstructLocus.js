@@ -14,8 +14,8 @@ ConstructLocusCommand.prototype.canDo = function(gdoc) {
     curr = q[qi++];
     if (curr == this.poo)
       return true;
-    if (!v[curr.id()]) {
-      v[curr.id()] = curr;
+    if (!v[curr.id]) {
+      v[curr.id] = curr;
       $.each(curr.getParents(), function(k, v) {
         q.push(v);
       });

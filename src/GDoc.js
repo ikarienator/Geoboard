@@ -89,7 +89,8 @@ GDoc.prototype.draw = function () {
   context.fillStyle = "white";
   context.clearRect(0, 0, 800, 600);
   me.forEntities(function (k, v) {
-    if (me.selection[v.id()])
+    v.update();
+    if (me.selection[v.id])
       v.drawSelected(context);
     else if (me.hovering === v)
       v.drawHovering(context);
@@ -104,7 +105,7 @@ GDoc.prototype.draw = function () {
   });
   elapse = new Date() - start;
   context.fillStyle = "black";
-  context.fillText((1000 / elapse + 1).toFixed(3) + "fps", 15, 15);
+  context.fillText(elapse.toFixed(0) + "ms", 15, 15);
 };
 
 GDoc.prototype.hitTest = function (x, y) {
@@ -199,21 +200,29 @@ GDoc.prototype.get = function (key) {
 GDoc.prototype.add = function (obj) {
   var me = this;
   if (obj.isPoint)
-    me.points[obj.id()] = obj;
+    me.points[obj.id] = obj;
   else
-    me.lines[obj.id()] = obj;
-  me.selection = {};
-  me.selection[obj.id()] = obj;
+    me.lines[obj.id] = obj;
+  $.each(obj.getParents(), function(k, v) {
+    v.__children[obj.id] = obj;
+  });
+  obj.dirt();
+  obj.update(me);
 };
 
 GDoc.prototype.del = function (obj) {
   var me = this;
   if (obj.isPoint)
-    delete me.points[obj.id()];
+    delete me.points[obj.id];
   else
-    delete me.lines[obj.id()];
-  if (me.selection[obj.id()])
-    delete me.selection[obj.id()];
+    delete me.lines[obj.id];
+  if (me.selection[obj.id])
+    delete me.selection[obj.id];
+  if (me.hovering == obj)
+    me.hovering = null;
+  $.each(obj.getParents(), function(k, v) {
+    delete v.__children[obj.id];
+  });
 };
 
 GDoc.prototype.load = function (json) {
@@ -223,10 +232,7 @@ GDoc.prototype.load = function (json) {
   $.each(json.entities, function (k, v) {
     var obj = gb.geom[v.type]();
     obj.load(v.data, me);
-    if (obj.isPoint)
-      me.points[obj.id()] = obj;
-    else
-      me.lines[obj.id()] = obj;
+    me.add(obj);
   });
   me.title = json.title;
   me.__nextId = json.nextId;
@@ -248,8 +254,9 @@ GDoc.prototype.save = function () {
       data : v.save()
     });
   });
-  if (window.localStorage)
+  if (window.localStorage) {
     window.localStorage[this.title] = gb.json.encode(result);
+  }
 };
 
 /**
@@ -289,16 +296,16 @@ GDoc.prototype.topoSort = function () {
 
   me.forEntities(function (k, v) {
     var pats = v.getParents();
-    parent[v.id()] = pats;
+    parent[v.id] = pats;
     if (pats.length == 0) {
-      top[v.id()] = v;
+      top[v.id] = v;
     }
   });
   $.each(parent, function (k, v) {
     $.each(v, function (ki, ch) {
-      if (!children[ch.id()])
-        children[ch.id()] = {};
-      children[ch.id()][k] = me.get(k);
+      if (!children[ch.id])
+        children[ch.id] = {};
+      children[ch.id][k] = me.get(k);
     });
     parent[k] = v.length;
   });
@@ -309,12 +316,12 @@ GDoc.prototype.topoSort = function () {
   qi = 0;
   while (qi < q.length) {
     curr = q[qi++];
-    if (!children[curr.id()])
-      children[curr.id()] = {};
+    if (!children[curr.id])
+      children[curr.id] = {};
     else
-      $.each(children[curr.id()], function (k, v) {
-        parent[v.id()]--;
-        if (parent[v.id()] == 0) {
+      $.each(children[curr.id], function (k, v) {
+        parent[v.id]--;
+        if (parent[v.id] == 0) {
           q.push(v);
         }
       });
@@ -390,7 +397,7 @@ GDoc.prototype.active = function () {
   $('#page-header li').removeClass('active');
   $(me.canvas).addClass('active');
   $(me.pageHeader).addClass('active');
-  gb.currentDocument = this;
+  gb.currentDoc = this;
   if (window.localStorage)
     window.localStorage.__currentDocument = this.title;
   me.draw();

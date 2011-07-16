@@ -20,7 +20,7 @@ gb.menu.file = {
 };
 gb.menu.edit = {
   text : '<a><span class="ud">E</span>dit</a>',
-  items : [ 'undo', 'redo', '-', 'del' ],
+  items : [ 'undo', 'redo', '-', 'sela', '-', 'del' ],
   undo : {
     text : 'Undo',
     isEnabled : function(gdoc) {
@@ -39,6 +39,16 @@ gb.menu.edit = {
       gdoc.redo();
     }
   },
+  
+  sela : {
+    text : 'Select all',
+    run : function(gdoc) {
+      gdoc.forVisibles(function (k, v) {
+        gdoc.selection[k] = v;
+      });
+    }
+  },
+  
   del : {
     text : 'Delete',
     isEnabled : function(gdoc) {
@@ -84,7 +94,7 @@ gb.menu.disp = {
 };
 gb.menu.cons = {
   text : '<a><span class="ud">C</span>onstruct</a>',
-  items : [ 'poo', 'mp', '-', 'perp', 'para', '-', 'loc' ],
+  items : [ 'poo', 'mp', 'inters', '-', 'perp', 'para', '-', 'loc' ],
   poo : {
     text : 'Point on Object',
     isEnabled : function(gdoc) {
@@ -215,6 +225,26 @@ gb.menu.cons = {
         return false;
     },
     run : function(gdoc) {
+      gdoc.run(this.cmd);
+    }
+  },
+  inters : {
+    text : 'Intersections',
+    isEnabled : function(gdoc) {
+      var l1 = null, l2 = null;
+      $.each(gdoc.selection, function(k, v) {
+        if (!v.isPoint)
+          if (l1 == null)
+            l1 = v;
+          else if(l2 == null)
+            l2 = v;
+      });
+      if (l1 == null) return false;
+      if (l2 == null) return false;
+      this.cmd = new ConstructIntersectionsCommand(l1, l2);
+      return this.cmd.canDo();
+    },
+    run : function (gdoc) {
       gdoc.run(this.cmd);
     }
   }

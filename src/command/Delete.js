@@ -15,7 +15,7 @@ $.extend(DeleteCommand.prototype, {
   exec : function(gdoc) {
     var sels = {}, topo, q, qi, curr, list, save;
     $.each(this.list, function(k, v) {
-      sels[v.id()] = v;
+      sels[v.id] = v;
     });
     topo = gdoc.topoSort();
     q = [];
@@ -25,17 +25,17 @@ $.extend(DeleteCommand.prototype, {
     qi = 0;
     while (qi < q.length) {
       curr = q[qi++];
-      if (topo.topo[curr.id()])
-        $.each(topo.topo[curr.id()], function(k, v) {
-          if (!sels[v.id()]) {
-            sels[v.id()] = v;
+      if (topo.topo[curr.id])
+        $.each(topo.topo[curr.id], function(k, v) {
+          if (!sels[v.id]) {
+            sels[v.id] = v;
             q.push(v);
           }
         });
     }
     list = [];
     $.each(topo.result, function(k, v) {
-      if (sels[v.id()]) {
+      if (sels[v.id]) {
         list.push(v);
       }
     });

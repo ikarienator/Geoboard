@@ -78,21 +78,21 @@ GBAbstractLine.prototype.crossTest = function (l, t, r, b) {
     la = (l - p1[0]) / (p2[0] - p1[0]);
     ra = (r - p1[0]) / (p2[0] - p1[0]);
     args = this.adjustArg([ la, ra ]);
-    if (args[0] == args[1] && (args[0] == 0 || args[0] == 1))
+    if (args[0] == args[1])
       return false;
     return t < p1[1] && p1[1] < b;
   } else if (p1[0] == p2[0]) {
     ta = (t - p1[1]) / (p2[1] - p1[1]);
     ba = (b - p1[1]) / (p2[1] - p1[1]);
     args = [ this.adjustArg(ta), this.adjustArg(ba) ];
-    if (args[0] == args[1] && (args[0] == 0 || args[0] == 1))
+    if (args[0] == args[1])
       return false;
     return l < p1[0] && p1[0] < r;
   } else {
     la = (l - p1[0]) / (p2[0] - p1[0]);
     ra = (r - p1[0]) / (p2[0] - p1[0]);
     args = [ this.adjustArg(la), this.adjustArg(ra) ];
-    if (args[0] == args[1] && (args[0] == 0 || args[0] == 1))
+    if (args[0] == args[1])
       return false;
     li = (p2[1] - p1[1]) * args[0] + p1[1];
     ri = (p2[1] - p1[1]) * args[1] + p1[1];
@@ -104,7 +104,7 @@ GBAbstractLine.prototype.crossTest = function (l, t, r, b) {
     ta = (t - p1[1]) / (p2[1] - p1[1]);
     ba = (b - p1[1]) / (p2[1] - p1[1]);
     args = [ this.adjustArg(ta), this.adjustArg(ba) ];
-    if (args[0] == args[1] && (args[0] == 0 || args[0] == 1))
+    if (args[0] == args[1])
       return false;
     ti = (p2[0] - p1[0]) * args[0] + p1[0];
     bi = (p2[0] - p1[0]) * args[1] + p1[0];

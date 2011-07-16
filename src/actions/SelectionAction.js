@@ -12,6 +12,7 @@ $.extend(SelectionAction.prototype, {
     this.dragging = null;
     this.oldSelection = null;
   },
+  
   mouseMove : function(gdoc, x, y) {
     var fx, fy, t, di, test;
     if (this.startDrag) {
@@ -30,7 +31,7 @@ $.extend(SelectionAction.prototype, {
       gdoc.selection = shallowClone(this.oldSelection);
       gdoc.forVisibles(function(k, ent) {
         if (ent.crossTest(fx, fy, tx, ty))
-          gdoc.selection[ent.id()] = ent;
+          gdoc.selection[ent.id] = ent;
       });
       gdoc.draw();
       gdoc.context.beginPath();
@@ -53,7 +54,7 @@ $.extend(SelectionAction.prototype, {
         di = {};
         $.each(gdoc.selection, function(k, v) {
           $.each(v.dragInvolve(), function(k, t) {
-            di[t.id()] = t;
+            di[t.id] = t;
           });
         });
         
@@ -76,15 +77,16 @@ $.extend(SelectionAction.prototype, {
       }
     }
   },
+  
   mouseDown : function(gdoc, x, y, ev) {
     var test = gdoc.hitTest(x, y), ent;
     if (ev.shiftKey) {
       if (test.found.length == 1) {
         ent = test.found[0];
-        if (!gdoc.selection[ent.id()]) {
-          gdoc.selection[ent.id()] = ent;
+        if (!gdoc.selection[ent.id]) {
+          gdoc.selection[ent.id] = ent;
         } else
-          delete gdoc.selection[ent.id()];
+          delete gdoc.selection[ent.id];
       }
       this.oldSelection = shallowClone(gdoc.selection);
       this.startDrag = [ x, y ];
@@ -92,9 +94,9 @@ $.extend(SelectionAction.prototype, {
       this.oldSelection = new Object();
       if (test.found.length == 1) {
         ent = test.found[0];
-        if (!gdoc.selection[ent.id()]) {
+        if (!gdoc.selection[ent.id]) {
           gdoc.selection = {};
-          gdoc.selection[ent.id()] = ent;
+          gdoc.selection[ent.id] = ent;
         }
         this.dragging = [ x, y ];
       } else {
@@ -104,6 +106,7 @@ $.extend(SelectionAction.prototype, {
     }
     gdoc.draw();
   },
+  
   mouseUp : function(gdoc, x, y) {
     if (this.startDrag) {
       this.startDrag = null;

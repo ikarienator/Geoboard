@@ -9,7 +9,7 @@ GBXLine.prototype.adjustArg = function (arg) {
 };
 
 GBXLine.prototype.legalArg = function (arg) {
-  return true;
+  return !$.isNaN(arg);
 };
 
 GBXLine.prototype.argRange = function (arg) {

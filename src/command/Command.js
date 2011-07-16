@@ -43,4 +43,6 @@ ConstructCommand.prototype.undo = function(gdoc) {
 
 ConstructCommand.prototype.redo = function(gdoc) {
   gdoc.add(this.newObject);
+  gdoc.selection = {};
+  gdoc.selection[this.newObject.id] = this.newObject;
 };

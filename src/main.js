@@ -50,7 +50,7 @@ function m2a (m) {
 function a2m (a) {
   var m = {};
   $.each(a, function (k, v) {
-    m[v.id()] = v;
+    m[v.id] = v;
   });
   return m;
 }
@@ -149,7 +149,7 @@ function installMenu () {
 
 window.init = function () {
   installMenu();
-  var toolids = [];
+  var toolids = [], cd, title = "", doc, json;
   $.each(gb.tools, function (k, v) {
     if (!gb.currentTool)
       gb.currentTool = v;
@@ -246,8 +246,6 @@ window.init = function () {
       ev.stopPropagation();
     }
   });
-
-  var cd, title = "", doc, json;
   if (window.localStorage) {
     cd = "";
     for (title in window.localStorage) {

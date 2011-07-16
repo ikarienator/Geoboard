@@ -25,14 +25,14 @@ $.extend(TranslateCommand.prototype, {
     this.save = {};
     var me = this;
     $.each(this.dragList, function(k, v) {
-      me.save[v.id()] = v.save(gdoc);
+      me.save[v.id] = v.save(gdoc);
     });
     this.redo(gdoc);
   },
   undo : function(gdoc) {
     var me = this;
     $.each(this.dragList, function(k, v) {
-      v.load(me.save[v.id()], gdoc);
+      v.load(me.save[v.id], gdoc);
     });
   },
   redo : function(gdoc) {

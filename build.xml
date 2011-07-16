@@ -12,6 +12,7 @@
 				<file name="geoms/GBPointMark.js" />
 				<file name="geoms/GBAbstractPoint.js" />
 				<file name="geoms/GBAbstractLine.js" />
+				<file name="geoms/GBAbstractCurve.js" />
 				<file name="geoms/GBCircle.js" />
 				<file name="geoms/GBPoint.js" />
 				<file name="geoms/GBPoO.js" />
@@ -24,6 +25,7 @@
 				<file name="command/Command.js" />
 				<file name="command/ConstructCircle.js" />
 				<file name="command/ConstructIntersection.js" />
+				<file name="command/ConstructIntersections.js" />
 				<file name="command/ConstructLine.js" />
 				<file name="command/ConstructLocus.js" />
 				<file name="command/ConstructMidpoint.js" />

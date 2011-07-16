@@ -25,11 +25,7 @@ GBLine.prototype.type = function () {
 };
 
 GBLine.prototype.legalArg = function (arg) {
-  if (arg < 0)
-    return false;
-  if (arg > 1)
-    return false;
-  return true;
+  return 0 <= arg && arg <= 1;
 };
 
 GBLine.prototype.argRange = function (arg) {
