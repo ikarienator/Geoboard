@@ -1,5 +1,6 @@
-function GBMidpoint (id, line) {
-  GBAbstractPoint.apply(this, [id, [line], []]);
+function GBMidpoint (document, line) {
+  GBAbstractPoint.apply(this, [document, [line], []]);
+  this.cache = [];
 };
 
 GBMidpoint.prototype = new GBAbstractPoint();
@@ -16,9 +17,20 @@ GBMidpoint.prototype.type = function () {
 };
 
 GBMidpoint.prototype.getPosition = function () {
-  return this.getParent(0).getPosition(0.5);
+  if(this.__dirty) {
+    return this.getParent(0).getPosition(0.5);
+  } 
+  return this.cache;
 };
 
-gb.geom.mpo = function (id, line) {
-  return new GBMidpoint(id, line);
+GBMidpoint.prototype.getInstruction = function (context) {
+  return '';
+};
+
+GBMidpoint.prototype.getInstructionRef = function (arg, context) {
+  return this.getParent(0).getInstructionRef(0.5, context);
+};
+
+gb.geom.mpo = function (gdoc, line) {
+  return new GBMidpoint(gdoc, line);
 };

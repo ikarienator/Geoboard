@@ -9,11 +9,11 @@
  *          on
  * @constructor
  */
-function GBCircle (id, center, on) {
-  Geom.apply(this, [ id, [ center, on ] ]);
+function GBCircle (document, center, on) {
+  Geom.apply(this, [ document, [ center, on ] ]);
 };
 
-GBCircle.prototype = new Geom();
+GBCircle.prototype = new LabeledGeom();
 GBCircle.CENTER = 0;
 GBCircle.ON = 1;
 
@@ -35,7 +35,7 @@ GBCircle.prototype.draw = function (context) {
   context.beginPath();
   context.arc(prop[0], prop[1], prop[2], 0, Math.PI * 2, false);
   context.closePath();
-  context.lineWidth = 3;
+  context.lineWidth = context.transP2M(3);
   context.strokeStyle = this.color;
   context.stroke();
 };
@@ -43,13 +43,13 @@ GBCircle.prototype.draw = function (context) {
 GBCircle.prototype.drawSelected = function (context) {
   var prop = this.prop();
   context.beginPath();
-  context.arc(prop[0], prop[1], prop[2] - 4, 0, Math.PI * 2, false);
+  context.arc(prop[0], prop[1], prop[2] - context.transP2M(4), 0, Math.PI * 2, false);
   context.closePath();
-  context.lineWidth = 1;
+  context.lineWidth = context.transP2M(1);
   context.strokeStyle = "#44c";
   context.stroke();
   context.beginPath();
-  context.arc(prop[0], prop[1], prop[2] + 4, 0, Math.PI * 2, false);
+  context.arc(prop[0], prop[1], prop[2] + context.transP2M(4), 0, Math.PI * 2, false);
   context.closePath();
   context.stroke();
   this.draw(context);
@@ -60,7 +60,7 @@ GBCircle.prototype.drawHovering = function (context) {
   context.beginPath();
   context.arc(prop[0], prop[1], prop[2], 0, Math.PI * 2, false);
   context.closePath();
-  context.lineWidth = 3;
+  context.lineWidth = context.transP2M(3);
   context.strokeStyle = "#f00";
   context.stroke();
 };
@@ -71,7 +71,7 @@ GBCircle.prototype.hitTest = function (x, y) {
       dy = prop[1] - y,
       r = dx * dx + dy * dy;
   r = Math.sqrt(r);
-  return r - 3 < prop[2] && prop[2] < r + 3;
+  return r - this.document.context.transP2M(5) < prop[2] && prop[2] < r + this.document.context.transP2M(5);
 };
 
 GBCircle.prototype.inters = function (obj) {
@@ -80,7 +80,7 @@ GBCircle.prototype.inters = function (obj) {
   else if (obj.isCircle) {
     var prop1 = this.prop(),
         prop2 = obj.prop(),
-        d = Math.sqrt(dist(prop1, prop2)),
+        d = Math.sqrt(Geom.dist(prop1, prop2)),
         r1 = prop1[2],
         r2 = prop2[2],
         d1 = ((r1 * r1 - r2 * r2) / d + d) * 0.5,
@@ -96,7 +96,7 @@ GBCircle.prototype.inters = function (obj) {
 GBCircle.prototype.crossTest = function (l, t, r, b) {
   var prop = this.prop(),
       ps = [ [ l, b ], [ l, t ], [ r, t ], [ r, b ] ],
-      ds = $.map(ps, function (v, k) { return dist(v, prop); }),
+      ds = $.map(ps, function (v, k) { return Geom.dist(v, prop); }),
       r2 = prop[2] * prop[2];
   if (ds[0] < r2 && ds[1] < r2 && ds[2] < r2 && ds[3] < r2)
     return false;
@@ -143,7 +143,7 @@ GBCircle.prototype.legalArg = function (arg) {
   return true;
 };
 
-GBCircle.prototype.argRange = function (arg) {
+GBCircle.prototype.argRange = function () {
   return [ 0, 2 * Math.PI ];
 };
 
@@ -156,6 +156,58 @@ GBCircle.prototype.randPoint = function () {
   }
 };
 
-gb.geom.gci = function (id, center, on) {
-  return new GBCircle(id, center, on);
+GBCircle.prototype.getInstruction = function (context) {
+  return 'function ' + this.id + '(arg) { var p1 = ' + this.getParent(0).getInstructionRef(0, context) + 
+  ', p2 = ' + this.getParent(1).getInstructionRef(0, context) + ',' +
+  ' r = Math.sqrt(Geom.dist(p1, p2));'+
+  'return [ p1[0] + Math.cos(arg) * r, p1[1] + Math.sin(arg) * r ]; }';
+};
+
+GBCircle.prototype.getInstructionRef = function (arg, context) {
+  if (!context.desc[this.id]) return this.getInstructionRefStatic(arg);
+  return this.id + '(' + arg + ')';
+};
+
+GBCircle.prototype.getInstruction = function (context) {
+  return 'function ' + this.id + '(arg) { var p1 = ' + this.getParent(0).getInstructionRef(0, context) + 
+  ', p2 = ' + this.getParent(1).getInstructionRef(0, context) + ',' +
+  ' r = Math.sqrt(Geom.dist(p1, p2));'+
+  'return [ p1[0] + Math.cos(arg) * r, p1[1] + Math.sin(arg) * r ]; }';
+};
+
+GBCircle.prototype.getInstructionRefStatic = function (arg) {
+  var prop = this.prop();
+  return '[' + prop[0] + '+Math.cos(' + arg + ')*' + prop[2] + ',' + prop[1] + '+Math.sin(' + arg + ')*' + prop[2] + ']';
+};
+
+GBCircle.prototype.getIntersInstruction = function (obj, context, idx) {
+  if (obj.isLine) {
+    return obj.getIntersInstruction(this, context);
+  } else {
+    if (idx >= 2) return '[NaN, NaN]';
+    var res= [
+      'function() {',
+      'var p1 = ' + this.getParent(0).getInstructionRef(0, context) + ',',
+      'p2 = ' + obj.getParent(0).getInstructionRef(0, context) + ',',
+      'd = Math.sqrt(Geom.dist(p1, p2)),',
+      'r1 = Geom.dist(p1, ' + this.getParent(1).getInstructionRef(0, context) + '),',
+      'r2 = Geom.dist(p2, ' + obj.getParent(1).getInstructionRef(0, context) + '),',
+      'd1 = ((r1 - r2) / d + d) * 0.5,',
+      'h = Math.sqrt(r1- d1 * d1),',
+      'dx = p2[0] - p1[0],',
+      'dy = p2[1] - p1[1];',
+      idx == 0 ? 'return [ p1[0] + (dx * d1 - dy * h) / d, p1[1] + (dy * d1 + dx * h) / d ],' :
+      'return [ p1[0] + (dx * d1 + dy * h) / d, p1[1] + (dy * d1 - dx * h) / d ];',
+      '}'
+    ];
+    return res.join('\n');
+  }
+};
+
+GBCircle.prototype.isClosed = function () {
+  return this.argRange()[1] == this.argRange()[0] + Math.PI * 2;
+};
+
+gb.geom.gci = function (gdoc, center, on) {
+  return new GBCircle(gdoc, center, on);
 };

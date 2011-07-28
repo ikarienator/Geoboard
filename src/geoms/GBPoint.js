@@ -1,60 +1,11 @@
-function GBPoint(id, x, y) {
-  GBAbstractPoint.apply(this, [ id, [ ], [x, y] ]);
+function GBPoint(document, x, y) {
+  GBAbstractPoint.apply(this, [ document, [ ], [x, y] ]);
 };
+
 GBPoint.X = 0;
 GBPoint.Y = 1;
 
-
 GBPoint.prototype = new GBAbstractPoint();
-
-GBPoint.prototype.draw = function(context) {
-  var pos = this.getPosition();
-  context.beginPath();
-  context.arc(pos[0], pos[1], 3, 0, Math.PI * 2, false);
-  context.closePath();
-  context.fillStyle = this.color;
-  context.fill();
-  context.lineWidth = 1;
-  context.strokeStyle = "#000";
-  context.stroke();
-};
-
-GBPoint.prototype.drawSelected = function(context) {
-  var pos = this.getPosition();
-  this.draw(context);
-  context.beginPath();
-  context.arc(pos[0], pos[1], 6, 0, Math.PI * 2, false);
-  context.closePath();
-  context.lineWidth = 1;
-  context.strokeStyle = "#339";
-  context.stroke();
-};
-
-GBPoint.prototype.drawHovering = function(context) {
-  var pos = this.getPosition();
-  context.beginPath();
-  context.arc(pos[0], pos[1], 3, 0, Math.PI * 2, false);
-  context.closePath();
-  context.fillStyle = this.color;
-  context.fill();
-  context.lineWidth = 1;
-  context.strokeStyle = "#F00";
-  context.stroke();
-};
-
-GBPoint.prototype.hitTest = function(x, y) {
-  var pos = this.getPosition(), dx = pos[0] - x, dy = pos[1] - y;
-  return dx * dx + dy * dy < 100;
-};
-
-GBPoint.prototype.crossTest = function(l, t, r, b) {
-  var pos = this.getPosition();
-  return l < pos[0] && pos[0] < r && t < pos[1] && pos[1] < b;
-};
-
-GBPoint.prototype.nearestArg = function(x, y) {
-  return 0;
-};
 
 GBPoint.prototype.drag = function(from, to) {
   this.setParam(GBPoint.X, this.getParam(GBPoint.X) + to[0] - from[0]);
@@ -69,4 +20,15 @@ GBPoint.prototype.getPosition = function() {
   return [ this.getParam(GBPoint.X), this.getParam(GBPoint.Y) ];
 };
 
-gb.geom.gpo = function(id, x, y) { return new GBPoint(id, x, y); };
+GBPoint.prototype.getInstruction = function (context) {
+  return 'var ' + this.id + '_x = gdoc.get("' +this.id+ '").__params[0];\n' +
+  'var ' + this.id + '_y = gdoc.get("' +this.id+ '").__params[1];';
+};
+
+GBPoint.prototype.getInstructionRef = function (arg, context) {
+  if (!context.desc[this.id]) return this.getInstructionRefStatic();
+  return '[' + this.id + '_x,' + this.id + '_y]';
+};
+
+
+gb.geom.gpo = function(gdoc, x, y) { return new GBPoint(gdoc, x, y); };

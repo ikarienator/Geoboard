@@ -1,5 +1,5 @@
-function GBPoO(id, obj, arg) {
-  GBAbstractPoint.apply(this, [id, [obj], [arg]]);
+function GBPoO(document, obj, arg) {
+  GBAbstractPoint.apply(this, [document, [obj], [arg]]);
   this.cache = [NaN, NaN];
 };
 
@@ -18,17 +18,23 @@ GBPoO.prototype.type = function() {
 };
 
 GBPoO.prototype.getPosition = function() {
-  this.update();
+  if (this.__dirty) {
+    return this.getParent(0).getPosition(this.getParam(0));
+  } 
   return this.cache;
 };
 
-GBPoO.prototype.update = function() {
-  if (this.__dirty){
-    GBAbstractPoint.prototype.update.apply(this, []);
-    this.cache = this.getParent(0).getPosition(this.getParam(0));
-  }
+GBPoO.prototype.getInstruction = function () {
+  return 'var ' + this.id + '_arg=gdoc.get("' + this.id + '").__params[0];';
 };
 
-gb.geom.poo = function(id, obj, arg) {
-  return new GBPoO(id, obj, arg);
+
+GBPoO.prototype.getInstructionRef = function (arg, context) {
+  if(!context.desc[this.id]) return this.getInstructionRefStatic();
+  return this.getParent(0).getInstructionRef(this.id + '_arg', context);
+};
+
+
+gb.geom.poo = function(gdoc, obj, arg) {
+  return new GBPoO(gdoc, obj, arg);
 };

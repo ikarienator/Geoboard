@@ -1,17 +1,17 @@
 function GBAbstractPoint() {
   Geom.apply(this, arguments);
 };
-GBAbstractPoint.prototype = new Geom();
+GBAbstractPoint.prototype = new LabeledGeom();
 GBAbstractPoint.prototype.isPoint = true;
 GBAbstractPoint.prototype.color = '#F00';
 GBAbstractPoint.prototype.draw = function(context) {
   var pos = this.getPosition();
   context.beginPath();
-  context.arc(pos[0], pos[1], 3, 0, Math.PI * 2, false);
+  context.arc(pos[0], pos[1], context.transP2M(3), 0, Math.PI * 2, false);
   context.closePath();
   context.fillStyle = this.color;
   context.fill();
-  context.lineWidth = 1;
+  context.lineWidth = context.transP2M(1);
   context.strokeStyle = "#000";
   context.stroke();
 };
@@ -20,9 +20,9 @@ GBAbstractPoint.prototype.drawSelected = function(context) {
   var pos = this.getPosition();
   this.draw(context);
   context.beginPath();
-  context.arc(pos[0], pos[1], 6, 0, Math.PI * 2, false);
+  context.arc(pos[0], pos[1], context.transP2M(6), 0, Math.PI * 2, false);
   context.closePath();
-  context.lineWidth = 1;
+  context.lineWidth = context.transP2M(1);
   context.strokeStyle = "#339";
   context.stroke();
 };
@@ -30,11 +30,11 @@ GBAbstractPoint.prototype.drawSelected = function(context) {
 GBAbstractPoint.prototype.drawHovering = function(context) {
   var pos = this.getPosition();
   context.beginPath();
-  context.arc(pos[0], pos[1], 3, 0, Math.PI * 2, false);
+  context.arc(pos[0], pos[1], context.transP2M(3), 0, Math.PI * 2, false);
   context.closePath();
   context.fillStyle = this.color;
   context.fill();
-  context.lineWidth = 1;
+  context.lineWidth = context.transP2M(1);
   context.strokeStyle = "#F00";
   context.stroke();
 };
@@ -57,4 +57,17 @@ GBAbstractPoint.prototype.nearestArg = function(x, y) {
 
 GBAbstractPoint.prototype.legalArg = function(arg) {
   return arg == 0;
+};
+
+GBAbstractPoint.prototype.update = function () {
+  if(this.__dirty) {
+    this.cache = this.getPosition();
+    Geom.prototype.update.apply(this, []);
+  }
+};
+
+GBAbstractPoint.prototype.getInstructionRefStatic = function () {
+  this.update();
+  var pos = this.getPosition();
+  return '[' + pos[0] + ',' + pos[1] + ']';
 };

@@ -8,6 +8,11 @@
 	-moz-user-select: none;
 	-o-user-select: none;
 	user-select: none;
+	background: transparent;
+}
+
+html {
+	overflow: hidden;
 }
 
 ul.show-ud span.ud {
@@ -15,69 +20,37 @@ ul.show-ud span.ud {
 }
 
 ul.menu {
-	display: block;
-	position: relative;
 	background: #282828;
-	font-family: Arial, Helvetica, sans-serif;
-	overflow-y: visible;
-	overflow-x: visible;
-	left: 0px;
-	right: 0px;
+	list-style: none;
 	height: 25px;
-	padding-left: 15px;
-}
-
-ul.menu.expand {
-	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(40, 40
-		, 40) ), color-stop(0, rgb(0, 9, 41) ) );
-	background-image: -moz-linear-gradient(center bottom, rgb(0, 0, 0) 100%,
-		rgb(0, 9, 41) 0% );
+	font-weight: normal;
+  font-size: 14px;
+  font-style: normal;
+  text-align: center;
+  text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 2px;
+  text-decoration: none;
+  -webkit-transition: .05s linear;
+  -moz-transition: all .05s linear;
+  transition: .05s linear;
 }
 
 ul.menu li.item {
-	cursor: pointer;
-	float: left;
-	position: relative;
-	display: block;
-	padding: 5px 9px;
-	width: auto;
-	text-align: center;
-	height: 12px;
-	line-height: 13px;
-	list-style: none;
-	border-bottom: 3px solid transparent;
-	color: #ccc;
-	text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 2px;
-	-webkit-transition: .05s linear;
-	transition: .05s linear;
-	overflow: visible;
-	white-space: nowrap;
-}
-
-ul.menu li.item a {
-	color: #ccc;
-	font-weight: normal;
-	font-size: 14px;
-	font-style: normal;
-	text-decoration: none;
-	-moz-transition: all .05s linear;
-	-webkit-transition: .05s linear;
-	transition: .05s linear;
-}
-
-ul.menu li.item:hover {
-	color: #fff;
-	background: rgba(255, 255, 255, 0.2);
-	border-bottom: 3px solid #cef;
-	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-	-moz-transition: 0s linear;
-	-webkit-transition: 0s linear;
-	transition: 0s linear;
-	-moz-transition: 0s linear;
+	position : relative;
+  cursor: pointer;
+  float: left;
+  color: #ccc;
+  padding: 5px 9px;
+  border-bottom: 3px solid transparent;
+  height: 12px;	
+  white-space: nowrap;
 }
 
 ul.menu.expand li.item:hover {
 	border-color: 3px solid #f99;
+}
+
+ul.menu ul.sub-menu {
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 ul.menu li.item:hover a {
@@ -166,32 +139,40 @@ div#center {
 	display: block;
 }
 
-ul.tool {
-	border: 1px solid #555;
-	width: 40px;
-	position: inherit;
+#left {
+	width: 46px;
+	position: absolute;
 	top: 0px;
 	bottom: 0px;
+}
+
+ul.tool {
+	border: 1px solid #555;
+	top: 19px;
+	left: 1px;
+	right: 1px;
+	bottom: 0px;
+	position: inherit;
 	background: #282828;
 	list-style: none;
 	overflow-y: hidden;
 	padding: 2px;
-	padding-top: 19px;
 	-moz-transition: .1s linear;
 	-webkit-transition: .1s linear;
 	transition: .1s linear;
 	overflow: hidden;
 }
 
-ul.tool li#tools-hider:after {
+#left .tools-hider:after {
 	content: '<<';
 }
 
-.hide-tools ul.tool li#tools-hider:after {
+.hide-tools #left .tools-hider:after {
 	content: '';
 }
 
-ul.tool li#tools-hider {
+.tools-hider {
+	cursor: pointer;
 	color: #777;
 	position: inherit;
 	top: 1px;
@@ -204,9 +185,10 @@ ul.tool li#tools-hider {
 	border-radius: 0px;
 	-moz-border-radius: 0px;
 	border: 0px;
+	color: #777;
 }
 
-#center.hide-tools ul.tool li#tools-hider {
+.hide-tools .tools-hider {
 	opacity: 1;
 	bottom: 1px;
 	height: auto;
@@ -231,11 +213,15 @@ ul.tool li {
 	transition: all .1s linear;
 }
 
-#center.hide-tools ul.tool {
-	width: 4px;
+#center.hide-tools #left {
+	right : 1px;
 	-moz-transition: width 0.5s ease;
 	-webkit-transition: width 0.5s ease;
 	transition: width 0.5s ease;
+}
+
+#center.hide-tools ul.tool {
+	opacity: 0;
 }
 
 ul.tool li:hover {
@@ -277,7 +263,7 @@ ul.tool li.active {
 }
 
 div#board {
-	right: 0px;
+	right: 192px;
 	left: 46px;
 	position: inherit;
 	margin: 1px;
@@ -293,7 +279,14 @@ div#board {
 	transition: left 0.5s ease;
 }
 
-ul#page-header {
+#center.hide-props div#board {
+	right: 10px;
+	-moz-transition: left 0.5s ease;
+	-webkit-transition: left 0.5s ease;
+	transition: left 0.5s ease;
+}
+
+ul.page-header {
 	height: 24px;
 	list-style: none;
 	padding-left: 15px;
@@ -301,7 +294,7 @@ ul#page-header {
 	border-bottom: 2px solid #555;
 }
 
-ul#page-header:after {
+ul.page-header:after {
 	content: '';
 	position: absolute;
 	border-bottom: 1px solid #aaa;
@@ -311,7 +304,7 @@ ul#page-header:after {
 	right: 0px;
 }
 
-ul#page-header li {
+ul.page-header li {
 	position: relative;
 	float: left;
 	background: #ccc;
@@ -330,7 +323,7 @@ ul#page-header li {
 	z-index: 2;
 }
 
-ul#page-header li.active {
+ul.page-header li.active {
 	color: white;
 	text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 2px;
 	height: 13px;
@@ -339,18 +332,17 @@ ul#page-header li.active {
 	z-index: 3;
 }
 
-ul#page-header li.active:hover {
+ul.page-header li.active:hover {
 	color: white;
 }
 
-ul#page-header li:hover {
+ul.page-header li:hover {
 	color: #555;
 }
 
 div#area {
-	overflow: scroll;
 	position: inherit;
-	background: #DDD;
+	background: #FFF;
 	top: 26px;
 	bottom: 0px;
 	left: 0px;
@@ -358,11 +350,17 @@ div#area {
 }
 
 canvas {
-	position: relative;
-	background: #fff;
+	position: absolute;
+	background: transparent;
 	top: 0px;
 	left: 0px;
+	right: 0px;
+	bottom: 0px;
 	display: none;
+}
+
+canvas.phantom {
+	z-index: 1000;
 }
 
 canvas.active {
@@ -385,6 +383,57 @@ ul#foot li {
 	margin: 1px 1px 1px 3px;
 	padding: 1px 5px;
 	border: 1px inset;
+}
+
+div#right {
+	right: 0px;
+	width: 190px;
+	top: 0px;
+	bottom: 0px;
+	margin: 1px;
+	position: absolute;
+}
+
+#right .tools-hider:after {
+	content: '>>';
+}
+
+div#right div#prop {
+	margin-top: 16px;
+	top: 26px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	background: #333;
+	position: absolute;
+	padding: 5px 8px;
+	color: #ddd;
+	text-shadow: 1px 1px 0px black;
+}
+
+#right ul.page-header li {
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-topright: 3px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	padding: 5px;
+	margin-right: 0px;
+}
+
+#right ul.page-header:after {
+	margin-top: 16px;
+}
+
+.center-message {
+	vertical-align: middle;
+	text-align: center;
+	position: absolute;
+	top: 50%;
+	display: none;
+}
+
+:only-child.center-message {
+	display: block;
 }
 
 svg .ent:hover {

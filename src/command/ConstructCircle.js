@@ -10,5 +10,5 @@ ConstructCircleCommand.prototype.canDo = function (gdoc) {
 };
 
 ConstructCircleCommand.prototype.createNew = function (gdoc) {
-  return new GBCircle(gdoc.nextId(), this.center, this.on);
+  return new GBCircle(gdoc, this.center, this.on);
 };

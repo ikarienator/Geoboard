@@ -2,8 +2,8 @@ function GBAbstractCurve () {
   Geom.apply(this, arguments);
 }
 
-GBAbstractCurve.SAMPLES = 500;
-GBAbstractCurve.prototype = new Geom();
+GBAbstractCurve.SAMPLES = 250;
+GBAbstractCurve.prototype = new LabeledGeom();
 GBAbstractCurve.prototype.color = "#880";
 
 GBAbstractCurve.prototype.__curve = function (start, stop) {
@@ -13,8 +13,8 @@ GBAbstractCurve.prototype.__curve = function (start, stop) {
   for (i = 0; i <= GBAbstractCurve.SAMPLES; i++) {
     curr1 = start + (stop - start) / GBAbstractCurve.SAMPLES * i;
     curr2 = start + ((stop - start) / GBAbstractCurve.SAMPLES) * (i + 0.5);
-    ps1.push(this.__getPosition(curr1));
-    ps2.push(this.__getPosition(curr2));
+    ps1.push(this.__getPosition(curr1, context));
+    ps2.push(this.__getPosition(curr2, context));
   }
   
   this.__curveStop(context);
@@ -23,42 +23,68 @@ GBAbstractCurve.prototype.__curve = function (start, stop) {
 
 GBAbstractCurve.prototype.__drawPath = function (context) {
   this.update();
-  var pss = this.path, ps = pss[0], dc = pss[1], last, top, curr, a, proj, i;
+  var pss = this.path, ps = pss[0], dc = pss[1], last, top, 
+      curr, i, ex = context.getExtent(), a, proj, l, t, c;
+  if (!ps) return;
   context.beginPath();
   context.moveTo(ps[0][0], ps[0][1]);
   for (i = 1; i < ps.length; i++) {
     last = ps[i - 1];
-    top = dc[i - 1].slice(0);
+    top = dc[i - 1];
     curr = ps[i];
-    a = projArg(last, curr, top);
+    l = (ex[0] < last[0] && last[0] < ex[2] && ex[1] < last[1] && last[1] < ex[3]);
+    t = (ex[0] < top[0] && top[0] < ex[2] && ex[1] < top[1] && top[1] < ex[3]);
+    c = (ex[0] < curr[0] && curr[0] < ex[2] && ex[1] < curr[1] && curr[1] < ex[3]);
+    a = Geom.projArg(last, curr, top);
     proj = [ (curr[0] - last[0]) * a + last[0], (curr[1] - last[1]) * a + last[1] ];
-    context.quadraticCurveTo(top[0] + top[0] - proj[0], top[1] + top[1] - proj[1], curr[0], curr[1]);
+    
+//    if (l || t)
+//      context.lineTo(top[0], top[1]);
+//    else
+//      context.moveTo(top[0], top[1]);
+//    if (t || c)
+//      context.lineTo(curr[0], curr[1]);
+//    else
+//      context.moveTo(curr[0], curr[1]);
+    
+    if (l || t || c)
+      context.quadraticCurveTo(top[0] + top[0] - proj[0], top[1] + top[1] - proj[1], curr[0], curr[1]);
+    else
+      context.moveTo(curr[0], curr[1]);
   }
 };
 
 GBAbstractCurve.prototype.draw = function (context) {
   this.__drawPath(context);
   context.strokeStyle = this.color;
-  context.lineWidth = 4;
+  context.lineWidth = context.transP2M(4);
   context.stroke();
+//  var path = this.path[0];
+//  $.each(path, function (k, v) {
+//    context.beginPath();
+//    context.rect(v[0] - 1, v[1] - 1, 2, 2);
+//    context.strokeStyle = 'black';
+//    context.lineWidth = 1;
+//    context.stroke();
+//  });
 };
 
 GBAbstractCurve.prototype.drawSelected = function (context) {
   this.__drawPath(context);
-  context.lineWidth = 8;
+  context.lineWidth = context.transP2M(8);
   context.strokeStyle = "#44c";
   context.stroke();
-  context.lineWidth = 6;
+  context.lineWidth = context.transP2M(6);
   context.strokeStyle = "#fff";
   context.stroke();
   context.strokeStyle = this.color;
-  context.lineWidth = 4;
+  context.lineWidth = context.transP2M(4);
   context.stroke();
 };
 
 GBAbstractCurve.prototype.drawHovering = function (context) {
   this.__drawPath(context);
-  context.lineWidth = 4;
+  context.lineWidth = context.transP2M(4);
   context.strokeStyle = "#F00";
   context.stroke();
 };
@@ -66,6 +92,7 @@ GBAbstractCurve.prototype.drawHovering = function (context) {
 GBAbstractCurve.prototype.crossTest = function (l, t, r, b) {
   this.update();
   var i, path = this.path[0], p1, p2, la, ra, ta, ba, li, ri, ti, bi;
+  if (!path) return false;
   for(i = 1; i < path.length; i++) {
     p1 = path[i - 1];
     p2 = path[i];
@@ -122,6 +149,7 @@ GBAbstractCurve.prototype.hitTest = function (x, y) {
   this.update();
   var i, path = this.path[0], p1, p2, 
       fx, tx, fy, ty, t, c;
+  if (!path) return false;
   for(i = 1; i < path.length; i++) {
     p1 = path[i - 1];
     p2 = path[i];
@@ -140,11 +168,11 @@ GBAbstractCurve.prototype.hitTest = function (x, y) {
       ty = t;
     }
     
-    c = cross(p1, [ x, y ], p2);
+    c = Geom.cross(p1, [ x, y ], p2);
     c = c * c;
-    if (c > 25 * dist(p1, p2))
+    if (c > 25 * Geom.dist(p1, p2))
       continue;
-    c = projArg(p1, p2, [ x, y ]);
+    c = Geom.projArg(p1, p2, [ x, y ]);
     if (c > 1) 
       continue;
     if (c < 0) 
@@ -157,39 +185,29 @@ GBAbstractCurve.prototype.hitTest = function (x, y) {
 
 GBAbstractCurve.prototype.nearestArg = function (x, y) {
   this.update();
-  var context = this.__curveStart(), path = this.path[0],
-      mind = Infinity, mini = -1, i, j, p, range = this.__getDefaultRange(), start = range[0], stop = range[1];
-  $.each(path, function(k, p) {
-    var d = dist(p, [x, y]);
-    if (d < mind) {
-      mind = d;
-      mini = k;  
+  var context = this.__curveStart(),
+      d, mind = Infinity, mini = -1, it = 0, lastMind = 0, i, j, p, range = this.__getDefaultRange(), start = range[0], stop = range[1];
+  while (Math.abs(mind - lastMind) > 1e-3 && it ++ < 10000) {
+    lastMind = mind;
+    mind = Infinity;
+    for (i = 0; i < 100; i++) {
+      j = i * 0.01 * (range[1] - range[0]) + range[0];
+      d = Geom.dist(this.__getPosition(j, context), [x, y]);
+      if (d < mind) {
+        mini = i;
+        mind = d;
+      }
     }
-  });
-  range = [(mini - 1) * (range[1] - range[0]) / (path.length - 1) + range[0],
-     (mini + 1) * (range[1] - range[0]) / (path.length - 1) + range[0]];
-  mini = mini * (range[1] - range[0]) / (path.length - 1) + range[0];
-  mind = Infinity;
-  for (i = 0; i < 100; i++) {
-    j = i * (range[1] - range[0]) * 0.01 + range[0];
-    p = dist(this.__getPosition(j), [x, y]);
-    if (p < mind) {
-      mini = j;
-      mind = p;
-    }
+    range = [(mini - 1) * 0.01 * (range[1] - range[0]) + range[0], (mini + 1) * 0.01 * (range[1] - range[0]) + range[0]];
   }
   this.__curveStop(context);
-  return (mini - start) / (stop - start);
+  p = (range[0] + range[1]) * 0.5;
+  return (p - start) / (stop - start);
 };
 
 GBAbstractCurve.prototype.getPosition = function (arg) {
-  this.update();
-  var path = this.path[0], p1, p2, 
-      a = arg * (path.length - 1), d = Math.floor(a), f = a - d;
-  p1 = path[d] || [0, 0];
-  p2 = path[d + 1] || p1;
-  if (f == 0) return p1;
-  return [f * (p2[0] - p1[0]) + p1[0], f * (p2[1] - p1[1]) + p1[1]];
+  var range = this.__getDefaultRange();
+  return this.__getPosition((range[1] - range[0]) * arg + range[0]);
 };
 
 GBAbstractCurve.prototype.update = function () {

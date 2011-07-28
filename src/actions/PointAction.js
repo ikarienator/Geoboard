@@ -11,36 +11,44 @@ PointAction.prototype.current = null;
 PointAction.prototype.init = function () {
   this.reset();
 };
+
 PointAction.prototype.reset = function () {
   this.current = [ 0, 0 ];
   this.found = null;
 };
+
 PointAction.prototype.mouseMove = function (gdoc, x, y) {
   var test = gdoc.hitTest(x, y), context = gdoc.context;
   this.found = test.found;
   this.current = test.current;
   gdoc.draw();
 
-  if (test.found.length <= 2)
-    $.each(test.found, function (k, v) {
-      v.drawHovering(context);
-    });
+  $.each(test.found, function (k, v) {
+    v.drawHovering(context);
+  });
 
   if (test.found[0] && test.found[0].isPoint) {
     context.beginPath();
-    context.arc(test.current[0], test.current[1], 6, 0, Math.PI * 2, false);
+    context.arc(test.current[0], test.current[1], context.transP2M(6), 0, Math.PI * 2, false);
     context.closePath();
-    context.lineWidth = 1;
+    context.lineWidth = context.transP2M(1);
     context.strokeStyle = "#F00";
+    context.stroke();
+  } else if(test.found.length >= 2) {
+    context.beginPath();
+    context.arc(test.current[0], test.current[1], context.transP2M(6), 0, Math.PI * 2, false);
+    context.closePath();
+    context.lineWidth = context.transP2M(1);
+    context.strokeStyle = "#0F0";
     context.stroke();
   }
 
   context.beginPath();
-  context.arc(test.current[0], test.current[1], 5, 0, Math.PI * 2, false);
+  context.arc(test.current[0], test.current[1], context.transP2M(3), 0, Math.PI * 2, false);
   context.closePath();
   context.fillStyle = this.color;
   context.fill();
-  context.lineWidth = 1;
+  context.lineWidth = context.transP2M(1);
   context.strokeStyle = "#000";
   context.stroke();
 };
@@ -71,7 +79,7 @@ PointAction.prototype.mouseDown = function (gdoc, x, y) {
       gdoc.draw();
     }
   } else if (test.found.length == 2) {
-    cmd = new ConstructIntersectionCommand(test.found[0], test.found[1], test.current[0], test.current[1]);
+    cmd = new ConstructIntersectionCommand(test.found[0], test.found[1], test.current[2]);
     gdoc.run(cmd);
     np = cmd.newObject;
     this.lastPoint = np;

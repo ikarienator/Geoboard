@@ -26,5 +26,5 @@ ConstructLocusCommand.prototype.canDo = function(gdoc) {
 
 ConstructLocusCommand.prototype.createNew = function (gdoc) {
   var range = this.poo.getParent(0).argRange && this.poo.getParent(0).argRange() || [0, 1];
-  return new GBLocus(gdoc.nextId(), this.poo, this.target, range[0], range[1]);
+  return new GBLocus(gdoc, this.poo, this.target, range[0], range[1]);
 };

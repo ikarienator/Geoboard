@@ -1,5 +1,5 @@
-function GBLocus (id, poo, target) {
-  GBAbstractCurve.apply(this, [ id, [ poo, target ] ]);
+function GBLocus (document, poo, target) {
+  GBAbstractCurve.apply(this, [ document, [ poo, target ] ]);
   this.path = [];
 };
 
@@ -14,38 +14,39 @@ GBLocus.prototype.__getDefaultRange = function () {
   return pa.argRange && pa.argRange() || [0, 1];
 };
 
-GBLocus.prototype.__getPosition = function (arg) {
-  var poo = this.getParent(GBLocus.POO),
-      target = this.getParent(GBLocus.TARGET);
-  poo.setParam(0, arg);
-  target.update();
-  return target.getPosition();
+GBLocus.prototype.__getPosition = function (arg, context) {
+  return [NaN, NaN];
 };
 
 GBLocus.prototype.__curveStart = function () {
-  var poo = this.getParent(GBLocus.POO), dirts = {};
-  $.each(poo.descendants(), function(k ,v) {
-    dirts[v.id] = v.__dirty;
-  });
-  return {dirts : dirts, arg : poo.getParam(0) };
+  
 };
 
 GBLocus.prototype.__curveStop = function (context) {
-  var poo = this.getParent(GBLocus.POO),
-      target = this.getParent(GBLocus.TARGET);
-  poo.setParam(0, context.arg);
-  target.update();
-  $.each(poo.descendants(), function(k ,v) {
-    v.__dirty = context.dirts[v.id];
-  });
+  
 };
 
+GBLocus.prototype.getInstruction = function (context) {
+  return 'var ' + this.id + ' = (' + Geom.calculas(this.document, this.getParent(0), this.getParent(1)) + ') (gdoc);';
+};
 
+GBLocus.prototype.getInstructionRef = function (arg, context) {
+  var range = this.__getDefaultRange();
+  return this.id + '(' + (range[1] - range[0]) + '* (' + arg + ') +' + range[0] + ')';
+};
 
 GBLocus.prototype.type = function () {
   return "loc";
 };
 
-gb.geom.loc = function (id, poo, target) {
-  return new GBLocus();
+GBLocus.prototype.update = function () {
+  if (this.__dirty) {
+    var text = Geom.calculas(this.document, this.getParent(0), this.getParent(1));
+    this.__getPosition = eval(text)(this.document);
+    GBAbstractCurve.prototype.update.apply(this, []);
+  }
+};
+
+gb.geom.loc = function (gdoc, poo, target) {
+  return new GBLocus(gdoc, poo, target);
 };

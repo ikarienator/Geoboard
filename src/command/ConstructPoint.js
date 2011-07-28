@@ -10,6 +10,6 @@ ConstructPointCommand.prototype.canDo = function(gdoc) {
 };
 
 ConstructPointCommand.prototype.createNew = function(gdoc) {
-  return new GBPoint(gdoc.nextId(), this.x, this.y);
+  return new GBPoint(gdoc, this.x, this.y);
 };
 

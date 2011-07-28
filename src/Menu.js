@@ -1,28 +1,34 @@
 gb.menu = {};
 gb.menu.file = {
-  text : '<a><span class="ud">F</span>ile</a>',
+  text : '<span class="ud">F</span>ile',
   items : [ 'news', 'down', '-', 'prop', 'help' ],
   news : {
     text : 'New Sketch',
+    shortcutKey : new ShortcutKey(78, ShortcutKey.CTRL, 'gb.menu.file.news'),
     run : function(gdoc) {
       new GDoc().active();
     }
   },
   down : {
+    shortcutKey : new ShortcutKey(83, ShortcutKey.CTRL, 'gb.menu.file.down'),
     text : 'Download...'
   },
   prop : {
+    shortcutKey : new ShortcutKey(188, ShortcutKey.CTRL, 'gb.menu.file.props'),
     text : 'Properties'
   },
   help : {
+    shortcutKey : new ShortcutKey(112, 0, 'gb.menu.file.help'),
     text : 'Help...'
   }
 };
+
 gb.menu.edit = {
-  text : '<a><span class="ud">E</span>dit</a>',
+  text : '<span class="ud">E</span>dit',
   items : [ 'undo', 'redo', '-', 'sela', '-', 'del' ],
   undo : {
     text : 'Undo',
+    shortcutKey : new ShortcutKey(90, ShortcutKey.CTRL, 'gb.menu.edit.undo'),
     isEnabled : function(gdoc) {
       return gdoc.canUndo();
     },
@@ -32,6 +38,7 @@ gb.menu.edit = {
   },
   redo : {
     text : 'Redo',
+    shortcutKey : new ShortcutKey(90, ShortcutKey.CTRL | ShortcutKey.SHIFT, 'gb.menu.edit.redo'),
     isEnabled : function(gdoc) {
       return gdoc.canRedo();
     },
@@ -42,15 +49,18 @@ gb.menu.edit = {
   
   sela : {
     text : 'Select all',
+    shortcutKey : new ShortcutKey(65, ShortcutKey.CTRL, 'gb.menu.edit.sela'),
     run : function(gdoc) {
       gdoc.forVisibles(function (k, v) {
         gdoc.selection[k] = v;
       });
+      gdoc.draw();
     }
   },
   
   del : {
     text : 'Delete',
+    shortcutKey : [new ShortcutKey(8, 0, 'gb.menu.edit.del'), new ShortcutKey(46, 0, 'gb.menu.edit.del')],
     isEnabled : function(gdoc) {
       var any = false;
       $.each(gdoc.selection, function() {
@@ -64,12 +74,39 @@ gb.menu.edit = {
     }
   }
 };
+
 gb.menu.disp = {
-  text : '<a><span class="ud">D</span>isplay</a>',
-  items : ['sha', 'hide', 'unhide'], 
+  text : '<span class="ud">D</span>isplay',
+  items : ['sha', 'hide', 'unhide', '-', 'shl', 'hil', '-', 'zi', 'zo', 'zr'],
+  zi : {
+    text : 'Zoom in',
+    shortcutKey : new ShortcutKey(187, ShortcutKey.CTRL, 'gb.menu.disp.zi'),
+    run : function(gdoc) {
+      gdoc.zoomIn();
+    }
+  },
+  zo : {
+    text : 'Zoom out',
+    shortcutKey : new ShortcutKey(189, ShortcutKey.CTRL, 'gb.menu.disp.zo'),
+    run : function(gdoc) {
+      gdoc.zoomOut();
+    }
+  },
+  zr : {
+    text : 'Zoom restore',
+    shortcutKey : new ShortcutKey(48, ShortcutKey.CTRL, 'gb.menu.disp.zr'),
+    run : function(gdoc) {
+      gdoc.zoomRestore();
+    }
+  },
   sha: {
     text : 'Show all hidden',
     show : false,
+    isEnabled : function(gdoc) {
+      this.show = gdoc.showHidden;
+      this.text(this.show ? 'Hide hiden' : 'Show all hidden');
+      return true;
+    },
     /**
      * @param {GDoc} gdoc
      */
@@ -79,24 +116,69 @@ gb.menu.disp = {
       gdoc.draw();
     }
   },
+  shl : {
+    text : 'Show label',
+    /**
+     * 
+     * @param {GDoc} gdoc
+     */
+    isEnabled : function(gdoc) {
+      this.cmd = new ShowLabelCommand(gdoc.selection, true);
+      return this.cmd.canDo(gdoc);
+    },
+    /**
+     * 
+     * @param {GDoc} gdoc
+     */
+    run : function(gdoc) {
+      gdoc.run(this.cmd);
+    }
+  },
+  hil : {
+    text : 'Hide label',
+    /**
+     * 
+     * @param {GDoc} gdoc
+     */
+    isEnabled : function(gdoc) {
+      this.cmd = new ShowLabelCommand(gdoc.selection, false);
+      return this.cmd.canDo(gdoc);
+    },
+    /**
+     * 
+     * @param {GDoc} gdoc
+     */
+    run : function(gdoc) {
+      gdoc.run(this.cmd);
+    }
+  },
   hide: {
     text: 'Hide',
+    shortcutKey : new ShortcutKey(72, ShortcutKey.CTRL, 'gb.menu.disp.hide'),
     run : function(gdoc) {
       gdoc.run(new HideCommand(gdoc.selection, true));
     }
   },
   unhide: {
     text: 'Unhide',
+    shortcutKey : new ShortcutKey(72, ShortcutKey.CTRL | ShortcutKey.SHIFT, 'gb.menu.disp.unhide'),
     run : function(gdoc) {
       gdoc.run(new HideCommand(gdoc.selection, false));
     }
   }
 };
+
 gb.menu.cons = {
-  text : '<a><span class="ud">C</span>onstruct</a>',
-  items : [ 'poo', 'mp', 'inters', '-', 'perp', 'para', '-', 'loc' ],
+  text : '<span class="ud">C</span>onstruct',
+  items : [ 'poo', 'mp', 'inters', '-', 'perp', 'para', 'anb', '-', 'loc' ],
+  line : {
+    text : 'Line',
+    shortcutKey : new ShortcutKey(80, ShortcutKey.CTRL | ShortcutKey.SHIFT, 'gb.menu.cons.poo')
+  },
+  
   poo : {
     text : 'Point on Object',
+    shortcutKey : new ShortcutKey(80, ShortcutKey.CTRL | ShortcutKey.SHIFT, 'gb.menu.cons.poo'),
     isEnabled : function(gdoc) {
       var any = false, anyP = false;
       $.each(gdoc.selection, function(k, v) {
@@ -116,6 +198,7 @@ gb.menu.cons = {
   },
   mp : {
     text : 'Midpoint',
+    shortcutKey : new ShortcutKey(77, ShortcutKey.CTRL, 'gb.menu.cons.mp'),
     isEnabled : function(gdoc) {
       var anyLine = false, allLine = true;
       $.each(gdoc.selection, function(k, v) {
@@ -200,9 +283,22 @@ gb.menu.cons = {
       });
     }
   },
+  anb : {
+    text : 'Angle Bisector',
+    isEnabled : function (gdoc) {
+      var sel = m2a(gdoc.selection);
+      if(sel.length != 3) return false;
+      this.cmd = new ConstructAngleBisector(sel[0], sel[2], sel[1]);
+      return this.cmd.canDo(gdoc);
+    },
+    run : function (gdoc) {
+      gdoc.run(this.cmd); 
+    }
+  },
   loc : {
     // ConstructLocusCommand
     text : 'Locus',
+    shortcutKey : new ShortcutKey(76, ShortcutKey.CTRL, 'gb.menu.cons.loc'),
     isEnabled : function(gdoc) {
       var poo = null, target = null;
       $.each(gdoc.selection, function(k, v) {
@@ -230,6 +326,7 @@ gb.menu.cons = {
   },
   inters : {
     text : 'Intersections',
+    shortcutKey : new ShortcutKey(73, ShortcutKey.CTRL | ShortcutKey.SHIFT, 'gb.menu.cons.inters'),
     isEnabled : function(gdoc) {
       var l1 = null, l2 = null;
       $.each(gdoc.selection, function(k, v) {
@@ -250,19 +347,19 @@ gb.menu.cons = {
   }
 };
 gb.menu.trans = {
-  text : '<a><span class="ud">T</span>ransform</a>',
+  text : '<span class="ud">T</span>ransform',
   items : []
 };
 gb.menu.meas = {
-  text : '<a><span class="ud">M</span>easure</a>',
+  text : '<span class="ud">M</span>easure',
   items : []
 };
 gb.menu.numb = {
-  text : '<a><span class="ud">N</span>umber</a>',
+  text : '<span class="ud">N</span>umber',
   items : []
 };
 gb.menu.grap = {
-  text : '<a><span class="ud">G</span>raph</a>',
+  text : '<span class="ud">G</span>raph',
   items : []
 };
 gb.menu.items = [ 'file', 'edit', 'disp', 'cons', 'trans', 'meas', 'numb', 'grap' ];

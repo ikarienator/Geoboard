@@ -7,7 +7,7 @@ HideCommand.prototype = new Command();
 
 HideCommand.prototype.canDo = function (gdoc) {
   var any = false;
-  $.each(gdoc.selection, function(k, v) {
+  $.each(this.list, function(k, v) {
     any = true;
     return false;
   });
@@ -36,5 +36,7 @@ HideCommand.prototype.redo = function (gdoc) {
   gdoc.selection = {};
   $.each(this.list, function (k, v) {
     v.hidden = me.hide;
+    if (gdoc.hovering == v)
+      gdoc.hovering = null;
   });
 };

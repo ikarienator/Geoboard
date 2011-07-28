@@ -15,7 +15,7 @@ ConstructIntersectionsCommand.prototype.canDo = function (gdoc) {
 ConstructIntersectionsCommand.prototype.exec = function (gdoc) {
   var me = this;
   this.newObjects = $.map(me.obj1.inters(me.obj2), function(v, k) {
-    return new GBInters(gdoc.nextId(), me.obj1, me.obj2, k);
+    return new GBInters(gdoc, me.obj1, me.obj2, k);
   });
   
   this.redo(gdoc);

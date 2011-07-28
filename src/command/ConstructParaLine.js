@@ -11,8 +11,8 @@ ConstructParaLineCommand.prototype.canDo = function(gdoc) {
 };
 
 ConstructParaLineCommand.prototype.createNew = function(gdoc) {
-  var mark = new GBPointMark(gdoc.nextId(), this.point, this.line, false);
-  return [mark, new GBXLine(gdoc.nextId(), this.point, mark)];
+  var mark = new GBPointMark(gdoc, this.point, this.line, false);
+  return [mark, new GBXLine(gdoc, this.point, mark)];
 };
 
 
@@ -22,8 +22,8 @@ ConstructParaLineCommand.prototype.exec = function(gdoc) {
 };
 
 ConstructParaLineCommand.prototype.undo = function(gdoc) {
-  gdoc.remove(this.newObject[0]);
-  gdoc.remove(this.newObject[1]);
+  gdoc.del(this.newObject[0]);
+  gdoc.del(this.newObject[1]);
 };
 
 ConstructParaLineCommand.prototype.redo = function(gdoc) {

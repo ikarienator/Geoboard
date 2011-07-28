@@ -1,5 +1,5 @@
-function GBInters (id, obj1, obj2, idx) {
-  GBAbstractPoint.apply(this, [id, [obj1, obj2], [idx]]);
+function GBInters (document, obj1, obj2, idx) {
+  GBAbstractPoint.apply(this, [document, [obj1, obj2], [idx]]);
   this.cache = [];
 };
 
@@ -21,22 +21,33 @@ GBInters.prototype.type = function () {
 };
 
 GBInters.prototype.getPosition = function () {
-  this.update();
+  if (this.__dirty) {
+    var inters = this.getParent(0).inters(this.getParent(1));
+    if (this.getParam(0) < inters.length)
+      return inters[this.getParam(0)];
+    else
+      return [ NaN, NaN ];
+  }
   return this.cache;
 };
 
 GBInters.prototype.update = function() {
   if (this.__dirty) {
+    this.cache = this.getPosition();
     Geom.prototype.update.apply(this, []);
-    var inters = this.getParent(0).inters(this.getParent(1));
-    if (inters.length == 0)
-      this.cache = [ NaN, NaN ];
-    else if (this.getParam(0) < inters.length)
-      this.cache = inters[this.getParam(0)];
-    else
-      this.cache = inters[inters.length - 1];
   }
 };
-gb.geom.xpo = function (id, obj1, obj2, idx) {
-  return new GBInters(id, obj1, obj2, idx);
+
+GBInters.prototype.getInstruction = function (context) {
+  return ['var ', this.id , '_revision = -1, ', this.id, '_cache = [NaN, NaN]; ',
+          'var ' , this.id , '=' , this.getParent(0).getIntersInstruction(this.getParent(1), context, this.getParam(0), this.id) , ';'].join('');
+};
+
+GBInters.prototype.getInstructionRef = function (arg, context) {
+  if (!context.desc[this.id]) return this.getInstructionRefStatic();
+  return this.id + '(' + arg + ')';
+};
+
+gb.geom.xpo = function (gdoc, obj1, obj2, idx) {
+  return new GBInters(gdoc, obj1, obj2, idx);
 };

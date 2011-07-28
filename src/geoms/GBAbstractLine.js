@@ -1,35 +1,36 @@
-function GBAbstractLine (id, gpo1, gpo2) {
-  Geom.apply(this, [ id, [ gpo1, gpo2 ] ]);
+function GBAbstractLine (document, gpo1, gpo2) {
+  Geom.apply(this, [ document, [ gpo1, gpo2 ] ]);
 };
 
-GBAbstractLine.prototype = new Geom();
+GBAbstractLine.prototype = new LabeledGeom();
 GBAbstractLine.prototype.color = '#008';
-
 GBAbstractLine.prototype.isLine = true;
 
 GBAbstractLine.prototype.draw = function (context) {
   context.beginPath();
-  var args = this.crossArg(-5, -5, context.canvas.clientWidth + 5, context.canvas.clientHeight + 5),
+  var extent = context.getExtent();
+      args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
       ps = this.adjustPosition(args);
   context.moveTo(ps[0][0], ps[0][1]);
   context.lineTo(ps[1][0], ps[1][1]);
   context.closePath();
-  context.lineWidth = 3;
+  context.lineWidth = context.transP2M(3);
   context.strokeStyle = this.color;
   context.stroke();
 };
 
 GBAbstractLine.prototype.drawSelected = function (context) {
   context.beginPath();
-  var args = this.crossArg(-5, -5, context.canvas.clientWidth + 5, context.canvas.clientHeight + 5),
+  var extent = context.getExtent();
+      args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
       ps = this.adjustPosition(args);
   context.moveTo(ps[0][0], ps[0][1]);
   context.lineTo(ps[1][0], ps[1][1]);
   context.closePath();
-  context.lineWidth = 8;
+  context.lineWidth = context.transP2M(8);
   context.strokeStyle = "#44c";
   context.stroke();
-  context.lineWidth = 6;
+  context.lineWidth = context.transP2M(6);
   context.strokeStyle = "#fff";
   context.stroke();
   this.draw(context);
@@ -37,12 +38,13 @@ GBAbstractLine.prototype.drawSelected = function (context) {
 
 GBAbstractLine.prototype.drawHovering = function (context) {
   context.beginPath();
-  var args = this.crossArg(-5, -5, context.canvas.clientWidth + 5, context.canvas.clientHeight + 5),
+  var extent = context.getExtent();
+      args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
       ps = this.adjustPosition(args);
   context.moveTo(ps[0][0], ps[0][1]);
   context.lineTo(ps[1][0], ps[1][1]);
   context.closePath();
-  context.lineWidth = 4;
+  context.lineWidth = context.transP2M(4);
   context.strokeStyle = "#F00";
   context.stroke();
 };
@@ -50,25 +52,27 @@ GBAbstractLine.prototype.drawHovering = function (context) {
 GBAbstractLine.prototype.hitTest = function (x, y) {
   var p1 = this.__getPosition(0), p2 = this.__getPosition(1),
       fx = p1[0], tx = p2[0], fy = p1[1], ty = p2[1], t, c, dx, dy;
+  
   if (fx > tx) {
     t = fx;
     fx = tx;
     tx = t;
   }
+  
   if (fy > ty) {
     t = fy;
     fy = ty;
     ty = t;
   }
 
-  c = cross(p1, [ x, y ], p2);
+  c = Geom.cross(p1, [ x, y ], p2);
   c = c * c;
   dx = p1[0] - p2[0];
   dy = p1[1] - p2[1];
   if (c > 25 * (dx * dx + dy * dy))
     return false;
 
-  return this.legalArg(projArg(p1, p2, [ x, y ]));
+  return this.legalArg(Geom.projArg(p1, p2, [ x, y ]));
 };
 
 GBAbstractLine.prototype.crossTest = function (l, t, r, b) {
@@ -118,7 +122,7 @@ GBAbstractLine.prototype.crossTest = function (l, t, r, b) {
 GBAbstractLine.prototype.projection = function (x, y) {
   var p1 = this.__getPosition(0),
       p2 = this.__getPosition(1);
-  return projArg(p1, p2, [ x, y ]);
+  return Geom.projArg(p1, p2, [ x, y ]);
 };
 
 GBAbstractLine.prototype.nearestArg = function (x, y) {
@@ -139,28 +143,38 @@ GBAbstractLine.prototype.intersLine = function (line) {
       p2 = this.__getPosition(1),
       p3 = line.__getPosition(0),
       p4 = line.__getPosition(1),
-      c1 = cross(p3, p1, p2),
-      c2 = cross(p4, p1, p2),
-      c3 = cross(p1, p3, p4),
-      c4 = cross(p2, p3, p4),
-      a1 = c3 / (c3 - c4),
-      a2 = c1 / (c1 - c2);
+      c1, c2, c3, c4, a1, a2;
+  
+  c1 = Geom.cross(p3, p1, p2);
+  c2 = Geom.cross(p4, p1, p2);
+  if (c1 == c2) return [[NaN, NaN]];
+  c3 = Geom.cross(p1, p3, p4);
+  c4 = Geom.cross(p2, p3, p4);
+  if (c3 == c4) return [[NaN, NaN]];
+  a1 = c3 / (c3 - c4);
+  a2 = c1 / (c1 - c2);
   if (this.legalArg(a1) && line.legalArg(a2)) {
     return [ this.getPosition(a1) ];
   } else
     return [ [ NaN, NaN ] ];
 };
 
+/**
+ * 
+ * @param {GBCircle} circ
+ * @returns {Array}
+ */
 GBAbstractLine.prototype.intersCircle = function (circ) {
-  var prop = circ.prop(),
+  var prop = circ.getParent(0).getPosition(),
+      r2 = Geom.dist(prop, circ.getParent(1).getPosition()),
       p1 = this.__getPosition(0), p2 = this.__getPosition(1),
-      arg = projArg(p1, p2, prop),
+      arg = Geom.projArg(p1, p2, prop),
       mp = [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ],
-      dx = prop[0] - mp[0],
-      dy = prop[1] - mp[1],
-      dist2 = Math.sqrt(prop[2] * prop[2] - (dx * dx + dy * dy)) / this.length(),
+      l = r2 - Geom.dist(prop, mp),
+      dist2 = Math.sqrt(l) / this.length(),
       res = [];
-
+  if (Math.abs(l) < 1e-10) 
+    dist2 = 0;
   if (this.legalArg(arg - dist2)) {
     res.push(this.getPosition(arg - dist2));
   } else {
@@ -185,26 +199,6 @@ GBAbstractLine.prototype.adjustPosition = function (args) {
   args[1] = this.adjustArg(args[1]);
   return [ [ p1[0] + (p2[0] - p1[0]) * args[0], p1[1] + (p2[1] - p1[1]) * args[0] ],
       [ p1[0] + (p2[0] - p1[0]) * args[1], p1[1] + (p2[1] - p1[1]) * args[1] ] ];
-};
-
-GBAbstractLine.prototype.legalArg = function (arg) {
-  if (arg < 0)
-    return false;
-  if (arg > 1)
-    return false;
-  return true;
-};
-
-GBAbstractLine.prototype.argRange = function (arg) {
-  return [ 0, 1 ];
-};
-
-GBAbstractLine.prototype.adjustArg = function (arg) {
-  if (arg < 0)
-    return 0;
-  if (arg > 1)
-    return 1;
-  return arg;
 };
 
 GBAbstractLine.prototype.crossArg = function (l, t, r, b) {
@@ -267,6 +261,65 @@ GBAbstractLine.prototype.randPoint = function () {
   }
 };
 
-gb.geom.gli = function (id, gpo1, gpo2) {
-  return new GBAbstractLine(id, gpo1, gpo2);
+
+GBAbstractLine.prototype.getInstructionRefStatic = function (arg) {
+  var p1 = this.__getPosition(0);
+  var p2 = this.__getPosition(1);
+  if (typeof arg === 'number')
+    return '[' + (p1[0] + (p2[0] - p1[0]) * arg) + ',' + (p1[1] + (p2[1] - p1[1]) * arg) + ']';
+  else return '[' + p1[0] + (p2[0] == p1[0] ? '' :'+' + (p2[0] - p1[0]) + '*' + arg) +',' + 
+    p1[1] + (p2[1] == p1[1] ? '' :'+' + (p2[1] - p1[1]) + '*' + arg) + ']';
+},
+
+GBAbstractLine.prototype.getIntersInstruction = function(obj, context, idx, intId) {
+  if (obj.isLine) {
+    if (idx != 0) return '[NaN, NaN]';
+    return this.getIntersInstructionLL(obj, context, idx, intId);
+  } else {
+    if (idx >= 2) return '[NaN, NaN]';
+    return this.getIntersInstructionLC(obj, context, idx, intId);
+  }
+};
+
+GBAbstractLine.prototype.getIntersInstructionLL = function(obj, context, idx, intId) {
+  return ['function () { ' ,
+  'if (' + intId + '_revision == revision) return ' + intId + '_cache;',
+  intId + '_revision = revision; ',
+  'var p1 = ' + this.getInstructionRef(0, context) + ';' ,
+  'var p2 = ' + this.getInstructionRef(1, context) + ';' ,
+  'var p3 = ' + obj.getInstructionRef(0, context) + ';' ,
+  'var p4 = ' + obj.getInstructionRef(1, context) + ';' ,
+  'var c1 = Geom.cross(p3, p1, p2), c2 = Geom.cross(p4, p1, p2);' ,
+  'if (Math.abs(c1 - c2) < 1e-10) return ' + intId + '_cache = [NaN, NaN];' ,
+  'var c3 = Geom.cross(p1, p3, p4), c4 = Geom.cross(p2, p3, p4);' ,
+  'if (Math.abs(c3 - c4) < 1e-10) return ' + intId + '_cache = [NaN, NaN];' ,
+  'var a1 = c3 / (c3 - c4);' ,
+  'var a2 = c1 / (c1 - c2);' ,
+  'if (' + this.legalArgInstructionRef('a1', context) + '&&' + obj.legalArgInstructionRef('a2', context) + ') {' ,
+    'return ' + intId + '_cache = [(p2[0]-p1[0])*a1+p1[0], (p2[1]-p1[1])*a1+p1[1]];' ,
+  '} else' ,
+    'return ' + intId + '_cache = [NaN,NaN]; }'].join('\n');
+};
+
+GBAbstractLine.prototype.getIntersInstructionLC = function(obj, context, idx, intId) {
+  var pc = obj.getParent(0).getInstructionRef(0, context), p2 = obj.getParent(1).getInstructionRef(0, context);
+  var res= ['function () {',
+  'if (' + intId + '_revision == revision) return ' + intId + '_cache;',
+  this.id + '_revision = revision; ',
+  'var prop = ' + pc + ', r2 = Geom.dist(prop, ' + p2 + '),',
+  'p1 = ' + this.getInstructionRef(0, context) + ', p2 = ' + this.getInstructionRef(1, context) + ',',
+  'arg = Geom.projArg(p1, p2, prop),',
+  'mp = [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ],',
+  'dist2 = Math.sqrt((r2 - Geom.dist(mp, prop)) / Geom.dist(p1, p2)),',
+  'if (' + this.legalArgInstructionRef(idx == 0 ? '(arg - dist2)' : '(arg + dist2)', context) + ') ', 
+  'return ' + intId + '_cache = ' + this.getInstructionRef(idx == 0 ? '(arg - dist2)' : '(arg + dist2)', context) + ';',
+  'else',
+  'return ' + intId + '_cache = [ NaN, NaN ]);',
+  '}'
+  ];
+  return res.join('\n');
+};
+
+gb.geom.gli = function (gdoc, gpo1, gpo2) {
+  return new GBAbstractLine(gdoc, gpo1, gpo2);
 };

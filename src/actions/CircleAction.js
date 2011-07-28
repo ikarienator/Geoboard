@@ -4,7 +4,7 @@ function CircleAction() {
 
 CircleAction.prototype = new GBAction();
 $.extend(CircleAction.prototype, {
-  text : '<img src="images/circ.svg"/>',
+  text : '<img type="image/svg+xml" src="images/circ.svg"/>',
   init : function() {
     var me = this;
     me.pointAction = new PointAction();
@@ -25,26 +25,26 @@ $.extend(CircleAction.prototype, {
     me.pointAction.reset();
   },
   mouseMove : function(gdoc, x, y) {
-    var me = this, con, p1, p2, dx, dy;
+    var me = this, context, p1, p2, dx, dy;
     switch (me.status) {
     case 0:
       me.pointAction.mouseMove(gdoc, x, y);
       break;
     case 1:
       me.pointAction.mouseMove(gdoc, x, y);
-      con = gdoc.context;
-      con.beginPath();
+      context = gdoc.context;
+      context.beginPath();
       x = me.pointAction.current[0];
       y = me.pointAction.current[1];
       p1 = me.p1.getPosition();
       p2 = [ x, y ];
       dx = p2[0] - p1[0];
       dy = p2[1] - p1[1];
-      con.arc(p1[0], p1[1], Math.sqrt(dx * dx + dy * dy), 0, Math.PI * 2, false);
-      con.closePath();
-      con.strokeStyle = "#99d";
-      con.lineWidth = 2;
-      con.stroke();
+      context.arc(p1[0], p1[1], Math.sqrt(dx * dx + dy * dy), 0, Math.PI * 2, false);
+      context.closePath();
+      context.strokeStyle = "#99d";
+      context.lineWidth = context.transP2M(2);
+      context.stroke();
       break;
     }
   },

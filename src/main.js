@@ -1,6 +1,6 @@
 var gb = {};
 gb.geo = {};
-
+gb.keys = {};
 Array.prototype.contains = function (x) {
   var i;
   for (i = 0; i < this.length; i++)
@@ -25,6 +25,14 @@ function eqo (o2) {
   return !failed;
 };
 
+function join (m1, m2) {
+  var result = {};
+  $.each(m1, function(k, v) {
+    if(v === m2[k])
+      result[k] = v;
+  });
+  return result;
+}
 /**
  * 
  * @param {Object}
@@ -53,30 +61,6 @@ function a2m (a) {
     m[v.id] = v;
   });
   return m;
-}
-
-function cross (p1, p2, p3) {
-  return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]);
-}
-
-function dist (p1, p2) {
-  var dx = p1[0] - p2[0], dy = p1[1] - p2[1];
-  return dx * dx + dy * dy;
-}
-
-function projArg (p1, p2, p3) {
-  var x = p3[0], y = p3[1], k, ik;
-  if (p1[1] == p2[1]) {
-    return (x - p1[0]) / (p2[0] - p1[0]);
-
-  } else if (p1[0] == p2[0]) {
-    return (y - p1[1]) / (p2[1] - p1[1]);
-  }
-  k = (p1[1] - p2[1]) / (p1[0] - p2[0]);
-  ik = 1 / k;
-  x = (y - p1[1]) + k * p1[0] + x * ik;
-  x /= ik + k;
-  return (x - p1[0]) / (p2[0] - p1[0]);
 }
 
 window.setTool = function (id) {
@@ -108,13 +92,54 @@ Math.nrand = function () {
   return x1 * c;
 };
 
+function registerShortcutKey(sk) {
+  if (sk instanceof Array) {
+    $.each(sk, function(k, v) { registerShortcutKey(v); });
+  }
+  if(!gb.keys[sk.keyCode]) {
+    gb.keys[sk.keyCode] = {
+      ctrl : {
+        alt : {
+          shift : [],
+          def : []
+        },
+        shift : [],
+        def : []
+      },
+      alt : {
+        shift : [],
+        def : []
+      },
+      def : [],
+    };
+  }
+  var item = gb.keys[sk.keyCode];
+  if (sk.alter & ShortcutKey.CTRL) {
+    item = item.ctrl;
+  }
+  
+  if (sk.alter & ShortcutKey.ALT) {
+    item = item.alt;
+  }
+  
+  if (sk.alter & ShortcutKey.SHIFT) {
+    item = item.shift;
+  }
+  
+  if (item.def) item = item.def;
+  
+  item.push(sk);
+  return true;
+}
+
 function installMenu () {
-  var menu = $('ul#menu'), item, ul, sitem;
+  var menu = $('ul#menu'), item, ul;
   $.each(gb.menu.items, function (k, v) {
     item = $('<li class="item">' + gb.menu[v].text + '</li>');
     menu.append(item);
     ul = null;
     $.each(gb.menu[v].items, function (sk, sv) {
+      var sitem, mitem;
       if (!ul) {
         ul = $('<ul class="sub-menu"></ul>');
         item.append(ul);
@@ -122,24 +147,27 @@ function installMenu () {
       if (sv == '-') {
         ul.append($('<li class="sep"></li>'));
       } else {
-        sitem = $('<li class="sub-item">' + gb.menu[v][sv].text + '</li>');
+        mitem = gb.menu[v][sv];
+        sitem = $('<li class="sub-item">' + mitem.text + '</li>');
+        if (mitem.shortcutKey) 
+          registerShortcutKey(mitem.shortcutKey);
         ul.append(sitem);
-        sitem.isEnabled = function () {
-          return !gb.menu[v][sv].isEnabled ? true : gb.menu[v][sv].isEnabled(gb.currentDoc);
-        };
-        sitem[0].action = gb.menu[v][sv];
+        sitem[0].action = mitem;
         sitem[0].action.item = sitem;
         sitem[0].action.text = function (text) {
           return this.item.html(text);
         };
-        sitem.click(function () {
-          gb.menu[v][sv].run(gb.currentDoc);
-          $('#menu').removeClass('expand');
+        sitem.click(function (ev) {
+          if(!mitem.isEnabled || mitem.isEnabled(gb.currentDoc)) {
+            mitem.run(gb.currentDoc);
+            $('#menu').removeClass('expand');
+          }
+          ev.stopPropagation();
         });
       }
     });
   });
-  $('#menu').click(function (ev) {
+  $('#menu li.item').click(function (ev) {
     $('#menu').addClass('expand');
   });
   $('#center').click(function () {
@@ -147,16 +175,88 @@ function installMenu () {
   });
 }
 
+function handleKeydown (ev) {
+  var gdoc = gb.currentDoc, sk;
+  if (gb.keys[ev.keyCode]) {
+    sk = gb.keys[ev.keyCode];
+    if (ev.metaKey) {
+      sk = sk.ctrl;
+    }
+    
+    if (ev.altKey) {
+      sk = sk.alt;
+    }
+    
+    if (ev.shiftKey) {
+      sk = sk.shift;
+    }
+    
+    if (sk.def) sk = sk.def;
+    
+    if (sk.length == 1) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      sk = sk[0];
+      sk.func();
+      return;
+    }
+  };
+  switch (ev.keyCode) {
+  case 48:
+    if (ev.metaKey) {
+      gb.currentDoc.zoomRestore();
+      ev.preventDefault();
+      ev.stopPropagation();
+    }
+    break;
+  case 49:
+  case 50:
+  case 51:
+  case 52:
+    if(!ev.metaKey && !ev.shiftKey){
+      ev.preventDefault();
+      ev.stopPropagation();
+      setTool(gb.toolids[ev.keyCode - 49]);
+    }
+    break;
+  case 27:
+    window.setTool('tools-sel');
+    ev.stopPropagation();
+    break;
+  case 45:
+    window.setTool('tools-sel');
+    ev.stopPropagation();
+    break;
+  case 18:
+    ev.preventDefault();
+    ev.stopPropagation();
+    $('#menu').addClass('show-ud');
+    break;
+  case 72:
+    if (ev.metaKey) {
+      gdoc.run(new HideCommand(gdoc.selection, !ev.shiftKey));
+      ev.preventDefault();
+      ev.stopPropagation();
+    }
+    break;
+  default:
+    $('#menu').removeClass('show-ud');
+    console.dir(ev.keyCode);
+    ev.stopPropagation();
+  }
+}
+
 window.init = function () {
   installMenu();
-  var toolids = [], cd, title = "", doc, json;
+  var cd, title = "", doc, json;
+  gb.toolids = [], 
   $.each(gb.tools, function (k, v) {
     if (!gb.currentTool)
       gb.currentTool = v;
     var li = $('<li class="item" id="tools-' + k + '">' + v.text + '</li>');
     li[0].action = v;
     $('#tools').append(li);
-    toolids.push('tools-' + k);
+    gb.toolids.push('tools-' + k);
   });
 
   $('#tools li:nth(1)').addClass('active');
@@ -166,7 +266,7 @@ window.init = function () {
     $('ul.tool li').removeClass('active');
     window.setTool(ev.currentTarget.id);
   });
-  $('#tools-hider').click(function (ev) {
+  $('#left .tools-hider').click(function (ev) {
     $('#center').toggleClass('hide-tools');
   });
   $('#menu-undo').click(function (ev) {
@@ -184,68 +284,7 @@ window.init = function () {
       break;
     }
   });
-  $(document).keydown(function (ev) {
-    var gdoc = gb.currentDoc;
-    switch (ev.keyCode) {
-    case 49:
-    case 50:
-    case 51:
-    case 52:
-      if(!ev.metaKey && !ev.shiftKey){
-        ev.preventDefault();
-        ev.stopPropagation();
-        setTool(toolids[ev.keyCode - 49]);
-      }
-      break;
-    case 27:
-      window.setTool('tools-sel');
-      ev.stopPropagation();
-      break;
-    case 45:
-      window.setTool('tools-sel');
-      ev.stopPropagation();
-      break;
-    case 8:
-      // delete
-      ev.preventDefault();
-      ev.stopPropagation();
-      gdoc.run(new DeleteCommand(gdoc.selection));
-      break;
-    case 18:
-      ev.preventDefault();
-      ev.stopPropagation();
-      $('#menu').addClass('show-ud');
-      break;
-    case 90:
-      if (ev.metaKey) {
-        if (!ev.shiftKey)
-          gdoc.undo();
-        else
-          gdoc.redo();
-      }
-      break;
-    case 72:
-      if (ev.metaKey) {
-        gdoc.run(new HideCommand(gdoc.selection, !ev.shiftKey));
-        ev.preventDefault();
-        ev.stopPropagation();
-      }
-      break;
-    case 77:
-      if(ev.metaKey) {
-        if(gb.menu.cons.mp.isEnabled(gdoc)) {
-          gb.menu.cons.mp.run(gdoc);
-        }
-        ev.preventDefault();
-        ev.stopPropagation();
-      }
-      break;
-    default:
-      $('#menu').removeClass('show-ud');
-      console.dir(ev.keyCode);
-      ev.stopPropagation();
-    }
-  });
+  $(document).keydown(handleKeydown);
   if (window.localStorage) {
     cd = "";
     for (title in window.localStorage) {
@@ -257,7 +296,13 @@ window.init = function () {
         doc.load(gb.json.decode(json));
       }
     }
-
+    if (gb.docs.length == 0) {
+      doc = new GDoc();
+      gb.currentDoc = doc;
+      doc.active();
+      cd = doc.title;
+    }
+    
     if (cd) {
       $.each(gb.docs, function (k, v) {
         if (v.title == cd) {
@@ -266,16 +311,18 @@ window.init = function () {
           return false;
         }
       });
-    } else if (gb.docs.length == 0) {
-      doc = new GDoc();
-      gb.currentDoc = doc;
-      doc.active();
+    } else {
+      gb.docs[0].active();
     }
+    
   } else {
     doc = new GDoc();
     gb.currentDoc = doc;
     doc.active();
   }
+  $(window).resize(function(){
+    gb.currentDoc.resize($('#area').width(), $('#area').height());
+  });
 };
 
 if (!document.createElement('canvas').getContext)

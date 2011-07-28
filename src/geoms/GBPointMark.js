@@ -1,5 +1,5 @@
-function GBPointMark(id, po, line, perp) {
-  Geom.apply(this, [id, [line, po], [perp]]);
+function GBPointMark(document, po, line, perp) {
+  Geom.apply(this, [document, [line, po], [perp]]);
 }
 GBPointMark.IS_PERP = 0;
 GBPointMark.prototype = new Geom();
@@ -16,6 +16,28 @@ GBPointMark.prototype.getPosition = function () {
     return [p3[0] + p2[0] - p1[0], p3[1] + p2[1] - p1[1]]; 
 };
 
-gb.geom.gpm = function(id, line, po, perp) {
-  return new GBPointMark(id, line, po, perp);
+
+GBPointMark.prototype.getInstruction = function (context) {
+  return ['function ' + this.id + '_mark(arg) { ' ,
+      'var p1 = ' + this.getParent(0).getInstructionRef(0, context) + ';' ,
+      'var p2 = ' + this.getParent(0).getInstructionRef(1, context) + ';' ,
+      'var p3 = ' + this.getParent(1).getInstructionRef(0, context) + ';' ,
+      'return' +
+      (this.getParam(0) ? 
+        '[p3[0] - (p2[1] - p1[1]), p3[1] + (p2[0] - p1[0])]' : 
+        '[p3[0] + p2[0] - p1[0], p3[1] + p2[1] - p1[1]]'
+      ) + 
+      ';}'].join('\n');
+};
+
+GBPointMark.prototype.getInstructionRef = function (arg, context) {
+  if (!context.desc[this.id]) {
+    var p = this.getPosition();
+    return '[' + p[0] + ',' + p[1] + ']';
+  }
+  return this.id + '_mark()';
+};
+
+gb.geom.gpm = function(gdoc, line, po, perp) {
+  return new GBPointMark(gdoc, line, po, perp);
 };

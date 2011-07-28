@@ -10,5 +10,5 @@ ConstructPoOCommand.prototype.canDo = function (gdoc) {
 };
 
 ConstructPoOCommand.prototype.createNew = function (gdoc) {
-  return new GBPoO(gdoc.nextId(), this.obj, this.arg);
+  return new GBPoO(gdoc, this.obj, this.arg);
 };

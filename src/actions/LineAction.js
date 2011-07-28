@@ -16,6 +16,7 @@ $.extend(LineAction.prototype, {
     };
     me.reset();
   },
+  
   reset : function() {
     var me = this;
     me.status = 0;
@@ -23,38 +24,38 @@ $.extend(LineAction.prototype, {
     me.p2 = null;
     me.pointAction.reset();
   },
+  
   mouseMove : function(gdoc, x, y) {
-    var me = this, con, p1;
+    var me = this, context, p1;
     switch (me.status) {
     case 0:
       me.pointAction.mouseMove(gdoc, x, y);
       break;
     case 1:
       me.pointAction.mouseMove(gdoc, x, y);
-      con = gdoc.context;
-      con.beginPath();
+      context = gdoc.context;
+      context.beginPath();
       p1 = me.p1.getPosition();
-      con.moveTo(p1[0], p1[1]);
-      con.lineTo(me.pointAction.current[0], me.pointAction.current[1]);
-      con.closePath();
-      con.strokeStyle = "#99d";
-      con.lineWidth = 2;
-      con.stroke();
+      context.moveTo(p1[0], p1[1]);
+      context.lineTo(me.pointAction.current[0], me.pointAction.current[1]);
+      context.closePath();
+      context.strokeStyle = "#99d";
+      context.lineWidth = context.transP2M(2);
+      context.stroke();
       break;
     }
   },
+  
   mouseUp : function(gdoc, x, y) {
     var me = this;
     if (me.status == 1) {
-      me.pointAction.mouseDown(gdoc, x, y);
-      if (me.p1 !== me.p2) {
-        gdoc.run(new ConstructLineCommand(me.p1, me.p2));
-        me.status = 0;
-      }
+      this.mouseDown(gdoc, x, y);
     }
+    this.mouseMove(gdoc, x, y);
   },
+  
   mouseDown : function(gdoc, x, y) {
-    var me = this;
+    var me = this, already = false;
     switch (me.status) {
     case 0:
       me.pointAction.mouseDown(gdoc, x, y);
@@ -62,10 +63,23 @@ $.extend(LineAction.prototype, {
       break;
     case 1:
       me.pointAction.mouseDown(gdoc, x, y);
-      me.status = 0;
       if (me.p1 === me.p2)
         break;
-      gdoc.run(new ConstructLineCommand(me.p1, me.p2));
+      me.status = 0;
+      $.each(join(me.p1.__children, me.p2.__children), function (k, v) {
+        if (v.type() == 'gli') {
+          already = v;
+          return false;
+        }
+      });
+      if(already) {
+        if (!gdoc.showHidden)
+          gdoc.showHidden = true;
+        gdoc.selection = {};
+        gdoc.selection[already.id] = already;
+      }
+      else 
+        gdoc.run(new ConstructLineCommand(me.p1, me.p2));
       break;
     }
   }

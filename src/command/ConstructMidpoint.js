@@ -9,5 +9,5 @@ ConstructMidpointCommand.prototype.canDo = function(gdoc) {
 };
 
 ConstructMidpointCommand.prototype.createNew = function(gdoc){
-  return new GBMidpoint(gdoc.nextId(), this.line);
+  return new GBMidpoint(gdoc, this.line);
 };

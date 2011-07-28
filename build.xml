@@ -5,10 +5,12 @@
 		<concat destfile="scripts/geoboard.js">
 			<filelist dir="src">
 				<file name="main.js" />
+				<file name="ShortcutKey.js" />
 				<file name="json.js" />
 				<file name="Menu.js" />
 				<file name="GDoc.js" />
 				<file name="geoms/Geom.js" />
+				<file name="geoms/LabeledGeom.js" />
 				<file name="geoms/GBPointMark.js" />
 				<file name="geoms/GBAbstractPoint.js" />
 				<file name="geoms/GBAbstractLine.js" />
@@ -22,7 +24,10 @@
 				<file name="geoms/GBRay.js" />
 				<file name="geoms/GBXLine.js" />
 				<file name="geoms/GBLocus.js" />
+				<file name="geoms/GBAngleBisectorMark.js" />
 				<file name="command/Command.js" />
+				<file name="command/ConstructAngleBisector.js" />
+				<file name="command/ConstructCommand.js" />
 				<file name="command/ConstructCircle.js" />
 				<file name="command/ConstructIntersection.js" />
 				<file name="command/ConstructIntersections.js" />
@@ -36,11 +41,12 @@
 				<file name="command/Delete.js" />
 				<file name="command/Hide.js" />
 				<file name="command/Translate.js" />
+				<file name="command/TranslateLabel.js" />
 				<file name="actions/Action.js" />
 				<file name="actions/SelectionAction.js" />
 				<file name="actions/PointAction.js" />
-				<file name="actions/CircleAction.js" />
 				<file name="actions/LineAction.js" />
+				<file name="actions/CircleAction.js" />
 			</filelist>
 		</concat>
 		<echo message="YUI Compressing" /> 

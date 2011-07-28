@@ -1,26 +1,81 @@
 /**
  * 
- * @param {string}
- *          id
- * @param {Array}
- *          parents
- * @constructor
+ * @param {GDoc} document
+ * @param {Array} parents
+ * @param {Array}params
+ * @returns {Geom}
  */
-function Geom (id, parents, params) {
-  this.id = id;
-  this.__parents = parents || [];
-  this.__params = params || [];
-  this.__children = {};
+function Geom (document, parents, params) {
+  if (document){
+    this.document = document;
+    this.id = document.nextId();
+    this.__parents = parents || [];
+    this.__params = params || [];
+    this.__children = {};
+  }
+};
+
+
+Geom.cross = function (p1, p2, p3) {
+  return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]);
+};
+
+Geom.dist = function (p1, p2) {
+  var dx = p1[0] - p2[0], dy = p1[1] - p2[1];
+  return dx * dx + dy * dy;
+};
+
+Geom.projArg = function (p1, p2, p3) {
+  var x = p3[0], y = p3[1], k, ik;
+  if (Math.abs(p1[1] - p2[1]) < 1e-10) {
+    return (x - p1[0]) / (p2[0] - p1[0]);
+  } else if (Math.abs(p1[0] - p2[0]) < 1e-10) {
+    return (y - p1[1]) / (p2[1] - p1[1]);
+  }
+  k = (p1[1] - p2[1]) / (p1[0] - p2[0]);
+  ik = 1 / k;
+  x = (y - p1[1]) + k * p1[0] + x * ik;
+  x /= ik + k;
+  return (x - p1[0]) / (p2[0] - p1[0]);
+};
+
+/**
+ * 
+ * @param {GDoc} gdoc
+ * @param {GBPoO} poo
+ * @param {GBAbstractPoint} target
+ * @returns
+ */
+Geom.calculas = function(gdoc, poo, target) {
+  poo = poo || target;
+  var desc = a2m(poo.descendants()), 
+      ance = a2m(target.ancestors()),
+      context = {desc: desc, poo: poo, target: target, ance : ance},
+      text = ['(function(gdoc){ var revision = 0; '];
+  gdoc.topoFor(function(k, v){
+    if (context.ance[v.id]) {
+      text.push(v.getInstruction(context));
+    }
+  });
+  text.push('return (function(___arg) {');
+  if (poo) {
+    text.push(poo.id + '_arg = ___arg; revision++; ');
+  } 
+  text.push('return ');
+  text.push(target.getInstructionRef('', context));
+  text.push(';});})');
+  return text.join('');
 };
 
 Geom.prototype = {
   color : '#000',
   hidden : false,
   size : 4,
+  name : '',
   __parents : null,
   __params : null,
   __children : null,
-  __dirty : false,
+  __dirty : true,
   
   draw : function () {
 
@@ -54,28 +109,35 @@ Geom.prototype = {
     return [ this ];
   },
 
-  drag : function (fx, fy, tx, ty) {
+  drag : function (from, to) {
 
   },
 
   type : function () {
     throw 'type() not implemented';
   },
+  
   /**
    * 
    * @param gdoc
    * @returns {Object}
    */
   save : function (gdoc) {
+    var me = this;
     return {
-      id : this.id,
-      color : this.color,
-      hidden : this.hidden,
-      size : this.size,
-      parents : $.map(this.__parents, function (v) {
+      id : me.id,
+      color : me.color,
+      hidden : me.hidden,
+      size : me.size,
+      name : me.name,
+      showLabel : me.showLabel,
+      labelX : me.labelX,
+      labelY : me.labelY,
+      labelArg : me.labelArg,
+      parents : $.map(me.__parents, function (v) {
         return v.id;
       }),
-      params : this.__params.slice(0)
+      params : me.__params.slice(0)
     };
   },
 
@@ -87,7 +149,9 @@ Geom.prototype = {
    */
   load : function (json, gdoc) {
     var me = this;
+    me.document = gdoc;
     me.id = json.id;
+    me.name = json.name;
     me.color = json.color || me.color;
     me.hidden = json.hidden || me.hidden;
     me.size = json.size || me.size;
@@ -150,7 +214,7 @@ Geom.prototype = {
   },
   
   ancestors : function (){
-    var result = {}, q = m2a(this.__parents.slice(0)), qi = 0, curr;
+    var result = {}, q = [this], qi = 0, curr;
     while(qi < q.length) {
       curr = q[qi ++];
       $.each(curr.__parents, function (k, v) {
@@ -164,9 +228,9 @@ Geom.prototype = {
   },
   
   descendants : function () {
-    var result = {}, q = m2a(this.__children), qi = 0, curr;
+    var result = {}, q = [this], qi = 0, curr;
     while(qi < q.length) {
-      curr = q[qi ++];
+      curr = q[qi++];
       $.each(curr.__children, function (k, v) {
         if (!result[v.id]) {
           result[v.id] = v;
@@ -175,6 +239,55 @@ Geom.prototype = {
       });
     }
     return q;
+  },
+  
+  getInstruction : function () {
+    throw 'getInstruction() not implemented';
+  },
+  
+  getInstructionRef : function (arg, isStatic) {
+    throw 'getInstructionRef(arg, isStatic) not implemented';
+  },
+  
+  getIntersInstruction : function(obj, isStatic1, isStatic2) {
+    throw 'getIntersInstruction(obj, isStatic1, isStatic2) not implemented';
+  },
+  
+  getIntersInstructionRef : function(obj, isStatic1, isStatic2) {
+    
+  },
+  
+  legalArgInstructionRef : function (isStatic) {
+    throw 'legalArgInstructionRef(isStatic) not implemented';
+  },
+  
+  isClosed : function () {
+    return false;
+  },
+  
+  phantom : function () {
+    return false;
+  },
+  
+  sector : function () {
+    
+  },
+  
+  getName : function () {
+    if (this.name == '') {
+      if (this.isPoint){
+        this.name = this.document.nextPointLabel();
+      } else {
+        this.name = this.document.nextLineLabel();
+      }
+      this.dirt();
+    }
+    return this.name;
+  },
+  
+  setName : function (name) {
+    this.name = name;
+    this.dirt();
   }
 };
 

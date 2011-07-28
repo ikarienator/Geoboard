@@ -11,8 +11,8 @@ ConstructPerpLineCommand.prototype.canDo = function(gdoc) {
 };
 
 ConstructPerpLineCommand.prototype.createNew = function(gdoc) {
-  var mark = new GBPointMark(gdoc.nextId(), this.point, this.line, true);
-  return [mark, new GBXLine(gdoc.nextId(), this.point, mark)];
+  var mark = new GBPointMark(gdoc, this.point, this.line, true);
+  return [mark, new GBXLine(gdoc, this.point, mark)];
 };
 
 
@@ -22,8 +22,8 @@ ConstructPerpLineCommand.prototype.exec = function(gdoc) {
 };
 
 ConstructPerpLineCommand.prototype.undo = function(gdoc) {
-  gdoc.remove(this.newObject[0]);
-  gdoc.remove(this.newObject[1]);
+  gdoc.del(this.newObject[0]);
+  gdoc.del(this.newObject[1]);
 };
 
 ConstructPerpLineCommand.prototype.redo = function(gdoc) {

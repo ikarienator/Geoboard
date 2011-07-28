@@ -10,5 +10,5 @@ ConstructLineCommand.prototype.canDo = function(gdoc) {
 };
 
 ConstructLineCommand.prototype.createNew = function (gdoc) {
-  return new GBLine(gdoc.nextId(), this.gpo1, this.gpo2);
+  return new GBLine(gdoc, this.gpo1, this.gpo2);
 };
