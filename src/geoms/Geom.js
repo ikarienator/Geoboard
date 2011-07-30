@@ -101,8 +101,15 @@ Geom.prototype = {
     return false;
   },
 
+  /**
+   * 
+   * @param {Number} x
+   * @param {Number} y
+   * @returns {Number}
+   */
   nearestArg : function (x, y) {
     throw 'nearestArg(x,y) not implemented';
+    return 0;
   },
 
   dragInvolve : function () {

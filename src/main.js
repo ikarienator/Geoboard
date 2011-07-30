@@ -1,5 +1,5 @@
 var gb = {};
-gb.geo = {};
+gb.geom = {};
 gb.keys = {};
 Array.prototype.contains = function (x) {
   var i;
@@ -98,20 +98,27 @@ function registerShortcutKey(sk) {
   }
   if(!gb.keys[sk.keyCode]) {
     gb.keys[sk.keyCode] = {
-      ctrl : {
-        alt : {
-          shift : [],
-          def : []
-        },
-        shift : [],
+			ctrl : {
+				alt : {
+					shift : [],
+					def : []
+				},
+				shift : {
+					def : []
+				},
+				def : []
+			},
+			alt : {
+				shift : {
+					def : []
+				},
+				def : []
+			},
+			shift : {
         def : []
       },
-      alt : {
-        shift : [],
-        def : []
-      },
-      def : [],
-    };
+			def : []
+		};
   }
   var item = gb.keys[sk.keyCode];
   if (sk.alter & ShortcutKey.CTRL) {
@@ -139,7 +146,7 @@ function installMenu () {
     menu.append(item);
     ul = null;
     $.each(gb.menu[v].items, function (sk, sv) {
-      var sitem, mitem;
+      var sitem, mitem, text;
       if (!ul) {
         ul = $('<ul class="sub-menu"></ul>');
         item.append(ul);
@@ -148,9 +155,12 @@ function installMenu () {
         ul.append($('<li class="sep"></li>'));
       } else {
         mitem = gb.menu[v][sv];
-        sitem = $('<li class="sub-item">' + mitem.text + '</li>');
-        if (mitem.shortcutKey) 
+        text = mitem.text;
+        if (mitem.shortcutKey) {
           registerShortcutKey(mitem.shortcutKey);
+          // text += mitem.shortcutKey.toString();
+        }
+        sitem = $('<li class="sub-item">' + text + '</li>');  
         ul.append(sitem);
         sitem[0].action = mitem;
         sitem[0].action.item = sitem;

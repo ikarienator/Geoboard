@@ -4,7 +4,7 @@ function LineAction() {
 
 LineAction.prototype = new GBAction();
 $.extend(LineAction.prototype, {
-  text : '<img src="images/line.svg"/>',
+  text : '<img src="images/line.svg" title="Line"/>',
   init : function() {
     var me = this;
     me.pointAction = new PointAction();

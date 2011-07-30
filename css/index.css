@@ -214,13 +214,14 @@ ul.tool li {
 }
 
 #center.hide-tools #left {
-	right : 1px;
+	width: 12px;
 	-moz-transition: width 0.5s ease;
 	-webkit-transition: width 0.5s ease;
 	transition: width 0.5s ease;
 }
 
 #center.hide-tools ul.tool {
+	left : 30px;
 	opacity: 0;
 }
 
@@ -263,7 +264,7 @@ ul.tool li.active {
 }
 
 div#board {
-	right: 192px;
+	right: 1px;
 	left: 46px;
 	position: inherit;
 	margin: 1px;

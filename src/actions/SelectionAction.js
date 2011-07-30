@@ -6,7 +6,7 @@ function SelectionAction() {
 
 SelectionAction.prototype = new GBAction();
 $.extend(SelectionAction.prototype, {
-  text : '<img src="images/sel.svg"/>',
+  text : '<img src="images/sel.svg" title="Selection"/>',
   startDrag : null,
   dragging : null,
   oldSelection : null,

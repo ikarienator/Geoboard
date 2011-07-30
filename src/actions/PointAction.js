@@ -4,7 +4,7 @@ function PointAction() {
 
 PointAction.prototype = new GBAction();
 
-PointAction.prototype.text = '<img src="images/point.svg"/>';
+PointAction.prototype.text = '<img src="images/point.svg" title="Point"/>';
 PointAction.prototype.color = '#f00';
 PointAction.prototype.found = null;
 PointAction.prototype.current = null;

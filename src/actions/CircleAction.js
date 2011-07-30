@@ -4,7 +4,7 @@ function CircleAction() {
 
 CircleAction.prototype = new GBAction();
 $.extend(CircleAction.prototype, {
-  text : '<img type="image/svg+xml" src="images/circ.svg"/>',
+  text : '<img type="image/svg+xml" src="images/circ.svg" title="Circle"/>',
   init : function() {
     var me = this;
     me.pointAction = new PointAction();
