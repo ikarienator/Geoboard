@@ -1,7 +1,6 @@
 function GBPoO(document, obj, arg) {
   GBAbstractPoint.apply(this, [document, [obj], [arg]]);
-  this.cache = [NaN, NaN];
-};
+}
 
 GBPoO.prototype = new GBAbstractPoint();
 
@@ -34,7 +33,4 @@ GBPoO.prototype.getInstructionRef = function (arg, context) {
   return this.getParent(0).getInstructionRef(this.id + '_arg', context);
 };
 
-
-gb.geom.poo = function(gdoc, obj, arg) {
-  return new GBPoO(gdoc, obj, arg);
-};
+gb.geom.reg(GBPoO);

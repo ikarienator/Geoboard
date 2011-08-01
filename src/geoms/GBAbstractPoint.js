@@ -1,6 +1,7 @@
 function GBAbstractPoint() {
-  Geom.apply(this, arguments);
-};
+  LabeledGeom.apply(this, arguments);
+}
+
 GBAbstractPoint.prototype = new LabeledGeom();
 GBAbstractPoint.prototype.isPoint = true;
 GBAbstractPoint.prototype.color = '#F00';

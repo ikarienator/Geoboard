@@ -24,25 +24,25 @@ ul.menu {
 	list-style: none;
 	height: 25px;
 	font-weight: normal;
-  font-size: 14px;
-  font-style: normal;
-  text-align: center;
-  text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 2px;
-  text-decoration: none;
-  -webkit-transition: .05s linear;
-  -moz-transition: all .05s linear;
-  transition: .05s linear;
+	font-size: 14px;
+	font-style: normal;
+	text-align: center;
+	text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 2px;
+	text-decoration: none;
+	-webkit-transition: .05s linear;
+	-moz-transition: all .05s linear;
+	transition: .05s linear;
 }
 
 ul.menu li.item {
-	position : relative;
-  cursor: pointer;
-  float: left;
-  color: #ccc;
-  padding: 5px 9px;
-  border-bottom: 3px solid transparent;
-  height: 12px;	
-  white-space: nowrap;
+	position: relative;
+	cursor: pointer;
+	float: left;
+	color: #ccc;
+	padding: 5px 9px;
+	border-bottom: 3px solid transparent;
+	height: 12px;
+	white-space: nowrap;
 }
 
 ul.menu.expand li.item:hover {
@@ -221,7 +221,7 @@ ul.tool li {
 }
 
 #center.hide-tools ul.tool {
-	left : 30px;
+	left: 30px;
 	opacity: 0;
 }
 
@@ -441,4 +441,18 @@ svg .ent:hover {
 	stroke: red !important;
 	fill: red !important;
 	cursor: pointer;
+}
+
+/***
+* Dialog
+***/
+div.mask {
+	position: absolute;
+	z-index: 1000000;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	background: rgba(0,0,0,0.5);
+	display: none;
 }

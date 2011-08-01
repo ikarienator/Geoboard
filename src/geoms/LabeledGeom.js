@@ -4,6 +4,7 @@ function LabeledGeom () {
 
 LabeledGeom.prototype = new Geom();
 
+LabeledGeom.prototype.isLabeled = true;
 LabeledGeom.prototype.fontSize = 18;
 LabeledGeom.prototype.showLabel = false;
 LabeledGeom.prototype.labelX = 10;

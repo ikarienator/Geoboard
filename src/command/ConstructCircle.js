@@ -1,7 +1,11 @@
+/**
+ * @class
+ * @inherits ConstructCommand
+ */
 function ConstructCircleCommand(center, on) {
   this.center = center;
   this.on = on;
-};
+}
 
 ConstructCircleCommand.prototype = new ConstructCommand();
 

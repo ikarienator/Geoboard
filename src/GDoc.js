@@ -1,7 +1,11 @@
+/**
+ * @namespace gb
+ */
 gb.docs = [];
+
 /**
  * 
- * @param {string}
+ * @param {String}
  *          title
  * @class GDoc
  * @constructor
@@ -26,36 +30,38 @@ function GDoc (title) {
   $(me.canvas.Phantom).addClass('phantom');
   can = $(me.canvas).add(me.canvasPhantom);
   can.attr('width', 1).attr('height', 1);
-  if (window.G_vmlCanvasManager)
-    window.G_vmlCanvasManager.initElement(me.canvas);
   
+  if (window.G_vmlCanvasManager) {
+    window.G_vmlCanvasManager.initElement(me.canvas);
+    window.G_vmlCanvasManager.initElement(me.contextPhantom);
+  }
   
   $('div#area').append(can);
   can.mousedown(function (ev) {
     me.mouse = me.context.transP2M([ ev.offsetX || ev.layerX, ev.offsetY || ev.layerY ]);
-    os = shallowClone(me.selection);
+    os = gb.utils.shallowClone(me.selection);
     $('#menu').removeClass('expand');
     if (ev.button == 0)
       gb.currentTool.mouseDown(me, me.mouse[0], me.mouse[1], ev);
-    if (!eqo(me.selection, os))
+    if (!gb.utils.eqo(me.selection, os))
       me.refreshMenu();
     ev.preventDefault();
     ev.stopPropagation();
   });
   can.mousemove(function (ev) {
     me.mouse = me.context.transP2M([ ev.offsetX || ev.layerX, ev.offsetY || ev.layerY ]);
-    os = shallowClone(me.selection);
+    os = gb.utils.shallowClone(me.selection);
     gb.currentTool.mouseMove(me, me.mouse[0], me.mouse[1], ev);
-    if (!eqo(me.selection, os))
+    if (!gb.utils.eqo(me.selection, os))
       me.refreshMenu();
     ev.preventDefault();
     ev.stopPropagation();
   });
   can.mouseup(function (ev) {
     me.mouse = me.context.transP2M([ ev.offsetX || ev.layerX, ev.offsetY || ev.layerY ]);
-    os = shallowClone(me.selection);
+    os = gb.utils.shallowClone(me.selection);
     gb.currentTool.mouseUp(me, me.mouse[0], me.mouse[1], ev);
-    if (!eqo(me.selection, os))
+    if (!gb.utils.eqo(me.selection, os))
       me.refreshMenu();
     ev.preventDefault();
     ev.stopPropagation();
@@ -79,8 +85,7 @@ function GDoc (title) {
   $('#page-header').append(me.pageHeader);
   me.pageHeader = me.pageHeader[0];
   gb.docs.push(me);
-};
-
+}
 
 GDoc.prototype = {
     
@@ -93,6 +98,11 @@ GDoc.prototype = {
    * @type Object
    */
   points : new Object(),
+  
+  
+  nextId : function () {
+    return "ent" + this.__nextId++;
+  },
   
   nextLabel : function (label) {
     var la = label.split('');
@@ -215,7 +225,7 @@ GDoc.prototype = {
         context.shadowBlur = 5;
         context.shadowColor = "#000";
         me.hovering.drawHovering(context);
-        if (me.hovering.showLabel) v.drawLabel(phantom);
+        if (me.hovering.showLabel) me.hovering.drawLabel(phantom);
       } finally {
         context.restore();
       }
@@ -257,6 +267,7 @@ GDoc.prototype = {
           po = v.obj;
           return false;
         }
+        return undefined;
       });
       if (po) {
         res.found = [ po ];
@@ -302,6 +313,9 @@ GDoc.prototype = {
     return me.lines[key] || me.points[key];
   },
   
+  /**
+   * @param {Geom} obj
+   */
   add : function (obj) {
     var me = this;
     if (obj.isPoint)
@@ -315,6 +329,9 @@ GDoc.prototype = {
     obj.update(me);
   },
   
+  /**
+   * @param {Geom} obj
+   */
   del : function (obj) {
     var me = this;
     if (obj.isPoint)
@@ -330,6 +347,9 @@ GDoc.prototype = {
     });
   },
   
+  /**
+   * @param {Object} json
+   */
   load : function (json) {
     var me = this;
     me.points = {};
@@ -375,36 +395,43 @@ GDoc.prototype = {
   
   /**
    * 
-   * @param {function(string,Geom,GDoc)}callback
+   * @param {function(string,Geom,GDoc)} callback
    */
   
   forEntities : function (callback) {
     var me = this;
     $.each(me.lines, function (k, v) {
-      callback(k, v, me);
+      return callback(k, v, me);
     });
     $.each(me.points, function (k, v) {
-      callback(k, v, me);
+      return callback(k, v, me);
     });
   },
   
+  /**
+   * 
+   * @param {function(string,Geom,GDoc)} callback
+   */
   forVisibles : function (callback) {
-    if (this.showHidden) return this.forEntities(callback);
+    if (this.showHidden) {
+      this.forEntities(callback);
+      return;
+    }
     var me = this;
     $.each(me.lines, function (k, v) {
       if(v.hidden) return true;
-      callback(k, v, me);
+      return callback(k, v, me);
     });
     $.each(me.points, function (k, v) {
       if(v.hidden) return true;
-      callback(k, v, me);
+      return callback(k, v, me);
     });
   },
   
-  nextId : function () {
-    return "ent" + this.__nextId++;
-  },
-  
+  /**
+   * 
+   * @param {function(string,Geom,GDoc)} callback
+   */
   topoFor : function (callback) {
     var me = this, q, qi, curr, parent = {}, top = {};
   
@@ -495,7 +522,7 @@ GDoc.prototype = {
   zoomIn : function() {
     this.context.scale(1.1, 1.1);
     this.scaleFactor *= 1.1;
-    this.forEntities(function (k, v) { v.dirt(); });
+    this.forEntities(function (k, v) {v.dirt();});
     this.draw();
     this.save();
   },
@@ -503,7 +530,7 @@ GDoc.prototype = {
   zoomOut : function() {
     this.context.scale(1/1.1, 1/1.1);
     this.scaleFactor /= 1.1;
-    this.forEntities(function (k, v) { v.dirt(); });
+    this.forEntities(function (k, v) {v.dirt();});
     this.draw();
     this.save();
   },
@@ -515,6 +542,10 @@ GDoc.prototype = {
     this.save();
   },
   
+  /**
+   * @param {Number} dx
+   * @param {Number} dy
+   */
   pan : function(dx, dy) {
     this.save();
   },
@@ -536,8 +567,14 @@ GDoc.prototype = {
     $(me.canvas).add(me.canvasPhantom).attr('width', w).attr('height', h);
     context.translate(me.panX + w * 0.5, me.panY + h * 0.5);
     context.scale(me.scaleFactor, me.scaleFactor);
-    me.forEntities(function (k, v) { v.dirt(); });
+    me.forEntities(function (k, v) {v.dirt();});
     me.draw();
+  },
+  
+  rename : function(newName) {  	
+  	if (window.localStorage)
+  	  delete window.localStorage[this.title];
+  	this.title = newName;
+  	this.save();
   }
-
 };

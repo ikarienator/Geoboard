@@ -23,7 +23,7 @@ GBAbstractCurve.prototype.__curve = function (start, stop) {
 
 GBAbstractCurve.prototype.__drawPath = function (context) {
   this.update();
-  var pss = this.path, ps = pss[0], dc = pss[1], last, top, 
+  var pss = this.path, ps = pss[0], dc = pss[1], last, top,
       curr, i, ex = context.getExtent(), a, proj, l, t, c;
   if (!ps) return;
   context.beginPath();
@@ -62,9 +62,9 @@ GBAbstractCurve.prototype.draw = function (context) {
 //  var path = this.path[0];
 //  $.each(path, function (k, v) {
 //    context.beginPath();
-//    context.rect(v[0] - 1, v[1] - 1, 2, 2);
+//    context.arc(v[0], v[1], context.transP2M(2), 0, 2 * Math.PI);
 //    context.strokeStyle = 'black';
-//    context.lineWidth = 1;
+//    context.lineWidth = context.transP2M(1);
 //    context.stroke();
 //  });
 };

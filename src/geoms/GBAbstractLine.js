@@ -1,6 +1,13 @@
-function GBAbstractLine (document, gpo1, gpo2) {
-  Geom.apply(this, [ document, [ gpo1, gpo2 ] ]);
-};
+/**
+ * @class GBAbstractLine
+ * @extends LabeledGeom
+ * @param {GDoc} gdoc
+ * @param {GBAbstractPoint} gpo1
+ * @param {GBAbstractPoint} gpo2
+ */
+function GBAbstractLine (gdoc, gpo1, gpo2) {
+  LabeledGeom.apply(this, [ gdoc, [ gpo1, gpo2 ] ]);
+}
 
 GBAbstractLine.prototype = new LabeledGeom();
 GBAbstractLine.prototype.color = '#008';
@@ -8,7 +15,7 @@ GBAbstractLine.prototype.isLine = true;
 
 GBAbstractLine.prototype.draw = function (context) {
   context.beginPath();
-  var extent = context.getExtent();
+  var extent = context.getExtent(),
       args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
       ps = this.adjustPosition(args);
   context.moveTo(ps[0][0], ps[0][1]);
@@ -21,7 +28,7 @@ GBAbstractLine.prototype.draw = function (context) {
 
 GBAbstractLine.prototype.drawSelected = function (context) {
   context.beginPath();
-  var extent = context.getExtent();
+  var extent = context.getExtent(),
       args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
       ps = this.adjustPosition(args);
   context.moveTo(ps[0][0], ps[0][1]);
@@ -38,7 +45,7 @@ GBAbstractLine.prototype.drawSelected = function (context) {
 
 GBAbstractLine.prototype.drawHovering = function (context) {
   context.beginPath();
-  var extent = context.getExtent();
+  var extent = context.getExtent(),
       args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
       ps = this.adjustPosition(args);
   context.moveTo(ps[0][0], ps[0][1]);
@@ -318,8 +325,4 @@ GBAbstractLine.prototype.getIntersInstructionLC = function(obj, context, idx, in
   '}'
   ];
   return res.join('\n');
-};
-
-gb.geom.gli = function (gdoc, gpo1, gpo2) {
-  return new GBAbstractLine(gdoc, gpo1, gpo2);
 };

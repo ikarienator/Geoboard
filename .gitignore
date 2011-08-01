@@ -3,3 +3,11 @@
 .settings
 .externalToolBuilders
 scripts/*
+/nbproject/private/
+/build/
+/dist/
+/manifest.mf
+/nbbuild.xml
+/test.html
+/nbproject/
+/resources/

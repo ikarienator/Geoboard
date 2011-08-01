@@ -2,7 +2,7 @@ function ConstructIntersectionCommand(obj1, obj2, min) {
   this.obj1 = obj1;
   this.obj2 = obj2;
   this.min = min;
-};
+}
 
 ConstructIntersectionCommand.prototype = new ConstructCommand();
 

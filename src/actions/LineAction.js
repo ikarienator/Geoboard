@@ -66,7 +66,7 @@ $.extend(LineAction.prototype, {
       if (me.p1 === me.p2)
         break;
       me.status = 0;
-      $.each(join(me.p1.__children, me.p2.__children), function (k, v) {
+      $.each(gb.utils.join(me.p1.__children, me.p2.__children), function (k, v) {
         if (v.type() == 'gli') {
           already = v;
           return false;

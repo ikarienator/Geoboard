@@ -1,7 +1,6 @@
 function GBInters (document, obj1, obj2, idx) {
   GBAbstractPoint.apply(this, [document, [obj1, obj2], [idx]]);
-  this.cache = [];
-};
+}
 
 GBInters.prototype = new GBAbstractPoint();
 
@@ -13,7 +12,7 @@ GBInters.prototype.dragInvolve = function () {
   $.each(this.getParent(1).dragInvolve(), function (k, v) {
     d[v.id] = v;
   });
-  return m2a(d);
+  return gb.utils.m2a(d);
 };
 
 GBInters.prototype.type = function () {
@@ -48,6 +47,4 @@ GBInters.prototype.getInstructionRef = function (arg, context) {
   return this.id + '(' + arg + ')';
 };
 
-gb.geom.xpo = function (gdoc, obj1, obj2, idx) {
-  return new GBInters(gdoc, obj1, obj2, idx);
-};
+gb.geom.reg(GBInters);

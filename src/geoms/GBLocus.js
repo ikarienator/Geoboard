@@ -1,7 +1,7 @@
 function GBLocus (document, poo, target) {
   GBAbstractCurve.apply(this, [ document, [ poo, target ] ]);
   this.path = [];
-};
+}
 
 GBLocus.POO = 0;
 GBLocus.TARGET = 1;
@@ -47,6 +47,4 @@ GBLocus.prototype.update = function () {
   }
 };
 
-gb.geom.loc = function (gdoc, poo, target) {
-  return new GBLocus(gdoc, poo, target);
-};
+gb.geom.reg(GBLocus);

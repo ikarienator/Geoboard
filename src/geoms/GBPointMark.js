@@ -1,6 +1,7 @@
 function GBPointMark(document, po, line, perp) {
   Geom.apply(this, [document, [line, po], [perp]]);
 }
+
 GBPointMark.IS_PERP = 0;
 GBPointMark.prototype = new Geom();
 GBPointMark.prototype.isPoint = true;
@@ -38,6 +39,4 @@ GBPointMark.prototype.getInstructionRef = function (arg, context) {
   return this.id + '_mark()';
 };
 
-gb.geom.gpm = function(gdoc, line, po, perp) {
-  return new GBPointMark(gdoc, line, po, perp);
-};
+gb.geom.reg(GBPointMark);

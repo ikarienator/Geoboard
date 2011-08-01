@@ -1,6 +1,6 @@
 function GBPoint(document, x, y) {
   GBAbstractPoint.apply(this, [ document, [ ], [x, y] ]);
-};
+}
 
 GBPoint.X = 0;
 GBPoint.Y = 1;
@@ -31,4 +31,4 @@ GBPoint.prototype.getInstructionRef = function (arg, context) {
 };
 
 
-gb.geom.gpo = function(gdoc, x, y) { return new GBPoint(gdoc, x, y); };
+gb.geom.reg(GBPoint);

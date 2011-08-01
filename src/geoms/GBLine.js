@@ -1,6 +1,6 @@
 function GBLine (document, gpo1, gpo2) {
   GBAbstractLine.apply(this, [document, gpo1, gpo2]);
-};
+}
 
 GBLine.prototype = new GBAbstractLine();
 GBLine.P1 = 0;
@@ -16,9 +16,9 @@ GBLine.prototype.length = function () {
 
 GBLine.prototype.dragInvolve = function () {
   var d = {};
-  $.extend(d, a2m(this.getParent(GBLine.P1).dragInvolve()));
-  $.extend(d, a2m(this.getParent(GBLine.P2).dragInvolve()));
-  return m2a(d);
+  $.extend(d, gb.utils.a2m(this.getParent(GBLine.P1).dragInvolve()));
+  $.extend(d, gb.utils.a2m(this.getParent(GBLine.P2).dragInvolve()));
+  return gb.utils.m2a(d);
 };
 
 GBLine.prototype.type = function () {
@@ -89,6 +89,4 @@ GBLine.prototype.getInstructionRef = function (arg, context) {
   else return this.id + '(' + arg + ')';
 };
 
-gb.geom.gli = function (gdoc, gpo1, gpo2) {
-  return new GBLine(gdoc, gpo1, gpo2);
-};
+gb.geom.reg(GBLine);

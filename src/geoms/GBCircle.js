@@ -1,6 +1,6 @@
 /**
  * @class GBCircle
- * @extends Geom
+ * @extends LabeledGeom
  * @param {string}
  *          id
  * @param {GBPoint}
@@ -10,8 +10,8 @@
  * @constructor
  */
 function GBCircle (document, center, on) {
-  Geom.apply(this, [ document, [ center, on ] ]);
-};
+  LabeledGeom.apply(this, [ document, [ center, on ] ]);
+}
 
 GBCircle.prototype = new LabeledGeom();
 GBCircle.CENTER = 0;
@@ -208,6 +208,4 @@ GBCircle.prototype.isClosed = function () {
   return this.argRange()[1] == this.argRange()[0] + Math.PI * 2;
 };
 
-gb.geom.gci = function (gdoc, center, on) {
-  return new GBCircle(gdoc, center, on);
-};
+gb.geom.reg(GBCircle);

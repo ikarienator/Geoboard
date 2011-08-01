@@ -1,13 +1,30 @@
 function PointAction() {
   this.init();
-};
+}
 
 PointAction.prototype = new GBAction();
 
+/**
+ * @static
+ */
 PointAction.prototype.text = '<img src="images/point.svg" title="Point"/>';
 PointAction.prototype.color = '#f00';
+
+/**
+ * @type {Geom}
+ */
 PointAction.prototype.found = null;
+
+/**
+ * @type {Array}
+ */
 PointAction.prototype.current = null;
+/**
+ * @private
+ * @type {Array}
+ */
+PointAction.prototype.onNewPoint = [];
+
 PointAction.prototype.init = function () {
   this.reset();
 };
@@ -52,9 +69,12 @@ PointAction.prototype.mouseMove = function (gdoc, x, y) {
   context.strokeStyle = "#000";
   context.stroke();
 };
+
 /**
- * @param {gdoc}
+ * @param {Gdoc}
  *          gdoc
+ * @param {Number} x
+ * @param {Number} y
  */
 PointAction.prototype.mouseDown = function (gdoc, x, y) {
   var test = gdoc.hitTest(x, y), cmd, arg, np;
@@ -64,8 +84,10 @@ PointAction.prototype.mouseDown = function (gdoc, x, y) {
     if (test.found[0].isPoint) {
       np = test.found[0];
       this.lastPoint = np;
-      if (this.onNewPoint)
-        this.onNewPoint(np);
+      $.each(this.onNewPoint, function(k, v) {
+        this.onNewPoint(v);
+      })
+        
       return;
     } else {
       arg = test.found[0].nearestArg(test.current[0], test.current[1]);

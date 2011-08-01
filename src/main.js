@@ -1,77 +1,9 @@
+/**
+ * @namespace gb
+ */
 var gb = {};
 gb.geom = {};
 gb.keys = {};
-Array.prototype.contains = function (x) {
-  var i;
-  for (i = 0; i < this.length; i++)
-    if (x == this[i])
-      return true;
-  return false;
-};
-
-function eqo (o2) {
-  var o1 = this, failed = false;
-  $.each(this, function (k) {
-    if (!o2[k])
-      return !(failed = true);
-  });
-  if (failed)
-    return false;
-
-  $.each(o2, function (k) {
-    if (!o1[k])
-      return !(failed = true);
-  });
-  return !failed;
-};
-
-function join (m1, m2) {
-  var result = {};
-  $.each(m1, function(k, v) {
-    if(v === m2[k])
-      result[k] = v;
-  });
-  return result;
-}
-/**
- * 
- * @param {Object}
- *          x
- * @returns {Object}
- */
-function shallowClone (x) {
-  var result = new Object();
-  $.each(x, function (k, v) {
-    result[k] = v;
-  });
-  return result;
-}
-
-function m2a (m) {
-  var a = [];
-  $.each(m, function (k, v) {
-    a.push(v);
-  });
-  return a;
-}
-
-function a2m (a) {
-  var m = {};
-  $.each(a, function (k, v) {
-    m[v.id] = v;
-  });
-  return m;
-}
-
-window.setTool = function (id) {
-  $('ul.tool li').removeClass('active');
-  $('#' + id).addClass('active');
-  var action = $('#' + id)[0].action;
-  gb.currentTool.reset();
-  gb.currentTool = action;
-  gb.currentDoc.draw();
-  gb.currentDoc.refreshMenu();
-};
 
 Math.nrand = function () {
   var x1, x2, rad, c, r;
@@ -204,13 +136,14 @@ function handleKeydown (ev) {
     if (sk.def) sk = sk.def;
     
     if (sk.length == 1) {
+    	gb.currentTool.reset();
       ev.preventDefault();
       ev.stopPropagation();
       sk = sk[0];
       sk.func();
       return;
     }
-  };
+  }
   switch (ev.keyCode) {
   case 48:
     if (ev.metaKey) {
@@ -226,15 +159,15 @@ function handleKeydown (ev) {
     if(!ev.metaKey && !ev.shiftKey){
       ev.preventDefault();
       ev.stopPropagation();
-      setTool(gb.toolids[ev.keyCode - 49]);
+      gb.utils.setTool(gb.toolids[ev.keyCode - 49]);
     }
     break;
   case 27:
-    window.setTool('tools-sel');
+    gb.utils.setTool('tools-sel');
     ev.stopPropagation();
     break;
   case 45:
-    window.setTool('tools-sel');
+    gb.utils.setTool('tools-sel');
     ev.stopPropagation();
     break;
   case 18:
@@ -256,46 +189,9 @@ function handleKeydown (ev) {
   }
 }
 
-window.init = function () {
-  installMenu();
-  var cd, title = "", doc, json;
-  gb.toolids = [], 
-  $.each(gb.tools, function (k, v) {
-    if (!gb.currentTool)
-      gb.currentTool = v;
-    var li = $('<li class="item" id="tools-' + k + '">' + v.text + '</li>');
-    li[0].action = v;
-    $('#tools').append(li);
-    gb.toolids.push('tools-' + k);
-  });
-
-  $('#tools li:nth(1)').addClass('active');
-  $('ul.tool li').click(function (ev) {
-    if (ev.currentTarget.id == 'tools-hider')
-      return;
-    $('ul.tool li').removeClass('active');
-    window.setTool(ev.currentTarget.id);
-  });
-  $('#left .tools-hider').click(function (ev) {
-    $('#center').toggleClass('hide-tools');
-  });
-  $('#menu-undo').click(function (ev) {
-    gb.currentDoc.undo();
-  });
-  $('#menu-redo').click(function (ev) {
-    gb.currentDoc.redo();
-  });
-  $(document).keyup(function (ev) {
-    switch (ev.keyCode) {
-    case 18:
-      ev.preventDefault();
-      ev.stopPropagation();
-      $('#menu').removeClass('show-ud');
-      break;
-    }
-  });
-  $(document).keydown(handleKeydown);
-  if (window.localStorage) {
+loadPrevious = function () {
+	var cd, json, doc, title;
+	if (window.localStorage) {
     cd = "";
     for (title in window.localStorage) {
       if (title == "__currentDocument")
@@ -330,6 +226,45 @@ window.init = function () {
     gb.currentDoc = doc;
     doc.active();
   }
+};
+
+installTools = function () {
+	gb.toolids = [], 
+  $.each(gb.tools, function (k, v) {
+    if (!gb.currentTool)
+      gb.currentTool = v;
+    var li = $('<li class="item" id="tools-' + k + '">' + v.text + '</li>');
+    li[0].action = v;
+    $('#tools').append(li);
+    gb.toolids.push('tools-' + k);
+  });
+  $('ul.tool li').click(function (ev) {
+    if (ev.currentTarget.id == 'tools-hider')
+      return;
+    $('ul.tool li').removeClass('active');
+    gb.utils.setTool(ev.currentTarget.id);
+  });
+  $('#left .tools-hider').click(function (ev) {
+    $('#center').toggleClass('hide-tools');
+  });
+  $('#tools li:nth(0)').addClass('active');
+};
+
+window.init = function () {
+  loadPrevious();
+  installMenu();
+  installTools();
+  $(document).keyup(function (ev) {
+    switch (ev.keyCode) {
+    case 18:
+      ev.preventDefault();
+      ev.stopPropagation();
+      $('#menu').removeClass('show-ud');
+      break;
+    }
+  });
+  $(document).keydown(handleKeydown);
+  gb.utils.setTool('tools-sel');
   $(window).resize(function(){
     gb.currentDoc.resize($('#area').width(), $('#area').height());
   });

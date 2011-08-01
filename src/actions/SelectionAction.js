@@ -71,7 +71,7 @@ $.extend(SelectionAction.prototype, {
         fy = ty;
         ty = t;
       }
-      gdoc.selection = shallowClone(this.oldSelection);
+      gdoc.selection = gb.utils.shallowClone(this.oldSelection);
       gdoc.forVisibles(function(k, ent) {
         if (ent.crossTest(fx, fy, tx, ty))
           gdoc.selection[ent.id] = ent;
@@ -126,7 +126,7 @@ $.extend(SelectionAction.prototype, {
         } else
           delete gdoc.selection[ent.id];
       }
-      me.oldSelection = shallowClone(gdoc.selection);
+      me.oldSelection = gb.utils.shallowClone(gdoc.selection);
       me.startDrag = [ x, y ];
     } else {
       me.oldSelection = new Object();

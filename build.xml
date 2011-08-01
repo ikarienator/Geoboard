@@ -5,6 +5,7 @@
 		<concat destfile="scripts/geoboard.js">
 			<filelist dir="src">
 				<file name="main.js" />
+				<file name="Utils.js" />
 				<file name="ShortcutKey.js" />
 				<file name="json.js" />
 				<file name="GDoc.js" />

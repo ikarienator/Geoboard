@@ -1,6 +1,6 @@
 function GBRay (document, gpo1, gpo2) {
   GBLine.apply(this, [ document, gpo1, gpo2]);
-};
+}
 
 GBRay.prototype = new GBLine();
 GBRay.labelArg = 0;
@@ -31,6 +31,4 @@ GBRay.prototype.type = function () {
   return 'ray';
 };
 
-gb.geom.ray = function (gdoc, gpo1, gpo2) {
-  return new GBRay(gdoc, gpo1, gpo2);
-};
+gb.geom.reg(GBRay);

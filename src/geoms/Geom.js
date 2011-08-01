@@ -1,9 +1,9 @@
 /**
- * 
+ * @constructor
+ * @class Geom
  * @param {GDoc} document
  * @param {Array} parents
  * @param {Array}params
- * @returns {Geom}
  */
 function Geom (document, parents, params) {
   if (document){
@@ -13,8 +13,7 @@ function Geom (document, parents, params) {
     this.__params = params || [];
     this.__children = {};
   }
-};
-
+}
 
 Geom.cross = function (p1, p2, p3) {
   return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]);
@@ -40,7 +39,22 @@ Geom.projArg = function (p1, p2, p3) {
 };
 
 /**
- * 
+ * @constructor 
+ * @class GIC
+ * @param {Object} desc
+ * @param {GBPoO} poo
+ * @param {GBAbstractPoint} target
+ * @param {Object} ance
+ */
+function GIC(desc, poo, target, ance) {
+  this.desc = desc;
+  this.poo = poo;
+  this.target = target;
+  this.ance = ance;
+}
+
+/**
+ * Create a function to deduce target position from poo (if presented)
  * @param {GDoc} gdoc
  * @param {GBPoO} poo
  * @param {GBAbstractPoint} target
@@ -48,9 +62,9 @@ Geom.projArg = function (p1, p2, p3) {
  */
 Geom.calculas = function(gdoc, poo, target) {
   poo = poo || target;
-  var desc = a2m(poo.descendants()), 
-      ance = a2m(target.ancestors()),
-      context = {desc: desc, poo: poo, target: target, ance : ance},
+  var desc = gb.utils.a2m(poo.descendants()), 
+      ance = gb.utils.a2m(target.ancestors()),
+      context = new GIC(desc, poo, target, ance),
       text = ['(function(gdoc){ var revision = 0; '];
   gdoc.topoFor(function(k, v){
     if (context.ance[v.id]) {
@@ -299,3 +313,22 @@ Geom.prototype = {
 };
 
 gb.geom = {};
+/**
+ * @private
+ */
+gb.geom.cc = function (klass) {
+  function psklass () {}
+  psklass.prototype = new klass();
+  return function() {
+    var inst = new psklass();
+    klass.apply(inst, arguments);
+    return inst;
+  };
+};
+
+/**
+ * @param {Function} klass
+ */
+gb.geom.reg = function (klass) {
+  gb.geom[(new klass()).type()] = gb.geom.cc(klass);
+};

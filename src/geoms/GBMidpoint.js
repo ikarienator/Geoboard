@@ -1,7 +1,6 @@
 function GBMidpoint (document, line) {
   GBAbstractPoint.apply(this, [document, [line], []]);
-  this.cache = [];
-};
+}
 
 GBMidpoint.prototype = new GBAbstractPoint();
 GBMidpoint.prototype.dragInvolve = function () {
@@ -31,6 +30,4 @@ GBMidpoint.prototype.getInstructionRef = function (arg, context) {
   return this.getParent(0).getInstructionRef(0.5, context);
 };
 
-gb.geom.mpo = function (gdoc, line) {
-  return new GBMidpoint(gdoc, line);
-};
+gb.geom.reg(GBMidpoint);

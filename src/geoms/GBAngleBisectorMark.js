@@ -1,10 +1,11 @@
 function GBAngleBisectorMark(document, p1, p2, ang) {
   Geom.apply(this, [document, [p1, p2, ang]]);
 }
+
 GBAngleBisectorMark.prototype = new Geom();
 GBAngleBisectorMark.prototype.isPoint = true;
-GBAngleBisectorMark.prototype.nearestArg = function () { return 0; };
-GBAngleBisectorMark.prototype.type = function() { return 'abm'; };
+GBAngleBisectorMark.prototype.nearestArg = function () {return 0;};
+GBAngleBisectorMark.prototype.type = function() {return 'abm';};
 GBAngleBisectorMark.prototype.getPosition = function () {
   var p1 = this.getParent(0).getPosition(0), 
       p2 = this.getParent(1).getPosition(0),
@@ -36,6 +37,4 @@ GBAngleBisectorMark.prototype.getInstructionRef = function (arg, context) {
   return this.id + '_mark()';
 };
 
-gb.geom.abm = function(document, p1, p2, ang) {
-  return new GBAngleBisectorMark(document, p1, p2, ang);
-};
+gb.geom.reg(GBAngleBisectorMark);

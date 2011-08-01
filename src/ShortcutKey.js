@@ -77,6 +77,8 @@ ShortcutKey.KEY_NAME = [
   '#124', '#125', '#126', '#127', '#',
   'Num Lock', 'Scroll Lock'
 ];
+
+
 ShortcutKey.prototype = {
   keyCode : 0,
   alter : 0,
@@ -93,7 +95,6 @@ ShortcutKey.prototype = {
   toString : function () {
   	var text = "";
   	if(this.keyCode) {
-  		
   		if (this.keyCode >= 65 && this.keyCode <= 90 && this.keyCode >= 96 && this.keyCode <= 122)
   		  text += String.fromCharCode(this.keyCode);
   		else

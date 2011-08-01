@@ -286,7 +286,7 @@ gb.menu.cons = {
   anb : {
     text : 'Angle Bisector',
     isEnabled : function (gdoc) {
-      var sel = m2a(gdoc.selection);
+      var sel = gb.utils.m2a(gdoc.selection);
       if(sel.length != 3) return false;
       this.cmd = new ConstructAngleBisector(sel[0], sel[2], sel[1]);
       return this.cmd.canDo(gdoc);

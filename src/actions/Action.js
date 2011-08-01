@@ -1,6 +1,6 @@
 function GBAction() {
   this.init();
-};
+}
 
 GBAction.prototype = {
   reset : function() {
