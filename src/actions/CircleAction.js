@@ -7,7 +7,7 @@ function CircleAction() {
   this.init();
 }
 
-CircleAction.prototype = new GBAction();
+CircleAction.prototype = new Action();
 CircleAction.prototype.text = '<img type="image/svg+xml" src="images/circ.svg" title="Circle"/>';
 
 CircleAction.prototype.init = function() {

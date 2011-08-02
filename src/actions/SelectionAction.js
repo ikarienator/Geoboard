@@ -2,9 +2,9 @@ function SelectionAction() {
   this.init();
   this.cmd = null;
   this.startDrag = null;
-};
+}
 
-SelectionAction.prototype = new GBAction();
+SelectionAction.prototype = new Action();
 $.extend(SelectionAction.prototype, {
   text : '<img src="images/sel.svg" title="Selection"/>',
   startDrag : null,
@@ -104,6 +104,7 @@ $.extend(SelectionAction.prototype, {
             v.drawLabel(gdoc.contextPhantom, true);
             return false;
           }
+          return undefined;
         });
       }
     }

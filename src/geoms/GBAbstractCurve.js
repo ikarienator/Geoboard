@@ -142,6 +142,7 @@ GBAbstractCurve.prototype.crossTest = function (l, t, r, b) {
         return true;
     }
   }
+  return false;
 };
 
 

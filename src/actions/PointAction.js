@@ -2,7 +2,7 @@ function PointAction() {
   this.init();
 }
 
-PointAction.prototype = new GBAction();
+PointAction.prototype = new Action();
 
 /**
  * @static

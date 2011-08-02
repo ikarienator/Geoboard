@@ -2,7 +2,7 @@ function LineAction() {
   this.init();
 };
 
-LineAction.prototype = new GBAction();
+LineAction.prototype = new Action();
 $.extend(LineAction.prototype, {
   text : '<img src="images/line.svg" title="Line"/>',
   init : function() {

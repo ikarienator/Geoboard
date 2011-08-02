@@ -1,6 +1,3 @@
-/**
- * @namespace gb
- */
 gb.docs = [];
 
 /**
@@ -123,18 +120,18 @@ GDoc.prototype = {
   },
   
   nextPointLabel : function () {
-   var me = this, label = 'A', lastLabel;
-   do {
-     lastLabel = label;
-     me.forEntities(function(k, v){
-       if (v.isPoint) {
-         if (v.name == label) {
-           label = me.nextLabel(label);
-         }
-       }
-     });
-   } while(label != lastLabel);
-   return label;
+    var me = this, label = 'A', lastLabel;
+    do {
+      lastLabel = label;
+      me.forEntities(function(k, v){
+        if (v.isPoint) {
+          if (v.name == label) {
+            label = me.nextLabel(label);
+          }
+        }
+      });
+    } while(label != lastLabel);
+    return label;
   },
   
   nextLineLabel : function () {
@@ -234,7 +231,7 @@ GDoc.prototype = {
   
   hitTest : function (x, y) {
     var me = this, po, pos, mini = [], minid = 1e300, min0, mind0, min1, mind1,  sf = me.scaleFactor,
-        temp, p, currd, d, res = {
+    temp, p, currd, d, res = {
       found : [],
       current : [ NaN, NaN ]
     };
@@ -522,7 +519,9 @@ GDoc.prototype = {
   zoomIn : function() {
     this.context.scale(1.1, 1.1);
     this.scaleFactor *= 1.1;
-    this.forEntities(function (k, v) {v.dirt();});
+    this.forEntities(function (k, v) {
+      v.dirt();
+    });
     this.draw();
     this.save();
   },
@@ -530,7 +529,9 @@ GDoc.prototype = {
   zoomOut : function() {
     this.context.scale(1/1.1, 1/1.1);
     this.scaleFactor /= 1.1;
-    this.forEntities(function (k, v) {v.dirt();});
+    this.forEntities(function (k, v) {
+      v.dirt();
+    });
     this.draw();
     this.save();
   },
@@ -547,6 +548,9 @@ GDoc.prototype = {
    * @param {Number} dy
    */
   pan : function(dx, dy) {
+    this.panX += dx;
+    this.panY += dy;
+    this.draw();
     this.save();
   },
   
@@ -567,14 +571,16 @@ GDoc.prototype = {
     $(me.canvas).add(me.canvasPhantom).attr('width', w).attr('height', h);
     context.translate(me.panX + w * 0.5, me.panY + h * 0.5);
     context.scale(me.scaleFactor, me.scaleFactor);
-    me.forEntities(function (k, v) {v.dirt();});
+    me.forEntities(function (k, v) {
+      v.dirt();
+    });
     me.draw();
   },
   
   rename : function(newName) {  	
-  	if (window.localStorage)
-  	  delete window.localStorage[this.title];
-  	this.title = newName;
-  	this.save();
+    if (window.localStorage)
+      delete window.localStorage[this.title];
+    this.title = newName;
+    this.save();
   }
 };
