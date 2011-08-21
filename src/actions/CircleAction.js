@@ -58,7 +58,7 @@ CircleAction.prototype.mouseMove = function(gdoc, x, y, ev) {
 CircleAction.prototype.mouseUp = function(gdoc, x, y, ev) {
   var me = this;
   if (me.status == 1) {
-    me.pointAction.mouseDown(gdoc, x, y, ev);
+    me.pointAction.mouseUp(gdoc, x, y, ev);
     if (me.p1 !== me.p2) {
       gdoc.run(new ConstructCircleCommand(me.p1, me.p2));
       me.status = 0;
@@ -71,11 +71,11 @@ CircleAction.prototype.mouseDown = function(gdoc, x, y, ev) {
   var me = this;
   switch (me.status) {
   case 0:
-    me.pointAction.mouseDown(gdoc, x, y, ev);
+    me.pointAction.mouseUp(gdoc, x, y, ev);
     me.status = 1;
     break;
   case 1:
-    me.pointAction.mouseDown(gdoc, x, y, ev);
+    me.pointAction.mouseUp(gdoc, x, y, ev);
     me.status = 0;
     if (me.p1 === me.p2)
       break;

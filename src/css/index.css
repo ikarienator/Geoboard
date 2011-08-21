@@ -11,6 +11,10 @@
   background: transparent;
 }
 
+.touch * {
+  font-size: 18px;
+}
+
 html {
   overflow: hidden;
 }
@@ -26,6 +30,9 @@ div#center {
   display: block;
 }
 
+.touch div#center {
+  top: 29px;
+}
 
 div#board {
   right: 1px;
@@ -35,6 +42,10 @@ div#board {
   top: 0px;
   bottom: 0px;
   background: #fff;
+}
+
+.touch div#board {
+  left: 56px;
 }
 
 #center.hide-tools div#board {
@@ -219,7 +230,7 @@ div.mask {
   right: 0px;
   top: 0px;
   bottom: 0px;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: none;
 }
 

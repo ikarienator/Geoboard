@@ -279,8 +279,9 @@ window.init = function () {
       navigator.userAgent.match(/iPod/i)
       ) {
     $.isTouch = true;
-    $(document).addClass('touch');  
+    $('body').addClass('touch');
   }
+
   loadPrevious();
   installMenu();
   installTools();

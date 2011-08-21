@@ -80,13 +80,13 @@ PointAction.prototype = new Action();
   };
 
   PointAction.prototype.snap = function (gdoc) {
-    var me = this, context = gdoc.context, po;
+    var me = this, context = gdoc.context, po, radius = context.transP2M(gdoc.mouse[2]);
     me.cmd = null;
     if (me.found.length == 1) {
       var target = me.found[0];
       if(target.isPoint) {
         context.beginPath();
-        context.arc(me.current[0], me.current[1], context.transP2M(6), 0, Math.PI * 2, false);
+        context.arc(me.current[0], me.current[1], radius, 0, Math.PI * 2, false);
         context.closePath();
         context.lineWidth = context.transP2M(1);
         context.strokeStyle = "#F00";
@@ -95,18 +95,19 @@ PointAction.prototype = new Action();
       }
       if(target.type() == 'gli') {
         po = target.getPosition(0.5);
-        if (Geom.dist(me.current, po) < context.transM2P(6)) {
+        if (Geom.dist(me.current, po) < radius) {
           me.current = po;
           context.beginPath();
-          context.moveTo(me.current[0], me.current[1] - context.transM2P(8));
-          context.lineTo(me.current[0] - context.transM2P(4 * Math.sqrt(3)), me.current[1] + context.transM2P(4));
-          context.lineTo(me.current[0] + context.transM2P(4 * Math.sqrt(3)), me.current[1] + context.transM2P(4));
+          context.moveTo(me.current[0], me.current[1] - radius);
+          context.lineTo(me.current[0] - radius * Math.sqrt(0.75), me.current[1] + radius * 0.5);
+          context.lineTo(me.current[0] + radius * Math.sqrt(0.75), me.current[1] + radius * 0.5);
           context.closePath();
           context.lineWidth = context.transP2M(2);
           context.strokeStyle = "#880";
           context.stroke();
           context.fillStyle = "black";
-          context.fillText("Midpoint", po[0] + context.transP2M(6), po[1] + context.transP2M(6));
+          context.font = radius * 2 + "px Arial";
+          context.fillText("Midpoint", po[0] + radius * 2, po[1] + radius * 2);
           me.cmd = new ConstructMidpointCommand(me.found[0]);
           return;
         }
@@ -116,17 +117,18 @@ PointAction.prototype = new Action();
           // Test for perpendicular line
           po = me.basePoint.getPosition(0);
           po = target.getPosition(target.nearestArg(po[0], po[1]));
-          if (Geom.dist(me.current, po) < context.transM2P(6)) {
+          if (Geom.dist(me.current, po) < radius) {
             me.current = po;
             context.beginPath();
-            context.arc(me.current[0], me.current[1], context.transP2M(6), 0, Math.PI * 2, false);
+            context.arc(me.current[0], me.current[1], radius, 0, Math.PI * 2, false);
             context.closePath();
             context.lineWidth = context.transP2M(1);
             context.strokeStyle = "#0F0";
             context.stroke();
             context.fillStyle = "black";
-            context.fillText("Perpendicular", po[0] + context.transP2M(6), po[1] + context.transP2M(6));
-            me.cmd = new ConstructProjectionPoint(me.found[0], me.basePoint, true);
+            context.font = radius * 2 + "px Arial";
+            context.fillText("Perpendicular", po[0] + radius * 2, po[1] + radius * 2);
+            me.cmd = new ConstructProjectionPoint(me.found[0], me.basePoint);
             return;
           }
         }
@@ -135,7 +137,7 @@ PointAction.prototype = new Action();
       return;
     } else if(me.found.length >= 2) {
       context.beginPath();
-      context.arc(me.current[0], me.current[1], context.transP2M(6), 0, Math.PI * 2, false);
+      context.arc(me.current[0], me.current[1], radius, 0, Math.PI * 2, false);
       context.closePath();
       context.lineWidth = context.transP2M(1);
       context.strokeStyle = "#0F0";
@@ -157,7 +159,7 @@ PointAction.prototype = new Action();
 
     me.snap(gdoc);
     
-    if (me.cmd == null) {
+    if (!me.cmd) {
       if(me.found.length == 0) {
         if (ev.shiftKey) me.adjust(ev);
         me.cmd = new ConstructPointCommand(test.current[0], test.current[1]);
@@ -186,11 +188,9 @@ PointAction.prototype = new Action();
  * @param {Number} y
  * @param {Event} ev
  */
-  PointAction.prototype.mouseDown = function (gdoc, x, y, ev) {
-    var me = this, test = gdoc.hitTest(x, y), cmd, arg, plast;
-    me.found = test.found;
-    me.current = test.current;
-
+  PointAction.prototype.mouseUp = function (gdoc, x, y, ev) {
+    var me = this;
+    me.mouseMove(gdoc, x, y, ev);
     if (me.cmd) {
       gdoc.run(me.cmd);
       me.fireOnNewPoint(me.cmd.newObjects[0]);
@@ -198,7 +198,6 @@ PointAction.prototype = new Action();
     } else {
       me.fireOnNewPoint(me.found[0]);
     }
-
     me.mouseMove(gdoc, x, y, ev);
   };
 

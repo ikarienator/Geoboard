@@ -56,7 +56,7 @@ GBAbstractLine.prototype.drawHovering = function (context) {
   context.stroke();
 };
 
-GBAbstractLine.prototype.hitTest = function (x, y) {
+GBAbstractLine.prototype.hitTest = function (x, y, radius) {
   var p1 = this.__getPosition(0), p2 = this.__getPosition(1),
       fx = p1[0], tx = p2[0], fy = p1[1], ty = p2[1], t, c, dx, dy;
   
@@ -76,7 +76,7 @@ GBAbstractLine.prototype.hitTest = function (x, y) {
   c = c * c;
   dx = p1[0] - p2[0];
   dy = p1[1] - p2[1];
-  if (c > ($.isTouch? 100 : 25) * (dx * dx + dy * dy))
+  if (c > radius * radius * (dx * dx + dy * dy))
     return false;
 
   return this.legalArg(Geom.projArg(p1, p2, [ x, y ]));

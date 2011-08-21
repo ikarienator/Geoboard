@@ -362,4 +362,4 @@ gb.menu.grap = {
   text : '<span class="ud">G</span>raph',
   items : []
 };
-gb.menu.items = [ 'file', 'edit', 'disp', 'cons', 'trans', 'meas', 'numb', 'grap' ];
+gb.menu.items = [ 'file', 'edit', 'disp', 'cons'];

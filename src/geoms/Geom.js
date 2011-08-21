@@ -5,8 +5,8 @@
  * @param {Array} parents
  * @param {Array}params
  */
-function Geom (document, parents, params) {
-  if (document){
+function Geom(document, parents, params) {
+  if (document) {
     this.document = document;
     this.id = document.nextId();
     this.__parents = parents || [];
@@ -39,7 +39,7 @@ Geom.projArg = function (p1, p2, p3) {
 };
 
 /**
- * @constructor 
+ * @constructor
  * @class GIC
  * @param {Object} desc
  * @param {GBPoO} poo
@@ -62,11 +62,11 @@ function GIC(desc, poo, target, ance) {
  */
 Geom.calculas = function(gdoc, poo, target) {
   poo = poo || target;
-  var desc = gb.utils.a2m(poo.descendants()), 
+  var desc = gb.utils.a2m(poo.descendants()),
       ance = gb.utils.a2m(target.ancestors()),
       context = new GIC(desc, poo, target, ance),
       text = ['(function(gdoc){ var revision = 0; '];
-  gdoc.topoFor(function(k, v){
+  gdoc.topoFor(function(k, v) {
     if (context.ance[v.id]) {
       text.push(v.getInstruction(context));
     }
@@ -74,7 +74,7 @@ Geom.calculas = function(gdoc, poo, target) {
   text.push('return (function(___arg) {');
   if (poo) {
     text.push(poo.id + '_arg = ___arg; revision++; ');
-  } 
+  }
   text.push('return ');
   text.push(target.getInstructionRef('', context));
   text.push(';});})');
@@ -90,33 +90,33 @@ Geom.prototype = {
   __params : null,
   __children : null,
   __dirty : true,
-  
-  draw : function () {
+
+  draw : function (context) {
 
   },
 
-  drawHovering : function () {
+  drawHovering : function (context) {
 
   },
 
-  drawSelected : function () {
+  drawSelected : function (context) {
 
   },
 
-  hitTest : function (x, y) {
+  hitTest : function (x, y, radius) {
     return false;
   },
 
   inters : function () {
     return [];
   },
-  
+
   crossTest : function (l, t, r, b) {
     return false;
   },
 
   /**
-   * 
+   *
    * @param {Number} x
    * @param {Number} y
    * @returns {Number}
@@ -137,9 +137,9 @@ Geom.prototype = {
   type : function () {
     throw 'type() not implemented';
   },
-  
+
   /**
-   * 
+   *
    * @param gdoc
    * @returns {Object}
    */
@@ -164,11 +164,11 @@ Geom.prototype = {
 
   /**
    * @param {Object}
-   *          json
+      *          json
    * @param {GDoc}
-   *          gdoc
+      *          gdoc
    */
-  load : function (json, gdoc) {
+  load: function (json, gdoc) {
     var me = this;
     me.document = gdoc;
     me.id = json.id;
@@ -183,16 +183,16 @@ Geom.prototype = {
     me.dirt();
   },
 
-  getParents : function () {
+  getParents: function () {
     return this.__parents;
   },
 
   /**
-   * 
+   *
    * @param index
    * @returns {Geom}
    */
-  getParent : function (index) {
+  getParent: function (index) {
     return this.__parents[index];
   },
 
@@ -201,42 +201,42 @@ Geom.prototype = {
     this.dirt();
   },
 
-  getParam : function (index) {
+  getParam: function (index) {
     return this.__params[index];
   },
 
-  setParam : function (index, value) {
+  setParam: function (index, value) {
     this.__params[index] = value;
     this.dirt();
   },
 
-  getPosition : function (arg) {
+  getPosition: function (arg) {
     throw 'getPosition(arg) not implemented';
   },
 
-  randPoint : function () {
+  randPoint: function () {
     throw 'randPoint() not implemented';
   },
-  
-  dirt : function () {
+
+  dirt: function () {
     if (this.__dirty) return;
     this.__dirty = true;
-    $.each(this.__children, function(k, v){
+    $.each(this.__children, function(k, v) {
       v.dirt();
     });
   },
-  
-  update : function () {
+
+  update: function () {
     if (!this.__dirty) return;
-    $.each(this.__parents, function(k, v){
+    $.each(this.__parents, function(k, v) {
       v.update();
     });
     this.__dirty = false;
   },
-  
-  ancestors : function (){
+
+  ancestors: function () {
     var result = {}, q = [this], qi = 0, curr;
-    while(qi < q.length) {
+    while (qi < q.length) {
       curr = q[qi ++];
       $.each(curr.__parents, function (k, v) {
         if (!result[v.id]) {
@@ -247,10 +247,10 @@ Geom.prototype = {
     }
     return q;
   },
-  
-  descendants : function () {
+
+  descendants: function () {
     var result = {}, q = [this], qi = 0, curr;
-    while(qi < q.length) {
+    while (qi < q.length) {
       curr = q[qi++];
       $.each(curr.__children, function (k, v) {
         if (!result[v.id]) {
@@ -261,42 +261,42 @@ Geom.prototype = {
     }
     return q;
   },
-  
-  getInstruction : function () {
+
+  getInstruction: function () {
     throw 'getInstruction() not implemented';
   },
-  
-  getInstructionRef : function (arg, isStatic) {
+
+  getInstructionRef: function (arg, isStatic) {
     throw 'getInstructionRef(arg, isStatic) not implemented';
   },
-  
-  getIntersInstruction : function(obj, isStatic1, isStatic2) {
+
+  getIntersInstruction: function(obj, isStatic1, isStatic2) {
     throw 'getIntersInstruction(obj, isStatic1, isStatic2) not implemented';
   },
-  
-  getIntersInstructionRef : function(obj, isStatic1, isStatic2) {
-    
+
+  getIntersInstructionRef: function(obj, isStatic1, isStatic2) {
+
   },
-  
-  legalArgInstructionRef : function (isStatic) {
+
+  legalArgInstructionRef: function (isStatic) {
     throw 'legalArgInstructionRef(isStatic) not implemented';
   },
-  
-  isClosed : function () {
+
+  isClosed: function () {
     return false;
   },
-  
-  phantom : function () {
+
+  phantom: function () {
     return false;
   },
-  
-  sector : function () {
-    
+
+  sector: function () {
+
   },
-  
-  getName : function () {
+
+  getName: function () {
     if (this.name == '') {
-      if (this.isPoint){
+      if (this.isPoint) {
         this.name = this.document.nextPointLabel();
       } else {
         this.name = this.document.nextLineLabel();
@@ -305,8 +305,8 @@ Geom.prototype = {
     }
     return this.name;
   },
-  
-  setName : function (name) {
+
+  setName: function (name) {
     this.name = name;
     this.dirt();
   }
@@ -321,7 +321,8 @@ gb.geom = {};
  * @private
  */
 gb.geom.cc = function (klass) {
-  function psklass () {}
+  function psklass() {}
+
   psklass.prototype = new klass();
   return function() {
     var inst = new psklass();

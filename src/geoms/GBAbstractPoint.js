@@ -40,11 +40,11 @@ GBAbstractPoint.prototype.drawHovering = function(context) {
   context.stroke();
 };
 
-GBAbstractPoint.prototype.hitTest = function(x, y) {
+GBAbstractPoint.prototype.hitTest = function(x, y, radius) {
   var pos = this.getPosition(), 
       dx = pos[0] - x, 
       dy = pos[1] - y;
-  return dx * dx + dy * dy < 100;
+  return dx * dx + dy * dy < radius * radius;
 };
 
 GBAbstractPoint.prototype.crossTest = function(l, t, r, b) {

@@ -69,6 +69,10 @@ GBAbstractCurve.prototype.draw = function (context) {
 //  });
 };
 
+/**
+ *
+ * @param {CanvasContext} context
+ */
 GBAbstractCurve.prototype.drawSelected = function (context) {
   this.__drawPath(context);
   context.lineWidth = context.transP2M(8);
@@ -146,7 +150,7 @@ GBAbstractCurve.prototype.crossTest = function (l, t, r, b) {
 };
 
 
-GBAbstractCurve.prototype.hitTest = function (x, y) {
+GBAbstractCurve.prototype.hitTest = function (x, y, radius) {
   this.update();
   var i, path = this.path[0], p1, p2, 
       fx, tx, fy, ty, t, c;
@@ -171,7 +175,7 @@ GBAbstractCurve.prototype.hitTest = function (x, y) {
     
     c = Geom.cross(p1, [ x, y ], p2);
     c = c * c;
-    if (c > 25 * Geom.dist(p1, p2))
+    if (c > radius * radius * Geom.dist(p1, p2))
       continue;
     c = Geom.projArg(p1, p2, [ x, y ]);
     if (c > 1) 

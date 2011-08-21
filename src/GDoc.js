@@ -35,14 +35,20 @@ function GDoc(title) {
   }
 
   $('div#area').append(can);
+  function bindMe(name) {
+    return function(ev) { return me[name](ev); };
+  }
+
+  ;
+
   if ($.isTouch) {
-    can.bind('touchstart', this.onTouchStart);
-    can.bind('touchmove', this.onTouchMove);
-    can.bind('touchend', this.onTouchEnd);
+    can.bind('touchstart', bindMe('onTouchStart'));
+    can.bind('touchmove', bindMe('onTouchMove'));
+    can.bind('touchend', bindMe('onTouchEnd'));
   } else {
-    can.mousedown(this.onMouseDown);
-    can.mousemove(this.onMouseMove);
-    can.mouseup(this.onMouseUp);
+    can.mousedown(bindMe('onMouseDown'));
+    can.mousemove(bindMe('onMouseMove'));
+    can.mouseup(bindMe('onMouseUp'));
   }
 
   me.contextPhantom = me.canvasPhantom.getContext("2d");
@@ -79,23 +85,40 @@ GDoc.prototype = {
 
   updateMouse: function (ev) {
     var me = this;
-    try {
-      if (!$.isTouch) {
-        this.mouse = this.context.transP2M([ ev.offsetX || ev.layerX, ev.offsetY || ev.layerY, 6 ]);
-      } else {
-        ev = ev.originalEvent;
-        ev.shiftKey = false;
-        ev.keyCode = 0;
+    if (!$.isTouch) {
+      this.mouse = this.context.transP2M([ ev.offsetX || ev.layerX, ev.offsetY || ev.layerY, 6 ]);
+    } else {
+      ev.shiftKey = false;
+      ev.keyCode = 0;
+      if (ev.targetTouches) {
         $.each(ev.targetTouches, function(i, touch) {
-          if (touch.id == me.currentTouch) {
-            var pos = $(this.canvas).offset();
-            this.mouse = this.context.transP2M([
-            touch.clientX - pos.left,
-            touch.clientY - pos.top,
-            Math.min(Math.max(touch.radiusX, touch.radiusY), 6)]);
+          if (touch.identifier == me.currentTouch) {
+            var pos = $(me.canvas).offset();
+            me.mouse = me.context.transP2M([
+              touch.clientX - pos.left,
+              touch.clientY - pos.top
+            ]);
+            me.mouse[2] = 18;
             return false;
           }
         });
+      } else {
+        throw 'no targetTouches';
+      }
+    }
+  },
+
+  /**
+   *
+   * @param {TouchEvent} ev
+   */
+  onTouchStart: function (ev) {
+    try {
+      ev = ev.originalEvent;
+      var me = this;
+      if (ev.targetTouches && ev.targetTouches.length == 1) {
+        me.currentTouch = ev.targetTouches[0].identifier;
+        me.onMouseDown(ev);
       }
     } catch (e) {
       me.contextPhantom.fillStyle = "red";
@@ -103,38 +126,55 @@ GDoc.prototype = {
     }
   },
 
-  onTouchStart: function (ev) {
-    if (ev.targetTouches.length == 1) {
-      this.currentTouch = ev.targetTouches[0].id;
-      this.onMouseDown (ev);
-    }
-  },
-
   onTouchMove: function (ev) {
-    var currentTouch = null, me = this;
-    $.each(ev.targetTouches, function(touch) {
-      if (touch.id == me.currentTouch) {
-        currentTouch = touch;
-        return false;
+    try {
+      var currentTouch = null, me = this;
+      ev = ev.originalEvent;
+      if (ev.targetTouches) {
+        $.each(ev.targetTouches, function(k, touch) {
+          if (touch.identifier == me.currentTouch) {
+            currentTouch = touch;
+            return false;
+          }
+        });
+        if (currentTouch) {
+          me.onMouseMove(ev);
+        } else {
+          me.currentTouch = null;
+          me.onMouseUp(ev);
+        }
       }
-    });
-    if (currentTouch) {
-      this.onMouseMove(ev);
-    } else {
-      this.currentTouch = null;
-      this.onMouseUp(ev);
+    } catch (e) {
+      me.contextPhantom.fillStyle = "red";
+      me.contextPhantom.fillText(e, 20, 20);
     }
   },
 
   onTouchEnd: function (ev) {
-    if (this.currentTouch) {
-      this.onMouseUp(ev);
+    try {
+      ev = ev.originalEvent;
+      var me = this, currentTouch;
+      if (me.currentTouch) {
+        $.each(ev.targetTouches, function(k, touch) {
+          if (touch.identifier == me.currentTouch) {
+            currentTouch = touch;
+            return false;
+          }
+        });
+        if (!currentTouch) {
+          me.onMouseUp(ev);
+          me.currentTouch = null;
+        }
+      }
+    } catch (e) {
+      me.contextPhantom.fillStyle = "red";
+      me.contextPhantom.fillText(e, 20, 20);
     }
   },
 
   onMouseDown: function (ev) {
     try {
-      var me = this.doc;
+      var me = this;
       me.updateMouse(ev);
       ev.preventDefault();
       ev.stopPropagation();
@@ -154,7 +194,7 @@ GDoc.prototype = {
 
   onMouseMove: function (ev) {
     try {
-      var me = this.doc;
+      var me = this;
       me.updateMouse(ev);
       ev.preventDefault();
       ev.stopPropagation();
@@ -170,7 +210,7 @@ GDoc.prototype = {
   },
 
   onMouseUp: function (ev) {
-    var me = this.doc;
+    var me = this;
     me.updateMouse(ev);
     ev.preventDefault();
     ev.stopPropagation();
@@ -180,8 +220,6 @@ GDoc.prototype = {
       me.refreshMenu();
     }
     var pos = $(me.canvas).offset();
-    me.contextPhantom.fillStyle = "black";
-    me.contextPhantom.fillText(pos.left, 10, 10);
   },
 
   nextId : function () {
@@ -322,16 +360,17 @@ GDoc.prototype = {
     }
   },
 
-  hitTest : function (x, y) {
+  hitTest : function (x, y, radius) {
     var me = this, po, pos, mini = [], minid = 1e300, min0, mind0, min1, mind1,  sf = me.scaleFactor,
         temp, p, currd, d, res = {
       found : [],
       current : [ NaN, NaN ]
     };
+    radius = radius || me.mouse[2];
     sf = sf * sf;
-    sf = ($.isTouch ? 144 : 36) / sf;
+    sf = radius * radius / sf;
     me.forVisibles(function (k, v) {
-      if (v.hitTest(x, y)) {
+      if (v.hitTest(x, y, radius)) {
         p = v.getPosition(v.nearestArg(x, y));
         if (Geom.dist(p, [x, y]) < sf) {
           res.found.push({
