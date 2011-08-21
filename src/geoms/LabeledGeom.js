@@ -1,3 +1,7 @@
+/**
+ * @class LabeledGeom
+ * @constructor
+ */
 function LabeledGeom () {
   Geom.apply(this, arguments);
 }

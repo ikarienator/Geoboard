@@ -5,6 +5,7 @@
   </target>
   <target name="build">
     <echo message="Merging files" />
+    <mkdir dir="build" />
     <concat destfile="build/css/index.css">
       <filelist dir="src/css">
         <file name="index.css" />
@@ -12,14 +13,12 @@
         <file name="tools.css" />
       </filelist>
     </concat>
+    <copy file="src/res/dev.html" todir="build/" verbose="false"/>
     <copy file="src/res/index.html" todir="build/" verbose="false"/>
     <copy file="src/res/jq.js" todir="build/scripts" verbose="false"/>
     <copy todir="build/images/">
       <fileset dir="src/res/images/">
-        <include name="sel.svg"/>
-        <include name="circ.svg"/>
-        <include name="line.svg"/>
-        <include name="point.svg"/>
+        <include name="*.svg"/>
       </fileset>
     </copy>
     <concat destfile="build/scripts/geoboard.js">
@@ -45,6 +44,7 @@
         <file name="geoms/GBRay.js" />
         <file name="geoms/GBXLine.js" />
         <file name="geoms/GBLocus.js" />
+        <file name="geoms/GBProjectionPoint.js" />
         <file name="geoms/GBAngleBisectorMark.js" />
         <file name="actions/Action.js" />
         <file name="actions/SelectionAction.js" />
@@ -56,6 +56,7 @@
         <file name="command/ConstructCommand.js" />
         <file name="command/ConstructPoint.js" />
         <file name="command/ConstructLine.js" />
+        <file name="command/ConstructProjectionPoint.js" />
         <file name="command/ConstructPerpLine.js" />
         <file name="command/ConstructParaLine.js" />
         <file name="command/ConstructCircle.js" />
@@ -78,6 +79,5 @@
       <arg value="-o"/>
       <arg value="build/scripts/geoboard.compiled.js"/>
     </java>
-    <delete file="build/scripts/geoboard.js" />
   </target>
 </project>

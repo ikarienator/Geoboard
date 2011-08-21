@@ -6,8 +6,12 @@ function ConstructIntersectionCommand(obj1, obj2, min) {
 
 ConstructIntersectionCommand.prototype = new ConstructCommand();
 
+/**
+ *
+ * @param {GDoc} gdoc
+ */
 ConstructIntersectionCommand.prototype.canDo = function (gdoc) {
-  if (this.min > 0 && !(this.obj1 !== undefined && this.obj2 !== undefined))
+  if (!(this.min >= 0) || this.obj1 === undefined || this.obj2 === undefined)
     return false;
   var inters = this.obj1.inters(this.obj2);
   return inters.length > this.min;
