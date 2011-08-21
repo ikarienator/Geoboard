@@ -37,7 +37,7 @@ function GDoc(title) {
   $('div#area').append(can);
   if ($.isTouch) {
     can.bind('touchstart', this.onTouchStart);
-    can.bind('touchmove', this.onToucheMove);
+    can.bind('touchmove', this.onTouchMove);
     can.bind('touchend', this.onTouchEnd);
   } else {
     can.mousedown(this.onMouseDown);
