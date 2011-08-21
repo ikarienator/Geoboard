@@ -36,9 +36,9 @@ function GDoc(title) {
 
   $('div#area').append(can);
   if ($.isTouch) {
-    can.bind('touchstart', this.onMouseDown);
-    can.bind('touchmove', this.onMouseMove);
-    can.bind('touchend', this.onMouseUp);
+    can.bind('touchstart', this.onTouchStart);
+    can.bind('touchmove', this.onToucheMove);
+    can.bind('touchend', this.onTouchEnd);
   } else {
     can.mousedown(this.onMouseDown);
     can.mousemove(this.onMouseMove);
@@ -78,23 +78,57 @@ GDoc.prototype = {
   points : new Object(),
 
   updateMouse: function (ev) {
+    var me = this;
     try {
       if (!$.isTouch) {
-        this.mouse = this.context.transP2M([ ev.offsetX || ev.layerX, ev.offsetY || ev.layerY ]);
+        this.mouse = this.context.transP2M([ ev.offsetX || ev.layerX, ev.offsetY || ev.layerY, 6 ]);
       } else {
         ev = ev.originalEvent;
         ev.shiftKey = false;
         ev.keyCode = 0;
-        if (ev.targetTouches.length) {
-          var pos = $(this.canvas).offset();
-          this.mouse = this.context.transP2M([
-            ev.targetTouches[0].clientX - pos.left,
-            ev.targetTouches[0].clientY - pos.top]);
-        }
+        $.each(ev.targetTouches, function(i, touch) {
+          if (touch.id == me.currentTouch) {
+            var pos = $(this.canvas).offset();
+            this.mouse = this.context.transP2M([
+            touch.clientX - pos.left,
+            touch.clientY - pos.top,
+            Math.min(Math.max(touch.radiusX, touch.radiusY), 6)]);
+            return false;
+          }
+        });
       }
     } catch (e) {
       me.contextPhantom.fillStyle = "red";
       me.contextPhantom.fillText(e, 20, 20);
+    }
+  },
+
+  onTouchStart: function (ev) {
+    if (ev.targetTouches.length == 1) {
+      this.currentTouch = ev.targetTouches[0].id;
+      this.onMouseDown (ev);
+    }
+  },
+
+  onTouchMove: function (ev) {
+    var currentTouch = null, me = this;
+    $.each(ev.targetTouches, function(touch) {
+      if (touch.id == me.currentTouch) {
+        currentTouch = touch;
+        return false;
+      }
+    });
+    if (currentTouch) {
+      this.onMouseMove(ev);
+    } else {
+      this.currentTouch = null;
+      this.onMouseUp(ev);
+    }
+  },
+
+  onTouchEnd: function (ev) {
+    if (this.currentTouch) {
+      this.onMouseUp(ev);
     }
   },
 
