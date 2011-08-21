@@ -98,7 +98,7 @@ GDoc.prototype = {
               touch.clientX - pos.left,
               touch.clientY - pos.top
             ]);
-            me.mouse[2] = 18;
+            me.mouse[2] = 24;
             return false;
           }
         });
