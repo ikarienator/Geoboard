@@ -7,37 +7,44 @@ GBAbstractPoint.prototype.isPoint = true;
 GBAbstractPoint.prototype.color = '#F00';
 GBAbstractPoint.prototype.draw = function(context) {
   var pos = this.getPosition();
-  context.beginPath();
-  context.arc(pos[0], pos[1], context.transP2M(3), 0, Math.PI * 2, false);
-  context.closePath();
-  context.fillStyle = this.color;
-  context.fill();
-  context.lineWidth = context.transP2M(1);
-  context.strokeStyle = "#000";
-  context.stroke();
+  if (!isNaN(pos[0]) && !isNaN(pos[0])) {
+    context.beginPath();
+    context.arc(pos[0], pos[1], context.transP2M(3), 0, Math.PI * 2, false);
+    context.closePath();
+    context.fillStyle = this.color;
+    context.fill();
+    context.lineWidth = context.transP2M(1);
+    context.strokeStyle = "#000";
+    context.stroke();
+  }
 };
 
 GBAbstractPoint.prototype.drawSelected = function(context) {
   var pos = this.getPosition();
-  this.draw(context);
-  context.beginPath();
-  context.arc(pos[0], pos[1], context.transP2M(6), 0, Math.PI * 2, false);
-  context.closePath();
-  context.lineWidth = context.transP2M(1);
-  context.strokeStyle = "#339";
-  context.stroke();
+  if (!isNaN(pos[0]) && !isNaN(pos[0])) {
+    this.draw(context);
+    context.beginPath();
+    context.arc(pos[0], pos[1], context.transP2M(6), 0, Math.PI * 2, false);
+    context.closePath();
+    context.lineWidth = context.transP2M(1);
+    context.strokeStyle = "#339";
+    context.stroke();
+  }
+
 };
 
 GBAbstractPoint.prototype.drawHovering = function(context) {
   var pos = this.getPosition();
-  context.beginPath();
-  context.arc(pos[0], pos[1], context.transP2M(3), 0, Math.PI * 2, false);
-  context.closePath();
-  context.fillStyle = this.color;
-  context.fill();
-  context.lineWidth = context.transP2M(1);
-  context.strokeStyle = "#F00";
-  context.stroke();
+  if (!isNaN(pos[0]) && !isNaN(pos[0])) {
+    context.beginPath();
+    context.arc(pos[0], pos[1], context.transP2M(3), 0, Math.PI * 2, false);
+    context.closePath();
+    context.fillStyle = this.color;
+    context.fill();
+    context.lineWidth = context.transP2M(1);
+    context.strokeStyle = "#F00";
+    context.stroke();
+  }
 };
 
 GBAbstractPoint.prototype.hitTest = function(x, y, radius) {

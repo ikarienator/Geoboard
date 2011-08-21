@@ -107,7 +107,7 @@ function installMenu() {
         sitem[0].action.text = function (text) {
           return this.item.html(text);
         };
-        sitem.click(function (ev) {
+        sitem.bind($.isTouch ? 'touchstart' : 'click', function (ev) {
           if (!mitem.isEnabled || mitem.isEnabled(gb.currentDoc)) {
             mitem.run(gb.currentDoc);
             $('#menu').removeClass('expand');
@@ -117,10 +117,10 @@ function installMenu() {
       }
     });
   });
-  $('#menu li.item').click(function (ev) {
+  $('#menu li.item').bind($.isTouch ? 'touchstart' : 'click', function (ev) {
     $('#menu').addClass('expand');
   });
-  $('#center').click(function () {
+  $('#center').bind($.isTouch ? 'touchstart' : 'click', function () {
     $('#menu').removeClass('expand');
   });
 }
@@ -201,17 +201,19 @@ loadPrevious = function () {
   var cd, json, doc, title;
   if (window.localStorage) {
     cd = "";
-    for (title in window.localStorage) {
-      if (title == gb.localStoragePrefix + "currentDocument")
-        cd = window.localStorage[title];
-      else {
-        json = window.localStorage[title];
-        if (title.startsWith(gb.localStoragePrefix)) {
-          doc = new GDoc(title.substr(gb.localStoragePrefix.length));
+    var files = window.localStorage[gb.localStoragePrefix + 'files'];
+    cd = window.localStorage[gb.localStoragePrefix + "currentDocument"];
+    if (files) {
+      files = gb.json.decode(files);
+      $.each(files, function (i, title) {
+        json = window.localStorage[gb.localStoragePrefix + title];
+        if (json) {
+          doc = new GDoc(title);
           doc.load(gb.json.decode(json));
         }
-      }
+      });
     }
+
     if (gb.docs.length == 0) {
       doc = new GDoc();
       gb.currentDoc = doc;
@@ -234,6 +236,7 @@ loadPrevious = function () {
   } else {
     doc = new GDoc();
     gb.currentDoc = doc;
+    doc.save();
     doc.active();
   }
 };
@@ -259,13 +262,13 @@ installTools = function () {
       gb.toolids.push('tools-' + k);
     }
   });
-  $('ul.tool li').bind('click touchstart', function (ev) {
+  $('ul.tool li').bind($.isTouch ? 'touchstart' : 'click', function (ev) {
     if (ev.currentTarget.id == 'tools-hider')
       return;
     $('ul.tool li').removeClass('active');
     gb.utils.setTool(ev.currentTarget.id);
   });
-  $('#left .tools-hider').click(function (ev) {
+  $('#left .tools-hider').bind($.isTouch ? 'touchstart' : 'click', function (ev) {
     $('#center').toggleClass('hide-tools');
   });
   $('#tools li:nth(0)').addClass('active');
@@ -279,7 +282,9 @@ window.init = function () {
       navigator.userAgent.match(/iPod/i)
       ) {
     $.isTouch = true;
-    $('body').addClass('touch');
+    $('body').addClass('touch').bind('touchstart', function(ev) {
+      ev.preventDefault();
+    });
   }
 
   loadPrevious();
@@ -307,6 +312,6 @@ window.init = function () {
 };
 
 if (!document.createElement('canvas').getContext) {
-  $('head').append('<scr' + 'ipt src="scripts/excanvas.compiled.js"></script>');
+  $('head').append('<script ' + 'src="scripts/excanvas.compiled.js"></script>');
 }
   

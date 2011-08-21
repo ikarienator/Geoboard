@@ -37,16 +37,6 @@ GBAbstractCurve.prototype.__drawPath = function (context) {
     c = (ex[0] < curr[0] && curr[0] < ex[2] && ex[1] < curr[1] && curr[1] < ex[3]);
     a = Geom.projArg(last, curr, top);
     proj = [ (curr[0] - last[0]) * a + last[0], (curr[1] - last[1]) * a + last[1] ];
-    
-//    if (l || t)
-//      context.lineTo(top[0], top[1]);
-//    else
-//      context.moveTo(top[0], top[1]);
-//    if (t || c)
-//      context.lineTo(curr[0], curr[1]);
-//    else
-//      context.moveTo(curr[0], curr[1]);
-    
     if (l || t || c)
       context.quadraticCurveTo(top[0] + top[0] - proj[0], top[1] + top[1] - proj[1], curr[0], curr[1]);
     else
