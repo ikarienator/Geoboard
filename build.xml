@@ -23,6 +23,7 @@
     </copy>
     <concat destfile="build/scripts/geoboard.js">
       <filelist dir="src">
+        <file name="res/jq.js" />
         <file name="main.js" />
         <file name="Utils.js" />
         <file name="ShortcutKey.js" />
