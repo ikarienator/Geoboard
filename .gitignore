@@ -2,6 +2,7 @@
 .project
 .settings
 .externalToolBuilders
+.idea
 scripts/*
 /nbproject/private/
 /build/

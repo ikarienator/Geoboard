@@ -48,7 +48,7 @@ gb.json = {
         
         ret = [];
         $.each(o, function(k, v) {
-          var type = typeof k;
+          var type = typeof k, name;
           if (type == "number")
             name = '"' + k + '"';
           else if (type == "string")

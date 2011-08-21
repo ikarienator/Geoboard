@@ -26,6 +26,7 @@ ul.menu li.item {
 	border-bottom: 3px solid transparent;
 	height: 12px;
 	white-space: nowrap;
+  z-index: 100000;
 }
 
 ul.menu.expand li.item:hover {
@@ -61,7 +62,7 @@ li.item ul.sub-menu li.sub-item.disabled:hover {
 ul.sub-menu {
 	position: absolute;
 	background: #282828;
-	z-index: 100;
+	z-index: 10001;
 	padding: 2px;
 	margin-top: 3px;
 	margin-left: -10px;

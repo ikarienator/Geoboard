@@ -58,7 +58,7 @@ function GIC(desc, poo, target, ance) {
  * @param {GDoc} gdoc
  * @param {GBPoO} poo
  * @param {GBAbstractPoint} target
- * @returns
+ * @return {Function}
  */
 Geom.calculas = function(gdoc, poo, target) {
   poo = poo || target;
@@ -312,7 +312,11 @@ Geom.prototype = {
   }
 };
 
+/**
+ * @namespace gb.geom
+ */
 gb.geom = {};
+
 /**
  * @private
  */

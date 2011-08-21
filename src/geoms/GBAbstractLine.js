@@ -76,7 +76,7 @@ GBAbstractLine.prototype.hitTest = function (x, y) {
   c = c * c;
   dx = p1[0] - p2[0];
   dy = p1[1] - p2[1];
-  if (c > 25 * (dx * dx + dy * dy))
+  if (c > ($.isTouch? 100 : 25) * (dx * dx + dy * dy))
     return false;
 
   return this.legalArg(Geom.projArg(p1, p2, [ x, y ]));

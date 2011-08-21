@@ -1,14 +1,21 @@
-function Dialog () {
-	this.init();
-}
-
-Dialog.prototype = {
+/**
+ * @class gb.Dailog
+ * @singleton
+ */
+gb.Dailog = {
 	init : function () {
-		this.mask = $('<div class="mask"></div>');
-		this.body = $('<div class="window"></div>');
-		$(document).append(this.mask).append(this.body);
+    var me = this;
+		me.mask = $('<div class="mask"></div>');
+		me.body = $('<div class="window"></div>');
+		$(document).append(me.mask);
+    me.mask.append(me.body);
 	},
+  alert : function (message) {
+    var me = this;
+    me.init();
+    me.done();
+  },
   done : function () {
-  	$(document).remove(this.mask).remove(this.body);
+  	$(document).remove(me.mask);
   }
 };

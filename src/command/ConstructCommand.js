@@ -33,7 +33,7 @@ ConstructCommand.prototype.exec = function(gdoc) {
  * @param {GDoc} gdoc
  */
 ConstructCommand.prototype.undo = function(gdoc) {
-  $.each(this.newObjects.reverse, function (k, v) { gdoc.del(v); });
+  $.each(this.newObjects.reverse(), function (k, v) { gdoc.del(v); });
 };
 
 /**
@@ -41,5 +41,5 @@ ConstructCommand.prototype.undo = function(gdoc) {
  */
 ConstructCommand.prototype.redo = function(gdoc) {
   $.each(this.newObjects, function (k, v) { gdoc.add(v); });
-  gdoc.selection = gdoc.a2m(this.newObjects);
+  gdoc.selection = gb.utils.a2m(this.newObjects);
 };

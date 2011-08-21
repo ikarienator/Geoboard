@@ -71,7 +71,7 @@ GBCircle.prototype.hitTest = function (x, y) {
       dy = prop[1] - y,
       r = dx * dx + dy * dy;
   r = Math.sqrt(r);
-  return r - this.document.context.transP2M(5) < prop[2] && prop[2] < r + this.document.context.transP2M(5);
+  return r - this.document.context.transP2M($.isTouch? 10 : 5) < prop[2] && prop[2] < r + this.document.context.transP2M(5);
 };
 
 GBCircle.prototype.inters = function (obj) {

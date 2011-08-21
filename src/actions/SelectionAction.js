@@ -1,3 +1,7 @@
+/**
+ * @class SelectionAction
+ * @extends Action
+ */
 function SelectionAction() {
   this.init();
   this.cmd = null;
@@ -24,7 +28,7 @@ $.extend(SelectionAction.prototype, {
   },
   
   mouseMove : function(gdoc, x, y) {
-    var fx, fy, t, di, test;
+    var fx, fy, tx, ty, di, test;
     if (this.dragging) {
       if (this.cmd) {
         if (this.cmd == gdoc.lastCommand()) {
@@ -89,8 +93,8 @@ $.extend(SelectionAction.prototype, {
       if (test.found.length == 1) {
         if (gdoc.hovering != test.found[0]) {
           gdoc.hovering = test.found[0];
-          gdoc.draw();
         }
+        gdoc.draw();
       } else if (test.found.length == 0) {
         /**
          * @param {Geom} v 
@@ -189,4 +193,4 @@ $.extend(SelectionAction.prototype, {
   }
 });
 
-gb.tools['sel'] = new SelectionAction();
+  gb.tools['sel'] = new SelectionAction();
