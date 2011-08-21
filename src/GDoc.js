@@ -39,8 +39,6 @@ function GDoc(title) {
     return function(ev) { return me[name](ev); };
   }
 
-  ;
-
   if ($.isTouch) {
     can.bind('touchstart', bindMe('onTouchStart'));
     can.bind('touchmove', bindMe('onTouchMove'));
@@ -50,9 +48,13 @@ function GDoc(title) {
     can.mousemove(bindMe('onMouseMove'));
     can.mouseup(bindMe('onMouseUp'));
   }
+  $('body').bind('mousewheel', function(ev){
+    alert('mousewheel');
+    ev.preventDefault();
+  });
 
-  me.contextPhantom = me.canvasPhantom.getContext("2d");
   me.context = me.canvas.getContext("2d");
+  me.contextPhantom = me.canvasPhantom.getContext("2d");
   me.installContext();
 
   me.canvas.doc = me;
@@ -63,7 +65,7 @@ function GDoc(title) {
   me.cmdStack = [];
   me.cmdStackPos = 0;
   me.pageHeader = $('<li>' + me.title + '</li>');
-  me.pageHeader.click(function () {
+  me.pageHeader.bind($.isTouch?'touchstart':'click', function () {
     me.active();
   });
   $('#page-header').append(me.pageHeader);

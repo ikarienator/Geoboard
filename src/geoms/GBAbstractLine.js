@@ -18,12 +18,14 @@ GBAbstractLine.prototype.draw = function (context) {
   var extent = context.getExtent(),
       args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
       ps = this.adjustPosition(args);
-  context.moveTo(ps[0][0], ps[0][1]);
-  context.lineTo(ps[1][0], ps[1][1]);
-  context.closePath();
-  context.lineWidth = context.transP2M(3);
-  context.strokeStyle = this.color;
-  context.stroke();
+  if (!isNaN(ps[0][0]) && !isNaN(ps[0][1]) && !isNaN(ps[1][0]) && !isNaN(ps[1][1]) ) {
+    context.moveTo(ps[0][0], ps[0][1]);
+    context.lineTo(ps[1][0], ps[1][1]);
+    context.closePath();
+    context.lineWidth = context.transP2M(3);
+    context.strokeStyle = this.color;
+    context.stroke();
+  }
 };
 
 GBAbstractLine.prototype.drawSelected = function (context) {
@@ -31,16 +33,18 @@ GBAbstractLine.prototype.drawSelected = function (context) {
   var extent = context.getExtent(),
       args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
       ps = this.adjustPosition(args);
-  context.moveTo(ps[0][0], ps[0][1]);
-  context.lineTo(ps[1][0], ps[1][1]);
-  context.closePath();
-  context.lineWidth = context.transP2M(8);
-  context.strokeStyle = "#44c";
-  context.stroke();
-  context.lineWidth = context.transP2M(6);
-  context.strokeStyle = "#fff";
-  context.stroke();
-  this.draw(context);
+  if (!isNaN(ps[0][0]) && !isNaN(ps[0][1]) && !isNaN(ps[1][0]) && !isNaN(ps[1][1]) ) {
+    context.moveTo(ps[0][0], ps[0][1]);
+    context.lineTo(ps[1][0], ps[1][1]);
+    context.closePath();
+    context.lineWidth = context.transP2M(8);
+    context.strokeStyle = "#44c";
+    context.stroke();
+    context.lineWidth = context.transP2M(6);
+    context.strokeStyle = "#fff";
+    context.stroke();
+    this.draw(context);
+  }
 };
 
 GBAbstractLine.prototype.drawHovering = function (context) {
@@ -48,12 +52,14 @@ GBAbstractLine.prototype.drawHovering = function (context) {
   var extent = context.getExtent(),
       args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
       ps = this.adjustPosition(args);
-  context.moveTo(ps[0][0], ps[0][1]);
-  context.lineTo(ps[1][0], ps[1][1]);
-  context.closePath();
-  context.lineWidth = context.transP2M(4);
-  context.strokeStyle = "#F00";
-  context.stroke();
+  if (!isNaN(ps[0][0]) && !isNaN(ps[0][1]) && !isNaN(ps[1][0]) && !isNaN(ps[1][1]) ) {
+    context.moveTo(ps[0][0], ps[0][1]);
+    context.lineTo(ps[1][0], ps[1][1]);
+    context.closePath();
+    context.lineWidth = context.transP2M(4);
+    context.strokeStyle = "#F00";
+    context.stroke();
+  }
 };
 
 GBAbstractLine.prototype.hitTest = function (x, y, radius) {

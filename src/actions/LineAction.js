@@ -7,7 +7,7 @@ function LineAction() {
 }
 
 LineAction.prototype = new Action();
-LineAction.prototype.text = '<img src="images/line.svg" title="Line"/>';
+LineAction.prototype.text = '<img src="images/line.svg"/>';
 LineAction.prototype.init = function() {
   var me = this;
   (me.pointAction = new PointAction()).registerOnNewPoint(function(np) {

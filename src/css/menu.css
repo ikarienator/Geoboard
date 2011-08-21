@@ -3,7 +3,8 @@ ul.show-ud span.ud {
 }
 
 ul.menu {
-  background: #282828;
+  float: left;
+  padding: 0 15px;
   list-style: none;
   height: 25px;
   font-weight: normal;
@@ -18,9 +19,10 @@ ul.menu {
 }
 
 .touch ul.menu {
-  height: 29px;
+  height: 31px;
   font-size: 18px;
   text-shadow: none;
+  left: 150px;
 }
 
 ul.menu li.item {
@@ -36,7 +38,7 @@ ul.menu li.item {
 }
 
 .touch ul.menu li.item {
-  height: 16px;
+  height: 17px;
 }
 
 ul.menu.expand li.item:hover {
