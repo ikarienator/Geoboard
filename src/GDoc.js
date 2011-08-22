@@ -7,7 +7,7 @@ gb.localStoragePrefix = 'Geoboard-0.1-';
  * @class GDoc
  * @constructor
  */
-function GDoc(title) {
+function GDoc(title, json) {
   var me = this, docNames, can, os, i;
   me.mouse = [ 0, 0 ];
   if (!title) {
@@ -48,7 +48,7 @@ function GDoc(title) {
     can.mousemove(bindMe('onMouseMove'));
     can.mouseup(bindMe('onMouseUp'));
   }
-  $('body').bind('mousewheel', function(ev){
+  $('body').bind('mousewheel', function(ev) {
     alert('mousewheel');
     ev.preventDefault();
   });
@@ -65,12 +65,15 @@ function GDoc(title) {
   me.cmdStack = [];
   me.cmdStackPos = 0;
   me.pageHeader = $('<li>' + me.title + '</li>');
-  me.pageHeader.bind($.isTouch?'touchstart':'click', function () {
+  me.pageHeader.bind($.isTouch ? 'touchstart' : 'click', function () {
     me.active();
   });
   $('#page-header').append(me.pageHeader);
   me.pageHeader = me.pageHeader[0];
   gb.docs.push(me);
+  if (json) {
+    me.load(json);
+  }
 }
 
 GDoc.prototype = {
@@ -527,6 +530,10 @@ GDoc.prototype = {
     });
     if (window.localStorage) {
       window.localStorage[gb.localStoragePrefix + this.title] = gb.json.encode(result);
+      var files = $.map(gb.docs, function (doc) {
+        return doc.title;
+      });
+      window.localStorage[gb.localStoragePrefix + 'files'] = gb.json.encode(files);
     }
   },
 

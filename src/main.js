@@ -208,8 +208,7 @@ loadPrevious = function () {
       $.each(files, function (i, title) {
         json = window.localStorage[gb.localStoragePrefix + title];
         if (json) {
-          doc = new GDoc(title);
-          doc.load(gb.json.decode(json));
+          doc = new GDoc(title, gb.json.decode(json));
         }
       });
     }

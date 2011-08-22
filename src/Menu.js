@@ -6,12 +6,9 @@ gb.menu.file = {
     text : 'New Sketch',
     shortcutKey : new ShortcutKey(78, ShortcutKey.CTRL, 'gb.menu.file.news'),
     run : function(gdoc) {
-      new GDoc().active();
-      if (window.localStorage) {
-        window.localStorage[gb.localStoragePrefix + 'files'] = gb.json.encode($.map(gb.docs, function(doc) {
-          return doc.title;
-        }));
-      }
+      var doc = new GDoc();
+      doc.active();
+      doc.save();
     }
   },
   down : {
