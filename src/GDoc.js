@@ -48,11 +48,18 @@ function GDoc(title, json) {
     can.mousemove(bindMe('onMouseMove'));
     can.mouseup(bindMe('onMouseUp'));
   }
-  $('body').bind('mousewheel', function(ev) {
-    alert('mousewheel');
+
+  can.bind('DOMMouseWheel mousewheel', function(ev) {
+    if (ev.ctrlKey || ev.metaKey) {
+      me.zoom(Math.pow(1.1, ev.wheelDelta / 240), [ ev.offsetX || ev.layerX, ev.offsetY || ev.layerY]);
+    } else {
+      me.pan(ev.originalEvent.wheelDeltaX, ev.originalEvent.wheelDeltaY);
+    }
+    me.draw();
+    ev.stopPropagation();
     ev.preventDefault();
   });
-
+  
   me.context = me.canvas.getContext("2d");
   me.contextPhantom = me.canvasPhantom.getContext("2d");
   me.installContext();
@@ -66,8 +73,32 @@ function GDoc(title, json) {
   me.cmdStackPos = 0;
   me.pageHeader = $('<li>' + me.title + '</li>');
   me.pageHeader.bind($.isTouch ? 'touchstart' : 'click', function () {
-    me.active();
+    if (gb.currentDoc == me) {
+      me.pageHeader.innerHTML = "";
+      var header = $('<input type="text"/>').val(me.title);
+      header.bind('keypress keyup keydown click',
+          function(ev) {
+            if (ev.keyCode == 27) {
+              me.pageHeader.innerHTML = me.title;
+              me.die();
+            }
+            ev.stopPropagation();
+          }).blur(function(ev) {
+            if(window.localStorage) {
+              delete window.localStorage[gb.localStoragePrefix + me.title];
+            }
+            me.title = header.val();
+            me.active();
+            me.save();
+            $(me.pageHeader).text(me.title);
+            header.die();
+          }).focus();
+      $(me.pageHeader).append(header);
+    } else {
+      me.active();
+    }
   });
+
   $('#page-header').append(me.pageHeader);
   me.pageHeader = me.pageHeader[0];
   gb.docs.push(me);
@@ -288,10 +319,12 @@ GDoc.prototype = {
       if (p instanceof Array) {
         p = p.slice(0);
         var w = me.canvas.clientWidth, h = me.canvas.clientHeight;
+        p[0] += me.panX;
+        p[1] += me.panY;
         p[0] *= me.scaleFactor;
         p[1] *= me.scaleFactor;
-        p[0] += me.panX + w * 0.5;
-        p[1] += me.panY + h * 0.5;
+        p[0] += w * 0.5;
+        p[1] += h * 0.5;
         return p;
       } else
         return p * me.scaleFactor;
@@ -301,10 +334,12 @@ GDoc.prototype = {
       if (p instanceof Array) {
         p = p.slice(0);
         var w = me.canvas.clientWidth, h = me.canvas.clientHeight;
-        p[0] -= me.panX + w * 0.5;
-        p[1] -= me.panY + h * 0.5;
+        p[0] -= w * 0.5;
+        p[1] -= h * 0.5;
         p[0] /= me.scaleFactor;
         p[1] /= me.scaleFactor;
+        p[0] -= me.panX;
+        p[1] -= me.panY;
         return p;
       } else
         return p / me.scaleFactor;
@@ -329,6 +364,10 @@ GDoc.prototype = {
     var me = this, context = me.context, phantom = me.contextPhantom, ext = context.getExtent();
     context.clearRect(ext[0], ext[1], ext[2] - ext[0], ext[3] - ext[1]);
     phantom.clearRect(0, 0, me.canvas.clientWidth, me.canvas.clientHeight);
+    me.context.setTransform(
+        this.scaleFactor, 0, 0, this.scaleFactor,
+        me.canvas.clientWidth * 0.5 + this.panX * this.scaleFactor,
+        me.canvas.clientHeight * 0.5 + this.panY * this.scaleFactor);
     me.forVisibles(function (k, v) {
       v.update();
       context.save();
@@ -372,12 +411,12 @@ GDoc.prototype = {
       current : [ NaN, NaN ]
     };
     radius = radius || me.mouse[2];
-    sf = sf * sf;
-    sf = radius * radius / sf;
+    radius = me.context.transP2M(radius);
+    sf = radius * radius;
     me.forVisibles(function (k, v) {
       if (v.hitTest(x, y, radius)) {
         p = v.getPosition(v.nearestArg(x, y));
-        if (Geom.dist(p, [x, y]) < sf) {
+        if (Geom.dist2(p, [x, y]) < sf) {
           res.found.push({
             obj : v,
             x : p[0],
@@ -412,7 +451,7 @@ GDoc.prototype = {
         min0 = null,mind0 = Infinity;
         min1 = null,mind1 = Infinity;
         $.each(res.found, function (k, curr) {
-          currd = Geom.dist([ x, y ], [ curr.x, curr.y ]);
+          currd = Geom.dist2([ x, y ], [ curr.x, curr.y ]);
           if (currd < mind1) {
             min1 = curr;
             mind1 = currd;
@@ -430,7 +469,7 @@ GDoc.prototype = {
         mini = [NaN, NaN, 0];
         minid = Infinity;
         $.each(min0.obj.inters(min1.obj), function (k, v) {
-          d = Geom.dist(v, [ x, y ]);
+          d = Geom.dist2(v, [ x, y ]);
           if (d < minid) {
             minid = d;
             mini = [v[0], v[1], k];
@@ -663,29 +702,28 @@ GDoc.prototype = {
     });
   },
 
-  zoomIn : function() {
-    this.context.scale(1.1, 1.1);
-    this.scaleFactor *= 1.1;
-    this.forEntities(function (k, v) {
-      v.dirt();
-    });
+  zoom : function (factor, center) {
+    center = center || [0, 0];
+    this.context.scale(factor, factor);
+    this.panX += (center[0] - this.canvas.clientWidth * 0.5) * (1 / factor - 1) / this.scaleFactor;
+    this.panY += (center[1] - this.canvas.clientHeight * 0.5) * (1 / factor - 1) / this.scaleFactor;
+    this.scaleFactor *= factor;
     this.draw();
     this.save();
+  },
+
+  zoomIn : function() {
+    this.zoom(1.1, [0, 0]);
   },
 
   zoomOut : function() {
-    this.context.scale(1 / 1.1, 1 / 1.1);
-    this.scaleFactor /= 1.1;
-    this.forEntities(function (k, v) {
-      v.dirt();
-    });
-    this.draw();
-    this.save();
+    this.zoom(1 / 1.1, [0, 0]);
   },
 
   zoomRestore : function() {
-    this.context.scale(1 / this.scaleFactor, 1 / this.scaleFactor);
     this.scaleFactor = 1;
+    this.panX = 0;
+    this.panY = 0;
     this.draw();
     this.save();
   },
@@ -695,8 +733,8 @@ GDoc.prototype = {
    * @param {Number} dy
    */
   pan : function(dx, dy) {
-    this.panX += dx;
-    this.panY += dy;
+    this.panX += dx / this.scaleFactor;
+    this.panY += dy / this.scaleFactor;
     this.draw();
     this.save();
   },

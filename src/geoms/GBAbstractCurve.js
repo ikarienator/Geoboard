@@ -165,7 +165,7 @@ GBAbstractCurve.prototype.hitTest = function (x, y, radius) {
     
     c = Geom.cross(p1, [ x, y ], p2);
     c = c * c;
-    if (c > radius * radius * Geom.dist(p1, p2))
+    if (c > radius * radius * Geom.dist2(p1, p2))
       continue;
     c = Geom.projArg(p1, p2, [ x, y ]);
     if (c > 1) 
@@ -187,7 +187,7 @@ GBAbstractCurve.prototype.nearestArg = function (x, y) {
     mind = Infinity;
     for (i = 0; i < 100; i++) {
       j = i * 0.01 * (range[1] - range[0]) + range[0];
-      d = Geom.dist(this.__getPosition(j, context), [x, y]);
+      d = Geom.dist2(this.__getPosition(j, context), [x, y]);
       if (d < mind) {
         mini = i;
         mind = d;

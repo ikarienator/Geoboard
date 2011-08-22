@@ -80,7 +80,7 @@ GBCircle.prototype.inters = function (obj) {
   else if (obj.isCircle) {
     var prop1 = this.prop(),
         prop2 = obj.prop(),
-        d = Math.sqrt(Geom.dist(prop1, prop2)),
+        d = Math.sqrt(Geom.dist2(prop1, prop2)),
         r1 = prop1[2],
         r2 = prop2[2],
         d1 = ((r1 * r1 - r2 * r2) / d + d) * 0.5,
@@ -96,7 +96,7 @@ GBCircle.prototype.inters = function (obj) {
 GBCircle.prototype.crossTest = function (l, t, r, b) {
   var prop = this.prop(),
       ps = [ [ l, b ], [ l, t ], [ r, t ], [ r, b ] ],
-      ds = $.map(ps, function (v, k) { return Geom.dist(v, prop); }),
+      ds = $.map(ps, function (v, k) { return Geom.dist2(v, prop); }),
       r2 = prop[2] * prop[2];
   if (ds[0] < r2 && ds[1] < r2 && ds[2] < r2 && ds[3] < r2)
     return false;

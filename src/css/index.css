@@ -5,7 +5,7 @@
   font-size: 14px;
   z-index: auto;
   -webkit-user-select: none;
-  -moz-user-select: none;
+  -moz-user-select: -moz-none;
   -o-user-select: none;
   -webkit-user-drag: none;
   user-select: none;
@@ -256,3 +256,13 @@ div.mask {
   display: none;
 }
 
+input[type="text"] {
+  -webkit-user-select: text;
+  -o-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+  border: 1px solid #111;
+  color: white;
+  float: left;
+  margin: -1px;
+}

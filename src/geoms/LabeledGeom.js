@@ -43,7 +43,7 @@ LabeledGeom.prototype.dragLabel = function (context, dx, dy) {
   p = context.transP2M(p);
   q = context.transM2P(this.getPosition(this.labelArg = this.nearestArg(p[0], p[1])));
   p = context.transM2P(p);
-  d = Math.sqrt(Geom.dist(p, q));
+  d = Math.sqrt(Geom.dist2(p, q));
   p[0] -= q[0];
   p[1] -= q[1];
   if (d > this.fontSize) {

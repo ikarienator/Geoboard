@@ -179,11 +179,11 @@ GBAbstractLine.prototype.intersLine = function (line) {
  */
 GBAbstractLine.prototype.intersCircle = function (circ) {
   var prop = circ.getParent(0).getPosition(),
-      r2 = Geom.dist(prop, circ.getParent(1).getPosition()),
+      r2 = Geom.dist2(prop, circ.getParent(1).getPosition()),
       p1 = this.__getPosition(0), p2 = this.__getPosition(1),
       arg = Geom.projArg(p1, p2, prop),
       mp = [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ],
-      l = r2 - Geom.dist(prop, mp),
+      l = r2 - Geom.dist2(prop, mp),
       dist2 = Math.sqrt(l) / this.length(),
       res = [];
   if (Math.abs(l) < 1e-10) 

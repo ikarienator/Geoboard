@@ -95,7 +95,7 @@ PointAction.prototype.snap = function (gdoc) {
     }
     if (target.type() == 'gli') {
       po = target.getPosition(0.5);
-      if (Geom.dist(me.current, po) < radius * 2) {
+      if (Geom.dist2(me.current, po) < radius * radius) {
         me.current = po;
         context.beginPath();
         context.moveTo(me.current[0], me.current[1] - radius * 2);
@@ -117,7 +117,7 @@ PointAction.prototype.snap = function (gdoc) {
         // Test for perpendicular line
         po = me.basePoint.getPosition(0);
         po = target.getPosition(target.nearestArg(po[0], po[1]));
-        if (Geom.dist(me.current, po) < radius * 2) {
+        if (Geom.dist2(me.current, po) < radius * radius) {
           me.current = po;
           context.beginPath();
           context.arc(me.current[0], me.current[1], radius, 0, Math.PI * 2, false);

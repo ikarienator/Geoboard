@@ -10,8 +10,8 @@ GBAngleBisectorMark.prototype.getPosition = function () {
   var p1 = this.getParent(0).getPosition(0), 
       p2 = this.getParent(1).getPosition(0),
       ang = this.getParent(2).getPosition(0),
-      d1 = Math.sqrt(Geom.dist(ang, p1)),
-      d2 = Math.sqrt(Geom.dist(ang, p2)),
+      d1 = Math.sqrt(Geom.dist2(ang, p1)),
+      d2 = Math.sqrt(Geom.dist2(ang, p2)),
       arg = d1 / (d1 + d2);
   return [(p2[0] - p1[0]) * arg + p1[0], (p2[1] - p1[1]) * arg + p1[1]];
 };
