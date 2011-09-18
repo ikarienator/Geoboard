@@ -121,6 +121,10 @@ ul.tool li > * {
   transition: opacity 0.2s linear;
 }
 
+ul.tool li.item img {
+  margin: 3px 0px;
+}
+
 #center.hide-tools ul.tool li.item {
   opacity: 0;
   margin-left: 50px;

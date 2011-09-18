@@ -19,7 +19,7 @@
     <copy file="src/res/cache.manifest" todir="build/" verbose="false"/>
     <copy todir="build/images/">
       <fileset dir="src/res/images/">
-        <include name="*.svg"/>
+        <include name="*.png"/>
       </fileset>
     </copy>
     <concat destfile="build/scripts/geoboard.js">

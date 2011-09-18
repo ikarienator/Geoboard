@@ -8,7 +8,7 @@ function CircleAction() {
 }
 
 CircleAction.prototype = new Action();
-CircleAction.prototype.text = '<img type="image/svg+xml" src="images/circ.png" title="Circle"/>';
+CircleAction.prototype.text = '<img src="images/circ.png" title="Circle"/>';
 
 CircleAction.prototype.init = function() {
   var me = this;
