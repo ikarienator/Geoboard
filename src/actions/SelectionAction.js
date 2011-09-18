@@ -10,7 +10,7 @@ function SelectionAction() {
 
 SelectionAction.prototype = new Action();
 $.extend(SelectionAction.prototype, {
-  text : '<img src="images/sel.svg" title="Selection"/>',
+  text : '<img src="images/sel.png" title="Selection"/>',
   startDrag : null,
   dragging : null,
   oldSelection : null,

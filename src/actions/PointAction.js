@@ -7,7 +7,7 @@ PointAction.prototype = new Action();
 /**
  * @static
  */
-PointAction.prototype.text = '<img src="images/point.svg" title="Point"/>';
+PointAction.prototype.text = '<img src="images/point.png" title="Point"/>';
 PointAction.prototype.color = '#f00';
 
 /**
