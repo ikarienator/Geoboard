@@ -13,11 +13,11 @@ GBXLine.prototype.adjustArgInstruction = function (arg) {
 };
 
 GBXLine.prototype.legalArg = function (arg) {
-  return !$.isNaN(arg);
+  return !isNaN(arg);
 };
 
 GBXLine.prototype.legalArgInstructionRef = function(arg) {
-  return '!$.isNaN(' + arg + ')';
+  return '!isNaN(' + arg + ')';
 };
 
 
