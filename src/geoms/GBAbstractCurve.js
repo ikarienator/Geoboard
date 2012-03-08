@@ -1,4 +1,4 @@
-function GBAbstractCurve () {
+function GBAbstractCurve() {
   Geom.apply(this, arguments);
 }
 
@@ -8,15 +8,15 @@ GBAbstractCurve.prototype.color = "#880";
 
 GBAbstractCurve.prototype.__curve = function (start, stop) {
   var context = this.__curveStart(),
-      ps1 = [], ps2 = [], curr1, curr2, i;
-     
+    ps1 = [], ps2 = [], curr1, curr2, i;
+
   for (i = 0; i <= GBAbstractCurve.SAMPLES; i++) {
     curr1 = start + (stop - start) / GBAbstractCurve.SAMPLES * i;
     curr2 = start + ((stop - start) / GBAbstractCurve.SAMPLES) * (i + 0.5);
     ps1.push(this.__getPosition(curr1, context));
     ps2.push(this.__getPosition(curr2, context));
   }
-  
+
   this.__curveStop(context);
   return [ps1, ps2];
 };
@@ -24,7 +24,7 @@ GBAbstractCurve.prototype.__curve = function (start, stop) {
 GBAbstractCurve.prototype.__drawPath = function (context) {
   this.update();
   var pss = this.path, ps = pss[0], dc = pss[1], last, top,
-      curr, i, ex = context.getExtent(), a, proj, l, t, c;
+    curr, i, ex = context.getExtent(), a, proj, l, t, c;
   if (!ps) return;
   context.beginPath();
   context.moveTo(ps[0][0], ps[0][1]);
@@ -87,10 +87,10 @@ GBAbstractCurve.prototype.crossTest = function (l, t, r, b) {
   this.update();
   var i, path = this.path[0], p1, p2, la, ra, ta, ba, li, ri, ti, bi;
   if (!path) return false;
-  for(i = 1; i < path.length; i++) {
+  for (i = 1; i < path.length; i++) {
     p1 = path[i - 1];
     p2 = path[i];
-    if (l < p1[0] && p1[0] < r && t < p1[1] && p1[1] < b) 
+    if (l < p1[0] && p1[0] < r && t < p1[1] && p1[1] < b)
       return true;
     if (p1[1] == p2[1]) {
       la = (l - p1[0]) / (p2[0] - p1[0]);
@@ -119,7 +119,7 @@ GBAbstractCurve.prototype.crossTest = function (l, t, r, b) {
       ri = (p2[1] - p1[1]) * ra + p1[1];
       if (t < li && li < b || t < ri && ri < b)
         return true;
-    
+
       ta = (t - p1[1]) / (p2[1] - p1[1]);
       ba = (b - p1[1]) / (p2[1] - p1[1]);
       if (ta < 0) continue;
@@ -128,11 +128,11 @@ GBAbstractCurve.prototype.crossTest = function (l, t, r, b) {
       if (ba > 1) continue;
       ti = (p2[0] - p1[0]) * ta + p1[0];
       bi = (p2[0] - p1[0]) * ba + p1[0];
-      
+
       if (l < ti && ti < r || l < bi && bi < r)
         return true;
-      
-      if(li < ri || ti < bi)
+
+      if (li < ri || ti < bi)
         return true;
     }
   }
@@ -142,10 +142,10 @@ GBAbstractCurve.prototype.crossTest = function (l, t, r, b) {
 
 GBAbstractCurve.prototype.hitTest = function (x, y, radius) {
   this.update();
-  var i, path = this.path[0], p1, p2, 
-      fx, tx, fy, ty, t, c;
+  var i, path = this.path[0], p1, p2,
+    fx, tx, fy, ty, t, c;
   if (!path) return false;
-  for(i = 1; i < path.length; i++) {
+  for (i = 1; i < path.length; i++) {
     p1 = path[i - 1];
     p2 = path[i];
     fx = p1[0];
@@ -162,15 +162,15 @@ GBAbstractCurve.prototype.hitTest = function (x, y, radius) {
       fy = ty;
       ty = t;
     }
-    
+
     c = Geom.cross(p1, [ x, y ], p2);
     c = c * c;
     if (c > radius * radius * Geom.dist2(p1, p2))
       continue;
     c = Geom.projArg(p1, p2, [ x, y ]);
-    if (c > 1) 
+    if (c > 1)
       continue;
-    if (c < 0) 
+    if (c < 0)
       continue;
     return true;
   }
@@ -181,8 +181,8 @@ GBAbstractCurve.prototype.hitTest = function (x, y, radius) {
 GBAbstractCurve.prototype.nearestArg = function (x, y) {
   this.update();
   var context = this.__curveStart(),
-      d, mind = Infinity, mini = -1, it = 0, lastMind = 0, i, j, p, range = this.__getDefaultRange(), start = range[0], stop = range[1];
-  while (Math.abs(mind - lastMind) > 1e-3 && it ++ < 10000) {
+    d, mind = Infinity, mini = -1, it = 0, lastMind = 0, i, j, p, range = this.__getDefaultRange(), start = range[0], stop = range[1];
+  while (Math.abs(mind - lastMind) > 1e-3 && it++ < 10000) {
     lastMind = mind;
     mind = Infinity;
     for (i = 0; i < 100; i++) {
@@ -206,10 +206,10 @@ GBAbstractCurve.prototype.getPosition = function (arg) {
 };
 
 GBAbstractCurve.prototype.update = function () {
-  if (this.__dirty){
+  if (this.__dirty) {
     Geom.prototype.update.apply(this, []);
-    var range =  this.__getDefaultRange();
-    this.path = this.__curve(range[0], range[1]);  
+    var range = this.__getDefaultRange();
+    this.path = this.__curve(range[0], range[1]);
     this.__dirty = false;
   }
 };

@@ -5,7 +5,7 @@
  * @param {GBAbstractPoint} gpo1
  * @param {GBAbstractPoint} gpo2
  */
-function GBAbstractLine (gdoc, gpo1, gpo2) {
+function GBAbstractLine(gdoc, gpo1, gpo2) {
   LabeledGeom.apply(this, [ gdoc, [ gpo1, gpo2 ] ]);
 }
 
@@ -16,9 +16,9 @@ GBAbstractLine.prototype.isLine = true;
 GBAbstractLine.prototype.draw = function (context) {
   context.beginPath();
   var extent = context.getExtent(),
-      args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
-      ps = this.adjustPosition(args);
-  if (!isNaN(ps[0][0]) && !isNaN(ps[0][1]) && !isNaN(ps[1][0]) && !isNaN(ps[1][1]) ) {
+    args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
+    ps = this.adjustPosition(args);
+  if (!isNaN(ps[0][0]) && !isNaN(ps[0][1]) && !isNaN(ps[1][0]) && !isNaN(ps[1][1])) {
     context.moveTo(ps[0][0], ps[0][1]);
     context.lineTo(ps[1][0], ps[1][1]);
     context.closePath();
@@ -31,9 +31,9 @@ GBAbstractLine.prototype.draw = function (context) {
 GBAbstractLine.prototype.drawSelected = function (context) {
   context.beginPath();
   var extent = context.getExtent(),
-      args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
-      ps = this.adjustPosition(args);
-  if (!isNaN(ps[0][0]) && !isNaN(ps[0][1]) && !isNaN(ps[1][0]) && !isNaN(ps[1][1]) ) {
+    args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
+    ps = this.adjustPosition(args);
+  if (!isNaN(ps[0][0]) && !isNaN(ps[0][1]) && !isNaN(ps[1][0]) && !isNaN(ps[1][1])) {
     context.moveTo(ps[0][0], ps[0][1]);
     context.lineTo(ps[1][0], ps[1][1]);
     context.closePath();
@@ -50,9 +50,9 @@ GBAbstractLine.prototype.drawSelected = function (context) {
 GBAbstractLine.prototype.drawHovering = function (context) {
   context.beginPath();
   var extent = context.getExtent(),
-      args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
-      ps = this.adjustPosition(args);
-  if (!isNaN(ps[0][0]) && !isNaN(ps[0][1]) && !isNaN(ps[1][0]) && !isNaN(ps[1][1]) ) {
+    args = this.crossArg(extent[0] - 5, extent[1] - 5, extent[2] + 5, extent[3] + 5),
+    ps = this.adjustPosition(args);
+  if (!isNaN(ps[0][0]) && !isNaN(ps[0][1]) && !isNaN(ps[1][0]) && !isNaN(ps[1][1])) {
     context.moveTo(ps[0][0], ps[0][1]);
     context.lineTo(ps[1][0], ps[1][1]);
     context.closePath();
@@ -64,14 +64,14 @@ GBAbstractLine.prototype.drawHovering = function (context) {
 
 GBAbstractLine.prototype.hitTest = function (x, y, radius) {
   var p1 = this.__getPosition(0), p2 = this.__getPosition(1),
-      fx = p1[0], tx = p2[0], fy = p1[1], ty = p2[1], t, c, dx, dy;
-  
+    fx = p1[0], tx = p2[0], fy = p1[1], ty = p2[1], t, c, dx, dy;
+
   if (fx > tx) {
     t = fx;
     fx = tx;
     tx = t;
   }
-  
+
   if (fy > ty) {
     t = fy;
     fy = ty;
@@ -90,7 +90,7 @@ GBAbstractLine.prototype.hitTest = function (x, y, radius) {
 
 GBAbstractLine.prototype.crossTest = function (l, t, r, b) {
   var p1 = this.__getPosition(0), p2 = this.__getPosition(1),
-      la, ra, ta, ba, li, ri, ti, bi, args;
+    la, ra, ta, ba, li, ri, ti, bi, args;
   if (p1[1] == p2[1]) {
     la = (l - p1[0]) / (p2[0] - p1[0]);
     ra = (r - p1[0]) / (p2[0] - p1[0]);
@@ -134,7 +134,7 @@ GBAbstractLine.prototype.crossTest = function (l, t, r, b) {
 
 GBAbstractLine.prototype.projection = function (x, y) {
   var p1 = this.__getPosition(0),
-      p2 = this.__getPosition(1);
+    p2 = this.__getPosition(1);
   return Geom.projArg(p1, p2, [ x, y ]);
 };
 
@@ -153,40 +153,46 @@ GBAbstractLine.prototype.inters = function (obj) {
 
 GBAbstractLine.prototype.intersLine = function (line) {
   var p1 = this.__getPosition(0),
-      p2 = this.__getPosition(1),
-      p3 = line.__getPosition(0),
-      p4 = line.__getPosition(1),
-      c1, c2, c3, c4, a1, a2;
-  
+    p2 = this.__getPosition(1),
+    p3 = line.__getPosition(0),
+    p4 = line.__getPosition(1),
+    c1, c2, c3, c4, a1, a2;
+
   c1 = Geom.cross(p3, p1, p2);
   c2 = Geom.cross(p4, p1, p2);
-  if (c1 == c2) return [[NaN, NaN]];
+  if (c1 == c2) return [
+    [NaN, NaN]
+  ];
   c3 = Geom.cross(p1, p3, p4);
   c4 = Geom.cross(p2, p3, p4);
-  if (c3 == c4) return [[NaN, NaN]];
+  if (c3 == c4) return [
+    [NaN, NaN]
+  ];
   a1 = c3 / (c3 - c4);
   a2 = c1 / (c1 - c2);
   if (this.legalArg(a1) && line.legalArg(a2)) {
     return [ this.getPosition(a1) ];
   } else
-    return [ [ NaN, NaN ] ];
+    return [
+      [ NaN, NaN ]
+    ];
 };
 
 /**
- * 
+ *
  * @param {GBCircle} circ
  * @returns {Array}
  */
 GBAbstractLine.prototype.intersCircle = function (circ) {
   var prop = circ.getParent(0).getPosition(),
-      r2 = Geom.dist2(prop, circ.getParent(1).getPosition()),
-      p1 = this.__getPosition(0), p2 = this.__getPosition(1),
-      arg = Geom.projArg(p1, p2, prop),
-      mp = [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ],
-      l = r2 - Geom.dist2(prop, mp),
-      dist2 = Math.sqrt(l) / this.length(),
-      res = [];
-  if (Math.abs(l) < 1e-10) 
+    r2 = Geom.dist2(prop, circ.getParent(1).getPosition()),
+    p1 = this.__getPosition(0), p2 = this.__getPosition(1),
+    arg = Geom.projArg(p1, p2, prop),
+    mp = [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ],
+    l = r2 - Geom.dist2(prop, mp),
+    dist2 = Math.sqrt(l) / this.length(),
+    res = [];
+  if (Math.abs(l) < 1e-10)
     dist2 = 0;
   if (this.legalArg(arg - dist2)) {
     res.push(this.getPosition(arg - dist2));
@@ -210,13 +216,15 @@ GBAbstractLine.prototype.adjustPosition = function (args) {
   var p1 = this.__getPosition(0), p2 = this.__getPosition(1);
   args[0] = this.adjustArg(args[0]);
   args[1] = this.adjustArg(args[1]);
-  return [ [ p1[0] + (p2[0] - p1[0]) * args[0], p1[1] + (p2[1] - p1[1]) * args[0] ],
-      [ p1[0] + (p2[0] - p1[0]) * args[1], p1[1] + (p2[1] - p1[1]) * args[1] ] ];
+  return [
+    [ p1[0] + (p2[0] - p1[0]) * args[0], p1[1] + (p2[1] - p1[1]) * args[0] ],
+    [ p1[0] + (p2[0] - p1[0]) * args[1], p1[1] + (p2[1] - p1[1]) * args[1] ]
+  ];
 };
 
 GBAbstractLine.prototype.crossArg = function (l, t, r, b) {
   var p1 = this.__getPosition(0), p2 = this.__getPosition(1),
-      amin, amax, aminx, amaxx, aminy, amaxy, te;
+    amin, amax, aminx, amaxx, aminy, amaxy, te;
   if (p1[0] == p2[0]) {
     amin = (b - p1[1]) / (p2[1] - p1[1]);
     amax = (t - p1[1]) / (p2[1] - p1[1]);
@@ -280,55 +288,55 @@ GBAbstractLine.prototype.getInstructionRefStatic = function (arg) {
   var p2 = this.__getPosition(1);
   if (typeof arg === 'number')
     return '[' + (p1[0] + (p2[0] - p1[0]) * arg) + ',' + (p1[1] + (p2[1] - p1[1]) * arg) + ']';
-  else return '[' + p1[0] + (p2[0] == p1[0] ? '' :'+' + (p2[0] - p1[0]) + '*' + arg) +',' + 
-    p1[1] + (p2[1] == p1[1] ? '' :'+' + (p2[1] - p1[1]) + '*' + arg) + ']';
+  else return '[' + p1[0] + (p2[0] == p1[0] ? '' : '+' + (p2[0] - p1[0]) + '*' + arg) + ',' +
+    p1[1] + (p2[1] == p1[1] ? '' : '+' + (p2[1] - p1[1]) + '*' + arg) + ']';
 },
 
-GBAbstractLine.prototype.getIntersInstruction = function(obj, context, idx, intId) {
-  if (obj.isLine) {
-    if (idx != 0) return '[NaN, NaN]';
-    return this.getIntersInstructionLL(obj, context, idx, intId);
-  } else {
-    if (idx >= 2) return '[NaN, NaN]';
-    return this.getIntersInstructionLC(obj, context, idx, intId);
-  }
-};
+  GBAbstractLine.prototype.getIntersInstruction = function (obj, context, idx, intId) {
+    if (obj.isLine) {
+      if (idx != 0) return '[NaN, NaN]';
+      return this.getIntersInstructionLL(obj, context, idx, intId);
+    } else {
+      if (idx >= 2) return '[NaN, NaN]';
+      return this.getIntersInstructionLC(obj, context, idx, intId);
+    }
+  };
 
-GBAbstractLine.prototype.getIntersInstructionLL = function(obj, context, idx, intId) {
+GBAbstractLine.prototype.getIntersInstructionLL = function (obj, context, idx, intId) {
   return ['function () { ' ,
-  'if (' + intId + '_revision == revision) return ' + intId + '_cache;',
-  intId + '_revision = revision; ',
-  'var p1 = ' + this.getInstructionRef(0, context) + ';' ,
-  'var p2 = ' + this.getInstructionRef(1, context) + ';' ,
-  'var p3 = ' + obj.getInstructionRef(0, context) + ';' ,
-  'var p4 = ' + obj.getInstructionRef(1, context) + ';' ,
-  'var c1 = Geom.cross(p3, p1, p2), c2 = Geom.cross(p4, p1, p2);' ,
-  'if (Math.abs(c1 - c2) < 1e-10) return ' + intId + '_cache = [NaN, NaN];' ,
-  'var c3 = Geom.cross(p1, p3, p4), c4 = Geom.cross(p2, p3, p4);' ,
-  'if (Math.abs(c3 - c4) < 1e-10) return ' + intId + '_cache = [NaN, NaN];' ,
-  'var a1 = c3 / (c3 - c4);' ,
-  'var a2 = c1 / (c1 - c2);' ,
-  'if (' + this.legalArgInstructionRef('a1', context) + '&&' + obj.legalArgInstructionRef('a2', context) + ') {' ,
+    'if (' + intId + '_revision == revision) return ' + intId + '_cache;',
+    intId + '_revision = revision; ',
+    'var p1 = ' + this.getInstructionRef(0, context) + ';' ,
+    'var p2 = ' + this.getInstructionRef(1, context) + ';' ,
+    'var p3 = ' + obj.getInstructionRef(0, context) + ';' ,
+    'var p4 = ' + obj.getInstructionRef(1, context) + ';' ,
+    'var c1 = Geom.cross(p3, p1, p2), c2 = Geom.cross(p4, p1, p2);' ,
+    'if (Math.abs(c1 - c2) < 1e-10) return ' + intId + '_cache = [NaN, NaN];' ,
+    'var c3 = Geom.cross(p1, p3, p4), c4 = Geom.cross(p2, p3, p4);' ,
+    'if (Math.abs(c3 - c4) < 1e-10) return ' + intId + '_cache = [NaN, NaN];' ,
+    'var a1 = c3 / (c3 - c4);' ,
+    'var a2 = c1 / (c1 - c2);' ,
+    'if (' + this.legalArgInstructionRef('a1', context) + '&&' + obj.legalArgInstructionRef('a2', context) + ') {' ,
     'return ' + intId + '_cache = [(p2[0]-p1[0])*a1+p1[0], (p2[1]-p1[1])*a1+p1[1]];' ,
-  '} else' ,
+    '} else' ,
     'return ' + intId + '_cache = [NaN,NaN]; }'].join('\n');
 };
 
-GBAbstractLine.prototype.getIntersInstructionLC = function(obj, context, idx, intId) {
+GBAbstractLine.prototype.getIntersInstructionLC = function (obj, context, idx, intId) {
   var pc = obj.getParent(0).getInstructionRef(0, context), p2 = obj.getParent(1).getInstructionRef(0, context);
-  var res= ['function () {',
-  'if (' + intId + '_revision == revision) return ' + intId + '_cache;',
-  this.id + '_revision = revision; ',
-  'var prop = ' + pc + ', r2 = Geom.dist(prop, ' + p2 + '),',
-  'p1 = ' + this.getInstructionRef(0, context) + ', p2 = ' + this.getInstructionRef(1, context) + ',',
-  'arg = Geom.projArg(p1, p2, prop),',
-  'mp = [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ],',
-  'dist2 = Math.sqrt((r2 - Geom.dist(mp, prop)) / Geom.dist(p1, p2)),',
-  'if (' + this.legalArgInstructionRef(idx == 0 ? '(arg - dist2)' : '(arg + dist2)', context) + ') ', 
-  'return ' + intId + '_cache = ' + this.getInstructionRef(idx == 0 ? '(arg - dist2)' : '(arg + dist2)', context) + ';',
-  'else',
-  'return ' + intId + '_cache = [ NaN, NaN ]);',
-  '}'
+  var res = ['function () {',
+    'if (' + intId + '_revision == revision) return ' + intId + '_cache;',
+    this.id + '_revision = revision; ',
+    'var prop = ' + pc + ', r2 = Geom.dist(prop, ' + p2 + '),',
+    'p1 = ' + this.getInstructionRef(0, context) + ', p2 = ' + this.getInstructionRef(1, context) + ',',
+    'arg = Geom.projArg(p1, p2, prop),',
+    'mp = [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ],',
+    'dist2 = Math.sqrt((r2 - Geom.dist(mp, prop)) / Geom.dist(p1, p2)),',
+    'if (' + this.legalArgInstructionRef(idx == 0 ? '(arg - dist2)' : '(arg + dist2)', context) + ') ',
+    'return ' + intId + '_cache = ' + this.getInstructionRef(idx == 0 ? '(arg - dist2)' : '(arg + dist2)', context) + ';',
+    'else',
+    'return ' + intId + '_cache = [ NaN, NaN ]);',
+    '}'
   ];
   return res.join('\n');
 };

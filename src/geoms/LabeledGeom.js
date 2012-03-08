@@ -2,7 +2,7 @@
  * @class LabeledGeom
  * @constructor
  */
-function LabeledGeom () {
+function LabeledGeom() {
   Geom.apply(this, arguments);
 }
 
@@ -24,13 +24,13 @@ LabeledGeom.prototype.drawLabel = function (context, hovering) {
   context.textAlign = 'left';
   context.textBaseline = 'top';
   m = context.measureText(this.name);
-  context.fillStyle = hovering? "#f00" : "#000";
+  context.fillStyle = hovering ? "#f00" : "#000";
   context.fillText(this.name, p[0] - m.width * 0.5, p[1] - this.fontSize * 0.5);
   context.restore();
 };
 
 /**
- * 
+ *
  * @param {CanvasRenderingContext2D} context
  * @param {Number} dx
  * @param {Number} dy
@@ -68,7 +68,7 @@ LabeledGeom.prototype.labelHistTest = function (context, x, y) {
 };
 
 /**
- * 
+ *
  * @param {GDoc} gdoc
  * @returns {Object}
  */

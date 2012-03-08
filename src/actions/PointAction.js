@@ -178,7 +178,7 @@ PointAction.prototype.mouseMove = function (gdoc, x, y, ev) {
 };
 
 PointAction.prototype.fireOnNewPoint = function (np) {
-  $.each(this._onNewPoint, function(k, callback) {
+  $.each(this._onNewPoint, function (k, callback) {
     callback(np);
   });
 }

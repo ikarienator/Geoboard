@@ -5,7 +5,7 @@ function GBAbstractPoint() {
 GBAbstractPoint.prototype = new LabeledGeom();
 GBAbstractPoint.prototype.isPoint = true;
 GBAbstractPoint.prototype.color = '#F00';
-GBAbstractPoint.prototype.draw = function(context) {
+GBAbstractPoint.prototype.draw = function (context) {
   var pos = this.getPosition();
   if (!isNaN(pos[0]) && !isNaN(pos[0])) {
     context.beginPath();
@@ -19,7 +19,7 @@ GBAbstractPoint.prototype.draw = function(context) {
   }
 };
 
-GBAbstractPoint.prototype.drawSelected = function(context) {
+GBAbstractPoint.prototype.drawSelected = function (context) {
   var pos = this.getPosition();
   if (!isNaN(pos[0]) && !isNaN(pos[0])) {
     this.draw(context);
@@ -33,7 +33,7 @@ GBAbstractPoint.prototype.drawSelected = function(context) {
 
 };
 
-GBAbstractPoint.prototype.drawHovering = function(context) {
+GBAbstractPoint.prototype.drawHovering = function (context) {
   var pos = this.getPosition();
   if (!isNaN(pos[0]) && !isNaN(pos[0])) {
     context.beginPath();
@@ -47,28 +47,28 @@ GBAbstractPoint.prototype.drawHovering = function(context) {
   }
 };
 
-GBAbstractPoint.prototype.hitTest = function(x, y, radius) {
-  var pos = this.getPosition(), 
-      dx = pos[0] - x, 
-      dy = pos[1] - y;
+GBAbstractPoint.prototype.hitTest = function (x, y, radius) {
+  var pos = this.getPosition(),
+    dx = pos[0] - x,
+    dy = pos[1] - y;
   return dx * dx + dy * dy < radius * radius;
 };
 
-GBAbstractPoint.prototype.crossTest = function(l, t, r, b) {
+GBAbstractPoint.prototype.crossTest = function (l, t, r, b) {
   var pos = this.getPosition();
   return l < pos[0] && pos[0] < r && t < pos[1] && pos[1] < b;
 };
 
-GBAbstractPoint.prototype.nearestArg = function(x, y) {
+GBAbstractPoint.prototype.nearestArg = function (x, y) {
   return 0;
 };
 
-GBAbstractPoint.prototype.legalArg = function(arg) {
+GBAbstractPoint.prototype.legalArg = function (arg) {
   return arg == 0;
 };
 
 GBAbstractPoint.prototype.update = function () {
-  if(this.__dirty) {
+  if (this.__dirty) {
     this.cache = this.getPosition();
     Geom.prototype.update.apply(this, []);
   }

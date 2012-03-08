@@ -8,14 +8,14 @@ function PanAction() {
 
 PanAction.prototype = new Action();
 
-PanAction.reset = function() {
+PanAction.reset = function () {
   this.lastPosition = null;
 };
 
-PanAction.mouseDown = function(gdoc, x, y) {
+PanAction.mouseDown = function (gdoc, x, y) {
   this.lastPosition = [x, y];
 };
 
-PanAction.mouseMove = function(gdoc, x, y) {
-  
+PanAction.mouseMove = function (gdoc, x, y) {
+
 }

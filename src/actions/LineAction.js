@@ -8,9 +8,9 @@ function LineAction() {
 
 LineAction.prototype = new Action();
 LineAction.prototype.text = '<img src="images/line.png"/>';
-LineAction.prototype.init = function() {
+LineAction.prototype.init = function () {
   var me = this;
-  (me.pointAction = new PointAction()).registerOnNewPoint(function(np) {
+  (me.pointAction = new PointAction()).registerOnNewPoint(function (np) {
     if (me.status == 0) {
       me.p1 = np;
       me.pointAction.basePoint = np;
@@ -22,7 +22,7 @@ LineAction.prototype.init = function() {
   me.reset();
 };
 
-LineAction.prototype.reset = function() {
+LineAction.prototype.reset = function () {
   var me = this;
   me.status = 0;
   me.p1 = null;
@@ -30,7 +30,7 @@ LineAction.prototype.reset = function() {
   me.pointAction.reset();
 };
 
-LineAction.prototype.mouseMove = function(gdoc, x, y, ev) {
+LineAction.prototype.mouseMove = function (gdoc, x, y, ev) {
   var me = this, context, p1;
   switch (me.status) {
     case 0:
@@ -53,7 +53,7 @@ LineAction.prototype.mouseMove = function(gdoc, x, y, ev) {
   }
 };
 
-LineAction.prototype.mouseUp = function(gdoc, x, y, ev) {
+LineAction.prototype.mouseUp = function (gdoc, x, y, ev) {
   var me = this;
   if (me.status == 1) {
     this.mouseDown(gdoc, x, y, ev);
@@ -61,7 +61,7 @@ LineAction.prototype.mouseUp = function(gdoc, x, y, ev) {
   this.mouseMove(gdoc, x, y, ev);
 };
 
-LineAction.prototype.mouseDown = function(gdoc, x, y, ev) {
+LineAction.prototype.mouseDown = function (gdoc, x, y, ev) {
   var me = this, already = false;
   switch (me.status) {
     case 0:

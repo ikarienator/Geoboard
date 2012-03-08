@@ -1,4 +1,4 @@
-function GBMidpoint (document, line) {
+function GBMidpoint(document, line) {
   GBAbstractPoint.apply(this, [document, [line], []]);
 }
 
@@ -16,9 +16,9 @@ GBMidpoint.prototype.type = function () {
 };
 
 GBMidpoint.prototype.getPosition = function () {
-  if(this.__dirty) {
+  if (this.__dirty) {
     return this.getParent(0).getPosition(0.5);
-  } 
+  }
   return this.cache;
 };
 

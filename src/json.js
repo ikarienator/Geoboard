@@ -37,7 +37,7 @@ gb.json = {
       default:
         if (typeof o.toJSON == "function")
           return me.encode(o.toJSON());
-        
+
         if (o.constructor === Array) {
           ret = [];
           for (i = 0; i < o.length; i++)
@@ -45,9 +45,9 @@ gb.json = {
 
           return "[" + ret.join(",") + "]";
         }
-        
+
         ret = [];
-        $.each(o, function(k, v) {
+        $.each(o, function (k, v) {
           var type = typeof k, name;
           if (type == "number")
             name = '"' + k + '"';
@@ -67,7 +67,7 @@ gb.json = {
   decode : function (src) {
     if (window.JSON && JSON.parse)
       return JSON.parse(src);
-    
+
     return eval("(" + src + ")");
   },
 
@@ -106,7 +106,7 @@ gb.json = {
     }
     return '"' + string + '"';
   },
-  
+
   /**
    * @private
    * @constant

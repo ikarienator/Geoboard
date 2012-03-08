@@ -1,4 +1,4 @@
-function GBXLine (document, gpo1, gpo2) {
+function GBXLine(document, gpo1, gpo2) {
   GBLine.apply(this, [ document, gpo1, gpo2]);
 }
 
@@ -16,14 +16,14 @@ GBXLine.prototype.legalArg = function (arg) {
   return !isNaN(arg);
 };
 
-GBXLine.prototype.legalArgInstructionRef = function(arg) {
+GBXLine.prototype.legalArgInstructionRef = function (arg) {
   return '!isNaN(' + arg + ')';
 };
 
 
 GBXLine.prototype.argRange = function () {
-  var ext = this.document.context.getExtent(), 
-      arg = this.crossArg(ext[0], ext[1], ext[2] - ext[0], ext[3] - ext[1]);
+  var ext = this.document.context.getExtent(),
+    arg = this.crossArg(ext[0], ext[1], ext[2] - ext[0], ext[3] - ext[1]);
   return [arg[0] + (arg[0] - arg[1]) * 2, arg[1] + (arg[1] - arg[0]) * 2];
 };
 

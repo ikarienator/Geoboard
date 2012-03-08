@@ -1,11 +1,11 @@
-function GBRay (document, gpo1, gpo2) {
+function GBRay(document, gpo1, gpo2) {
   GBLine.apply(this, [ document, gpo1, gpo2]);
 }
 
 GBRay.prototype = new GBLine();
 GBRay.labelArg = 0;
 GBRay.prototype.adjustArg = function (arg) {
-  if (arg < 0) return 0; 
+  if (arg < 0) return 0;
   return arg;
 };
 
@@ -17,7 +17,7 @@ GBRay.prototype.legalArg = function (arg) {
   return arg >= 0;
 };
 
-GBRay.prototype.legalArgInstructionRef = function(arg) {
+GBRay.prototype.legalArgInstructionRef = function (arg) {
   return '(' + arg + '>=0)';
 };
 

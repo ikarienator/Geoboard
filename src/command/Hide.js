@@ -1,13 +1,14 @@
-function HideCommand (list, hide) {
+function HideCommand(list, hide) {
   this.list = list;
   this.hide = hide;
-};
+}
+;
 
 HideCommand.prototype = new Command();
 
 HideCommand.prototype.canDo = function (gdoc) {
   var any = false;
-  $.each(this.list, function(k, v) {
+  $.each(this.list, function (k, v) {
     any = true;
     return false;
   });

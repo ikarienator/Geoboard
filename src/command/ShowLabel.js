@@ -1,7 +1,8 @@
-function ShowLabelCommand (list, show) {
+function ShowLabelCommand(list, show) {
   this.list = list;
   this.show = show;
-};
+}
+;
 
 ShowLabelCommand.prototype = new Command();
 
@@ -17,7 +18,7 @@ ShowLabelCommand.prototype.canDo = function (gdoc) {
 ShowLabelCommand.prototype.exec = function (gdoc) {
   var me = this;
   me.save = {};
-  $.each(me.list, function(k, v){
+  $.each(me.list, function (k, v) {
     me.save[v.id] = { sl : v.showLabel, name : v.name };
   });
   me.redo(gdoc);
@@ -25,7 +26,7 @@ ShowLabelCommand.prototype.exec = function (gdoc) {
 
 ShowLabelCommand.prototype.undo = function (gdoc) {
   var me = this;
-  $.each(me.list, function(k, v){
+  $.each(me.list, function (k, v) {
     v.showLabel = me.save[v.id].sl;
     v.name = me.save[v.id].name;
     v.dirt();
@@ -34,7 +35,7 @@ ShowLabelCommand.prototype.undo = function (gdoc) {
 
 ShowLabelCommand.prototype.redo = function (gdoc) {
   var me = this;
-  $.each(me.list, function(k, v){
+  $.each(me.list, function (k, v) {
     v.showLabel = me.show;
     v.getName();
   });

@@ -17,17 +17,17 @@ gb.utils.eqo = function (o2) {
 
 gb.utils.join = function (m1, m2) {
   var result = {};
-  $.each(m1, function(k, v) {
-    if(v === m2[k])
+  $.each(m1, function (k, v) {
+    if (v === m2[k])
       result[k] = v;
   });
   return result;
 };
 
 /**
- * 
+ *
  * @param {Object}
- *          x
+  *          x
  * @returns {Object}
  */
 gb.utils.shallowClone = function (x) {

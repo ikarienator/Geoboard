@@ -3,7 +3,7 @@ gb.localStoragePrefix = 'Geoboard-0.1-';
 /**
  *
  * @param {String}
-    *          title
+  *          title
  * @class GDoc
  * @constructor
  */
@@ -36,7 +36,9 @@ function GDoc(title, json) {
 
   $('div#area').append(can);
   function bindMe(name) {
-    return function(ev) { return me[name](ev); };
+    return function (ev) {
+      return me[name](ev);
+    };
   }
 
   if ($.isTouch) {
@@ -49,9 +51,9 @@ function GDoc(title, json) {
     can.mouseup(bindMe('onMouseUp'));
   }
 
-  can.bind('DOMMouseWheel mousewheel', function(ev) {
+  can.bind('DOMMouseWheel mousewheel', function (ev) {
     if (ev.ctrlKey || ev.metaKey) {
-      me.zoom(Math.pow(1.1, ev.wheelDelta / 240), [ ev.offsetX || ev.layerX, ev.offsetY || ev.layerY]);
+      me.zoom(Math.pow(1.1, ev.wheelDelta / 240), [ ev.offsetX, ev.offsetY]);
     } else {
       me.pan(ev.originalEvent.wheelDeltaX, ev.originalEvent.wheelDeltaY);
     }
@@ -59,7 +61,7 @@ function GDoc(title, json) {
     ev.stopPropagation();
     ev.preventDefault();
   });
-  
+
   me.context = me.canvas.getContext("2d");
   me.contextPhantom = me.canvasPhantom.getContext("2d");
   me.installContext();
@@ -77,22 +79,23 @@ function GDoc(title, json) {
       me.pageHeader.innerHTML = "";
       var header = $('<input type="text"/>').val(me.title);
       header.bind('keypress keyup keydown click',
-          function(ev) {
-            if (ev.keyCode == 27) {
-              me.pageHeader.innerHTML = me.title;
-              me.die();
-            }
-            ev.stopPropagation();
-          }).blur(function(ev) {
-            if(window.localStorage) {
-              delete window.localStorage[gb.localStoragePrefix + me.title];
-            }
-            me.title = header.val();
-            me.active();
-            me.save();
-            $(me.pageHeader).text(me.title);
-            header.die();
-          }).focus();
+        function (ev) {
+          if (ev.keyCode == 27) {
+            me.pageHeader.innerHTML = me.title;
+            me.die();
+          }
+          ev.stopPropagation();
+        }).blur(
+        function (ev) {
+          if (window.localStorage) {
+            delete window.localStorage[gb.localStoragePrefix + me.title];
+          }
+          me.title = header.val();
+          me.active();
+          me.save();
+          $(me.pageHeader).text(me.title);
+          header.die();
+        }).focus();
       $(me.pageHeader).append(header);
     } else {
       me.active();
@@ -119,15 +122,15 @@ GDoc.prototype = {
    */
   points : new Object(),
 
-  updateMouse: function (ev) {
+  updateMouse : function (ev) {
     var me = this;
     if (!$.isTouch) {
-      this.mouse = this.context.transP2M([ ev.offsetX || ev.layerX, ev.offsetY || ev.layerY, 6 ]);
+      this.mouse = this.context.transP2M([ ev.offsetX, ev.offsetY, 6 ]);
     } else {
       ev.shiftKey = false;
       ev.keyCode = 0;
       if (ev.targetTouches) {
-        $.each(ev.targetTouches, function(i, touch) {
+        $.each(ev.targetTouches, function (i, touch) {
           if (touch.identifier == me.currentTouch) {
             var pos = $(me.canvas).offset();
             me.mouse = me.context.transP2M([
@@ -148,7 +151,7 @@ GDoc.prototype = {
    *
    * @param {TouchEvent} ev
    */
-  onTouchStart: function (ev) {
+  onTouchStart : function (ev) {
     try {
       ev = ev.originalEvent;
       var me = this;
@@ -162,12 +165,12 @@ GDoc.prototype = {
     }
   },
 
-  onTouchMove: function (ev) {
+  onTouchMove : function (ev) {
     try {
       var currentTouch = null, me = this;
       ev = ev.originalEvent;
       if (ev.targetTouches) {
-        $.each(ev.targetTouches, function(k, touch) {
+        $.each(ev.targetTouches, function (k, touch) {
           if (touch.identifier == me.currentTouch) {
             currentTouch = touch;
             return false;
@@ -186,12 +189,12 @@ GDoc.prototype = {
     }
   },
 
-  onTouchEnd: function (ev) {
+  onTouchEnd : function (ev) {
     try {
       ev = ev.originalEvent;
       var me = this, currentTouch;
       if (me.currentTouch) {
-        $.each(ev.targetTouches, function(k, touch) {
+        $.each(ev.targetTouches, function (k, touch) {
           if (touch.identifier == me.currentTouch) {
             currentTouch = touch;
             return false;
@@ -208,7 +211,7 @@ GDoc.prototype = {
     }
   },
 
-  onMouseDown: function (ev) {
+  onMouseDown : function (ev) {
     try {
       var me = this;
       me.updateMouse(ev);
@@ -228,7 +231,7 @@ GDoc.prototype = {
     }
   },
 
-  onMouseMove: function (ev) {
+  onMouseMove : function (ev) {
     try {
       var me = this;
       me.updateMouse(ev);
@@ -245,7 +248,7 @@ GDoc.prototype = {
     }
   },
 
-  onMouseUp: function (ev) {
+  onMouseUp : function (ev) {
     var me = this;
     me.updateMouse(ev);
     ev.preventDefault();
@@ -284,7 +287,7 @@ GDoc.prototype = {
     var me = this, label = 'A', lastLabel;
     do {
       lastLabel = label;
-      me.forEntities(function(k, v) {
+      me.forEntities(function (k, v) {
         if (v.isPoint) {
           if (v.name == label) {
             label = me.nextLabel(label);
@@ -299,7 +302,7 @@ GDoc.prototype = {
     var me = this, label = 'a', lastLabel;
     do {
       lastLabel = label;
-      me.forEntities(function(k, v) {
+      me.forEntities(function (k, v) {
         if (!v.isPoint) {
           if (v.name == label) {
             label = me.nextLabel(label);
@@ -345,15 +348,15 @@ GDoc.prototype = {
         return p / me.scaleFactor;
     };
 
-    me.contextPhantom.transM2P = function(p) {
+    me.contextPhantom.transM2P = function (p) {
       return me.context.transM2P(p);
     };
 
-    me.contextPhantom.transP2M = function(p) {
+    me.contextPhantom.transP2M = function (p) {
       return me.context.transP2M(p);
     };
 
-    me.context.getExtent = function() {
+    me.context.getExtent = function () {
       var me = this, lt = me.transP2M([0, 0]), rb = me.transP2M([me.canvas.clientWidth, me.canvas.clientHeight]);
       return [lt[0], lt[1], rb[0], rb[1]];
     };
@@ -365,9 +368,9 @@ GDoc.prototype = {
     context.clearRect(ext[0], ext[1], ext[2] - ext[0], ext[3] - ext[1]);
     phantom.clearRect(0, 0, me.canvas.clientWidth, me.canvas.clientHeight);
     me.context.setTransform(
-        this.scaleFactor, 0, 0, this.scaleFactor,
-        me.canvas.clientWidth * 0.5 + this.panX * this.scaleFactor,
-        me.canvas.clientHeight * 0.5 + this.panY * this.scaleFactor);
+      this.scaleFactor, 0, 0, this.scaleFactor,
+      me.canvas.clientWidth * 0.5 + this.panX * this.scaleFactor,
+      me.canvas.clientHeight * 0.5 + this.panY * this.scaleFactor);
     me.forVisibles(function (k, v) {
       v.update();
       context.save();
@@ -405,8 +408,8 @@ GDoc.prototype = {
   },
 
   hitTest : function (x, y, radius) {
-    var me = this, po, pos, mini = [], minid = 1e300, min0, mind0, min1, mind1,  sf = me.scaleFactor,
-        temp, p, currd, d, res = {
+    var me = this, po, pos, mini = [], minid = 1e300, min0, mind0, min1, mind1, sf = me.scaleFactor,
+      temp, p, currd, d, res = {
       found : [],
       current : [ NaN, NaN ]
     };
@@ -448,8 +451,8 @@ GDoc.prototype = {
         res.current[0] = pos[0];
         res.current[1] = pos[1];
       } else {
-        min0 = null,mind0 = Infinity;
-        min1 = null,mind1 = Infinity;
+        min0 = null, mind0 = Infinity;
+        min1 = null, mind1 = Infinity;
         $.each(res.found, function (k, curr) {
           currd = Geom.dist2([ x, y ], [ curr.x, curr.y ]);
           if (currd < mind1) {
@@ -496,7 +499,7 @@ GDoc.prototype = {
     } else {
       me.lines[obj.id] = obj;
     }
-    $.each(obj.getParents(), function(k, v) {
+    $.each(obj.getParents(), function (k, v) {
       v.__children[obj.id] = obj;
     });
     obj.dirt();
@@ -521,7 +524,7 @@ GDoc.prototype = {
     if (me.hovering == obj) {
       me.hovering = null;
     }
-    $.each(obj.getParents(), function(k, v) {
+    $.each(obj.getParents(), function (k, v) {
       delete v.__children[obj.id];
     });
   },
@@ -712,15 +715,15 @@ GDoc.prototype = {
     this.save();
   },
 
-  zoomIn : function() {
+  zoomIn : function () {
     this.zoom(1.1, [0, 0]);
   },
 
-  zoomOut : function() {
+  zoomOut : function () {
     this.zoom(1 / 1.1, [0, 0]);
   },
 
-  zoomRestore : function() {
+  zoomRestore : function () {
     this.scaleFactor = 1;
     this.panX = 0;
     this.panY = 0;
@@ -732,7 +735,7 @@ GDoc.prototype = {
    * @param {Number} dx
    * @param {Number} dy
    */
-  pan : function(dx, dy) {
+  pan : function (dx, dy) {
     this.panX += dx / this.scaleFactor;
     this.panY += dy / this.scaleFactor;
     this.draw();
@@ -762,7 +765,7 @@ GDoc.prototype = {
     me.draw();
   },
 
-  rename : function(newName) {
+  rename : function (newName) {
     if (window.localStorage)
       delete window.localStorage[this.title];
     this.title = newName;

@@ -1,4 +1,4 @@
-function GBInters (document, obj1, obj2, idx) {
+function GBInters(document, obj1, obj2, idx) {
   GBAbstractPoint.apply(this, [document, [obj1, obj2], [idx]]);
 }
 
@@ -30,7 +30,7 @@ GBInters.prototype.getPosition = function () {
   return this.cache;
 };
 
-GBInters.prototype.update = function() {
+GBInters.prototype.update = function () {
   if (this.__dirty) {
     this.cache = this.getPosition();
     Geom.prototype.update.apply(this, []);
@@ -39,7 +39,7 @@ GBInters.prototype.update = function() {
 
 GBInters.prototype.getInstruction = function (context) {
   return ['var ', this.id , '_revision = -1, ', this.id, '_cache = [NaN, NaN]; ',
-          'var ' , this.id , '=' , this.getParent(0).getIntersInstruction(this.getParent(1), context, this.getParam(0), this.id) , ';'].join('');
+    'var ' , this.id , '=' , this.getParent(0).getIntersInstruction(this.getParent(1), context, this.getParam(0), this.id) , ';'].join('');
 };
 
 GBInters.prototype.getInstructionRef = function (arg, context) {

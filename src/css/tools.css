@@ -1,149 +1,149 @@
 #left {
-  width: 46px;
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
+    width: 46px;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
 }
 
 .touch #left {
-  width: 56px;
+    width: 56px;
 }
 
 ul.tool {
-  border: 1px solid #555;
-  top: 19px;
-  left: 1px;
-  right: 1px;
-  bottom: 0px;
-  position: inherit;
-  background: #282828;
-  list-style: none;
-  overflow-y: hidden;
-  padding: 2px;
-  -moz-transition: .1s linear;
-  -webkit-transition: .1s linear;
-  transition: .1s linear;
-  overflow: hidden;
+    border: 1px solid #555;
+    top: 19px;
+    left: 1px;
+    right: 1px;
+    bottom: 0px;
+    position: inherit;
+    background: #282828;
+    list-style: none;
+    overflow-y: hidden;
+    padding: 2px;
+    -moz-transition: .1s linear;
+    -webkit-transition: .1s linear;
+    transition: .1s linear;
+    overflow: hidden;
 }
 
 #left .tools-hider:after {
-  content: '<<';
+    content: '<<';
 }
 
 .hide-tools #left .tools-hider:after {
-  content: '';
+    content: '';
 }
 
 .tools-hider {
-  cursor: pointer;
-  color: #777;
-  position: inherit;
-  top: 1px;
-  right: 1px;
-  left: 1px;
-  height: 17px;
-  line-height: 17px;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 0px;
-  -moz-border-radius: 0px;
-  border: 0px;
-  color: #777;
+    cursor: pointer;
+    color: #777;
+    position: inherit;
+    top: 1px;
+    right: 1px;
+    left: 1px;
+    height: 17px;
+    line-height: 17px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0px;
+    -moz-border-radius: 0px;
+    border: 0px;
+    color: #777;
 }
 
 .hide-tools .tools-hider {
-  opacity: 1;
-  bottom: 1px;
-  height: auto;
+    opacity: 1;
+    bottom: 1px;
+    height: auto;
 }
 
 ul.tool > li {
-  cursor: pointer;
-  color: white;
-  border-right: 3px solid #282828;
-  right: 1px;
-  height: 40px;
-  line-height: 1px;
-  text-align: center;
-  margin-bottom: 2px;
-  vertical-align: middle;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  -moz-border-radius-topleft: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  -moz-transition: all .1s linear;
-  -webkit-transition: all .1s linear;
-  transition: all .1s linear;
+    cursor: pointer;
+    color: white;
+    border-right: 3px solid #282828;
+    right: 1px;
+    height: 40px;
+    line-height: 1px;
+    text-align: center;
+    margin-bottom: 2px;
+    vertical-align: middle;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    -moz-transition: all .1s linear;
+    -webkit-transition: all .1s linear;
+    transition: all .1s linear;
 }
 
 .touch ul.tool > li {
-  height: 50px;
-  line-height: 1px;
-  margin-bottom: 5px;
+    height: 50px;
+    line-height: 1px;
+    margin-bottom: 5px;
 }
 
 ul.tool > li.group:after {
-  content: '>'
+    content: '>'
 }
 
 ul.tool > li.group div {
-  display: none;
+    display: none;
 }
 
 ul.tool > li.group div.active {
-  display: block;
+    display: block;
 }
 
 #center.hide-tools #left {
-  width: 12px;
-  -moz-transition: width 0.5s ease;
-  -webkit-transition: width 0.5s ease;
-  transition: width 0.5s ease;
+    width: 12px;
+    -moz-transition: width 0.5s ease;
+    -webkit-transition: width 0.5s ease;
+    transition: width 0.5s ease;
 }
 
 #center.hide-tools ul.tool {
-  left: 30px;
-  opacity: 0;
+    left: 30px;
+    opacity: 0;
 }
 
 ul.tool li:hover {
-  background: #444;
-  border-color: #cef;
-  -moz-transition: all 0s linear;
-  -webkit-transition: 0s linear;
-  transition: 0s linear;
+    background: #444;
+    border-color: #cef;
+    -moz-transition: all 0s linear;
+    -webkit-transition: 0s linear;
+    transition: 0s linear;
 }
 
 ul.tool li > * {
-  opacity: 0.7;
-  -moz-transition: opacity 0.2s linear;
-  -webkit-transition: opacity 0.2s linear;
-  transition: opacity 0.2s linear;
+    opacity: 0.7;
+    -moz-transition: opacity 0.2s linear;
+    -webkit-transition: opacity 0.2s linear;
+    transition: opacity 0.2s linear;
 }
 
 ul.tool li.item img {
-  margin: 3px 0px;
+    margin: 3px 0px;
 }
 
 #center.hide-tools ul.tool li.item {
-  opacity: 0;
-  margin-left: 50px;
-  -moz-transition: margin-left opacity 0.5s ease;
-  -webkit-transition: margin-left opacity 0.5s ease;
-  transition: margin-left opacity 0.5s ease;
+    opacity: 0;
+    margin-left: 50px;
+    -moz-transition: margin-left opacity 0.5s ease;
+    -webkit-transition: margin-left opacity 0.5s ease;
+    transition: margin-left opacity 0.5s ease;
 }
 
 ul.tool li.active > * {
-  opacity: 1;
-  -moz-transition: opacity 0.2s linear;
-  -webkit-transition: opacity 0.2s linear;
-  transition: opacity 0.2s linear;
+    opacity: 1;
+    -moz-transition: opacity 0.2s linear;
+    -webkit-transition: opacity 0.2s linear;
+    transition: opacity 0.2s linear;
 }
 
 ul.tool li.active {
-  background: #444;
-  border-color: #f99;
-  -moz-transition: border-color .1s linear;
-  -webkit-transition: border-color .1s linear;
-  transition: border-color .1s linear;
+    background: #444;
+    border-color: #f99;
+    -moz-transition: border-color .1s linear;
+    -webkit-transition: border-color .1s linear;
+    transition: border-color .1s linear;
 }

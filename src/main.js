@@ -5,7 +5,7 @@ var gb = {};
 gb.geom = {};
 gb.keys = {};
 
-String.prototype.startsWith = function(str) {
+String.prototype.startsWith = function (str) {
   return this.indexOf(str) === 0;
 }
 
@@ -30,7 +30,7 @@ Math.nrand = function () {
 
 function registerShortcutKey(sk) {
   if (sk instanceof Array) {
-    $.each(sk, function(k, v) {
+    $.each(sk, function (k, v) {
       registerShortcutKey(v);
     });
   }
@@ -192,7 +192,6 @@ function handleKeydown(ev) {
       break;
     default:
       $('#menu').removeClass('show-ud');
-      console.dir(ev.keyCode);
       ev.stopPropagation();
   }
 }
@@ -249,7 +248,7 @@ installTools = function () {
       var li = $('<li class="item group></li>'), ul = $('<ul></ul>');
       $('#tools').append(li);
       li.append(ul);
-      $.each(v, function(k, item) {
+      $.each(v, function (k, item) {
         var li = $('<li id="tools-' + k + '">' + v.text + '</li>');
         ul.append(ul);
         li[0].action = v;
@@ -275,13 +274,13 @@ installTools = function () {
 
 window.init = function () {
   if (navigator.userAgent.match(/Android/i) ||
-      navigator.userAgent.match(/webOS/i) ||
-      navigator.userAgent.match(/iPhone/i) ||
-      navigator.userAgent.match(/iPad/i) ||
-      navigator.userAgent.match(/iPod/i)
-      ) {
+    navigator.userAgent.match(/webOS/i) ||
+    navigator.userAgent.match(/iPhone/i) ||
+    navigator.userAgent.match(/iPad/i) ||
+    navigator.userAgent.match(/iPod/i)
+    ) {
     $.isTouch = true;
-    $('body').addClass('touch').bind('touchstart', function(ev) {
+    $('body').addClass('touch').bind('touchstart', function (ev) {
       ev.preventDefault();
     });
   }
@@ -290,7 +289,7 @@ window.init = function () {
   installMenu();
   installTools();
   if ($.isTouch) {
-    $(document).bind('touchmove', function(event) {
+    $(document).bind('touchmove', function (event) {
       event.preventDefault();
     });
   }
@@ -305,7 +304,7 @@ window.init = function () {
   });
   $(document).keydown(handleKeydown);
   gb.utils.setTool('tools-sel');
-  $(window).resize(function() {
+  $(window).resize(function () {
     gb.currentDoc.resize($('#area').width(), $('#area').height());
   });
 };

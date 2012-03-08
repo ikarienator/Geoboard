@@ -1,4 +1,4 @@
-function GBLocus (document, poo, target) {
+function GBLocus(document, poo, target) {
   GBAbstractCurve.apply(this, [ document, [ poo, target ] ]);
   this.path = [];
 }
@@ -19,11 +19,11 @@ GBLocus.prototype.__getPosition = function (arg, context) {
 };
 
 GBLocus.prototype.__curveStart = function () {
-  
+
 };
 
 GBLocus.prototype.__curveStop = function (context) {
-  
+
 };
 
 GBLocus.prototype.getInstruction = function (context) {

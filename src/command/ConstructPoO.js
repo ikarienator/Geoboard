@@ -1,7 +1,8 @@
 function ConstructPoOCommand(obj, arg) {
   this.obj = obj;
   this.arg = arg;
-};
+}
+;
 
 ConstructPoOCommand.prototype = new ConstructCommand();
 

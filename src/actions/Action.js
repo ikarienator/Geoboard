@@ -3,19 +3,11 @@ function Action() {
 }
 
 Action.prototype = {
-  reset : function() {
+  reset : function () {
   },
-  init : function() {
+  init : function () {
   },
-  click : function() {
-  },
-  /**
-   * @param {GDoc} gdoc
-   * @param {Number} x
-   * @param {Number} y
-   * @param {Event} event
-   */
-  mouseDown : function(gdoc, x, y, event) {
+  click : function () {
   },
   /**
    * @param {GDoc} gdoc
@@ -23,7 +15,7 @@ Action.prototype = {
    * @param {Number} y
    * @param {Event} event
    */
-  mouseMove : function(gdoc, x, y) {
+  mouseDown : function (gdoc, x, y, event) {
   },
   /**
    * @param {GDoc} gdoc
@@ -31,7 +23,15 @@ Action.prototype = {
    * @param {Number} y
    * @param {Event} event
    */
-  mouseUp : function(gdoc, x, y) {
+  mouseMove : function (gdoc, x, y) {
+  },
+  /**
+   * @param {GDoc} gdoc
+   * @param {Number} x
+   * @param {Number} y
+   * @param {Event} event
+   */
+  mouseUp : function (gdoc, x, y) {
   }
 };
 

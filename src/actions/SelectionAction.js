@@ -19,15 +19,15 @@ $.extend(SelectionAction.prototype, {
    * @field {Command} cmd
    */
   cmd : null,
-  reset : function() {
+  reset : function () {
     this.startDrag = null;
     this.dragging = null;
     this.oldSelection = null;
     this.draggingLabel = null;
     this.cmd = null;
   },
-  
-  mouseMove : function(gdoc, x, y) {
+
+  mouseMove : function (gdoc, x, y) {
     var fx, fy, tx, ty, di, test;
     if (this.dragging) {
       if (this.cmd) {
@@ -35,12 +35,12 @@ $.extend(SelectionAction.prototype, {
           this.cmd.undo(gdoc);
           this.cmd.tx = x;
           this.cmd.ty = y;
-          this.cmd.redo(gdoc);  
+          this.cmd.redo(gdoc);
         }
       } else {
         di = {};
-        $.each(gdoc.selection, function(k, v) {
-          $.each(v.dragInvolve(), function(k, t) {
+        $.each(gdoc.selection, function (k, v) {
+          $.each(v.dragInvolve(), function (k, t) {
             di[t.id] = t;
           });
         });
@@ -54,12 +54,12 @@ $.extend(SelectionAction.prototype, {
           this.cmd.undo(gdoc);
           this.cmd.dx = x - this.startDrag[0];
           this.cmd.dy = y - this.startDrag[1];
-          this.cmd.redo(gdoc);  
+          this.cmd.redo(gdoc);
         }
       } else {
         this.cmd = new TranslateLabelCommand(this.draggingLabel, x - this.startDrag[0], y - this.startDrag[1]);
         gdoc.run(this.cmd);
-      } 
+      }
       gdoc.draw();
       this.draggingLabel.drawLabel(gdoc.contextPhantom, true);
     } else if (this.startDrag) {
@@ -76,7 +76,7 @@ $.extend(SelectionAction.prototype, {
         ty = t;
       }
       gdoc.selection = gb.utils.shallowClone(this.oldSelection);
-      gdoc.forVisibles(function(k, ent) {
+      gdoc.forVisibles(function (k, ent) {
         if (ent.crossTest(fx, fy, tx, ty))
           gdoc.selection[ent.id] = ent;
       });
@@ -97,13 +97,13 @@ $.extend(SelectionAction.prototype, {
         gdoc.draw();
       } else if (test.found.length == 0) {
         /**
-         * @param {Geom} v 
+         * @param {Geom} v
          */
         if (gdoc.hovering != null) {
           gdoc.hovering = null;
         }
         gdoc.draw();
-        gdoc.forVisibles(function(k, v){
+        gdoc.forVisibles(function (k, v) {
           if (v.showLabel && v.labelHistTest(gdoc.contextPhantom, x, y)) {
             v.drawLabel(gdoc.contextPhantom, true);
             return false;
@@ -113,15 +113,15 @@ $.extend(SelectionAction.prototype, {
       }
     }
   },
-  
+
   /**
-   * 
+   *
    * @param {GDoc} gdoc
    * @param x
    * @param y
    * @param {MouseEvent} ev
    */
-  mouseDown : function(gdoc, x, y, ev) {
+  mouseDown : function (gdoc, x, y, ev) {
     var me = this, test = gdoc.hitTest(x, y), ent;
     if (ev.shiftKey) {
       if (test.found.length == 1) {
@@ -144,9 +144,9 @@ $.extend(SelectionAction.prototype, {
         me.dragging = [ x, y ];
       } else if (test.found.length == 0) {
         /**
-         * @param {Geom} v 
+         * @param {Geom} v
          */
-        gdoc.forVisibles(function(k, v){
+        gdoc.forVisibles(function (k, v) {
           if (v.showLabel && v.labelHistTest(gdoc.contextPhantom, x, y)) {
             me.draggingLabel = v;
             return false;
@@ -163,15 +163,15 @@ $.extend(SelectionAction.prototype, {
     }
     gdoc.draw();
   },
-  
-  mouseUp : function(gdoc, x, y) {
+
+  mouseUp : function (gdoc, x, y) {
     if (this.dragging) {
       if (this.cmd && this.cmd == gdoc.lastCommand()) {
         this.cmd.undo(gdoc);
         this.cmd.tx = x;
         this.cmd.ty = y;
         this.cmd.redo(gdoc);
-        gdoc.save();        
+        gdoc.save();
       }
       this.cmd = null;
       this.dragging = null;
@@ -181,7 +181,7 @@ $.extend(SelectionAction.prototype, {
         this.cmd.dx = x - this.startDrag[0];
         this.cmd.dy = y - this.startDrag[1];
         this.cmd.redo(gdoc);
-        gdoc.save();        
+        gdoc.save();
       }
       this.cmd = null;
       this.startDrag = null;
@@ -193,4 +193,4 @@ $.extend(SelectionAction.prototype, {
   }
 });
 
-  gb.tools['sel'] = new SelectionAction();
+gb.tools['sel'] = new SelectionAction();

@@ -1,13 +1,14 @@
 function ConstructLocusCommand(poo, target) {
   this.poo = poo;
   this.target = target;
-};
+}
+;
 
 ConstructLocusCommand.prototype = new ConstructCommand();
 
-ConstructLocusCommand.prototype.canDo = function(gdoc) {
+ConstructLocusCommand.prototype.canDo = function (gdoc) {
   if (!(this.poo !== undefined && this.target !== undefined && //
-      this.poo.type() == "poo" && this.target.isPoint))
+    this.poo.type() == "poo" && this.target.isPoint))
     return false;
   var v = {}, q = [ this.target ], qi = 0, curr;
   while (qi < q.length) {
@@ -16,7 +17,7 @@ ConstructLocusCommand.prototype.canDo = function(gdoc) {
       return true;
     if (!v[curr.id]) {
       v[curr.id] = curr;
-      $.each(curr.getParents(), function(k, v) {
+      $.each(curr.getParents(), function (k, v) {
         q.push(v);
       });
     }

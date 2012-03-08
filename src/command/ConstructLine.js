@@ -11,7 +11,7 @@ function ConstructLineCommand(gpo1, gpo2) {
 
 ConstructLineCommand.prototype = new ConstructCommand();
 
-ConstructLineCommand.prototype.canDo = function(gdoc) {
+ConstructLineCommand.prototype.canDo = function (gdoc) {
   return !!(this.gpo1 !== undefined && this.gpo2 !== undefined);
 };
 

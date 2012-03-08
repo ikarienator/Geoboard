@@ -1,4 +1,4 @@
-function GBLine (document, gpo1, gpo2) {
+function GBLine(document, gpo1, gpo2) {
   GBAbstractLine.apply(this, [document, gpo1, gpo2]);
 }
 
@@ -8,9 +8,9 @@ GBLine.P2 = 1;
 GBLine.prototype.labelArg = 0.5;
 GBLine.prototype.length = function () {
   var p1 = this.__getPosition(0),
-      p2 = this.__getPosition(1),
-      dx = p1[0] - p2[0],
-      dy = p1[1] - p2[1];
+    p2 = this.__getPosition(1),
+    dx = p1[0] - p2[0],
+    dy = p1[1] - p2[1];
   return Math.sqrt(dx * dx + dy * dy);
 };
 
@@ -29,7 +29,7 @@ GBLine.prototype.legalArg = function (arg) {
   return 0 <= arg && arg <= 1;
 };
 
-GBLine.prototype.legalArgInstructionRef = function(arg) {
+GBLine.prototype.legalArgInstructionRef = function (arg) {
   return '0<=' + arg + '&&' + arg + '<=1';
 };
 
@@ -56,7 +56,7 @@ GBLine.prototype.__getPosition = function (arg) {
     return this.getParent(GBLine.P2).getPosition();
   arg = Math.atan(arg);
   var p1 = this.getParent(GBLine.P1).getPosition(),
-      p2 = this.getParent(GBLine.P2).getPosition();
+    p2 = this.getParent(GBLine.P2).getPosition();
   return [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ];
 };
 
@@ -71,12 +71,12 @@ GBLine.prototype.randPoint = function () {
 
 GBLine.prototype.getInstruction = function (context) {
   return ['function ' + this.id + '(arg) {',
-  '  if (!' + this.legalArgInstructionRef('arg', context) + ') return [NaN, NaN];',
-  '  var p1 = ' + this.getParent(0).getInstructionRef(0, context) + ';',
-  '  var p2 = ' + this.getParent(1).getInstructionRef(0, context) + ';',
-  '  ' + this.adjustArgInstruction('arg', context),
-  '  return [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ];',
-  '}'].join('\n');
+    '  if (!' + this.legalArgInstructionRef('arg', context) + ') return [NaN, NaN];',
+    '  var p1 = ' + this.getParent(0).getInstructionRef(0, context) + ';',
+    '  var p2 = ' + this.getParent(1).getInstructionRef(0, context) + ';',
+    '  ' + this.adjustArgInstruction('arg', context),
+    '  return [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ];',
+    '}'].join('\n');
 };
 
 GBLine.prototype.getInstructionRef = function (arg, context) {
@@ -84,7 +84,7 @@ GBLine.prototype.getInstructionRef = function (arg, context) {
     return this.getInstructionRefStatic(arg, context);
   if (arg === 0)
     return this.getParent(0).getInstructionRef(0, context);
-  else if(arg === 1)
+  else if (arg === 1)
     return this.getParent(1).getInstructionRef(0, context);
   else return this.id + '(' + arg + ')';
 };

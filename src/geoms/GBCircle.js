@@ -2,14 +2,14 @@
  * @class GBCircle
  * @extends LabeledGeom
  * @param {string}
- *          id
+  *          id
  * @param {GBPoint}
- *          center
+  *          center
  * @param {GBPoint}
- *          on
+  *          on
  * @constructor
  */
-function GBCircle (document, center, on) {
+function GBCircle(document, center, on) {
   LabeledGeom.apply(this, [ document, [ center, on ] ]);
 }
 
@@ -22,12 +22,14 @@ GBCircle.prototype.isCircle = true;
 
 GBCircle.prototype.prop = function () {
   var cen = this.getParent(GBCircle.CENTER).getPosition(),
-      on = this.getParent(GBCircle.ON).getPosition(),
-      dx = cen[0] - on[0],
-      dy = cen[1] - on[1],
-      r = dx * dx + dy * dy;
+    on = this.getParent(GBCircle.ON).getPosition(),
+    dx = cen[0] - on[0],
+    dy = cen[1] - on[1],
+    r = dx * dx + dy * dy;
   r = Math.sqrt(r);
-  return [ cen[0], cen[1], r, [ [ 0, Math.PI * 2 ] ] ];
+  return [ cen[0], cen[1], r, [
+    [ 0, Math.PI * 2 ]
+  ] ];
 };
 
 GBCircle.prototype.draw = function (context) {
@@ -67,9 +69,9 @@ GBCircle.prototype.drawHovering = function (context) {
 
 GBCircle.prototype.hitTest = function (x, y, radius) {
   var prop = this.prop(),
-      dx = prop[0] - x,
-      dy = prop[1] - y,
-      r = dx * dx + dy * dy;
+    dx = prop[0] - x,
+    dy = prop[1] - y,
+    r = dx * dx + dy * dy;
   r = Math.sqrt(r);
   return r - this.document.context.transP2M(radius) < prop[2] && prop[2] < r + this.document.context.transP2M(radius);
 };
@@ -79,25 +81,32 @@ GBCircle.prototype.inters = function (obj) {
     return obj.inters(this);
   else if (obj.isCircle) {
     var prop1 = this.prop(),
-        prop2 = obj.prop(),
-        d = Math.sqrt(Geom.dist2(prop1, prop2)),
-        r1 = prop1[2],
-        r2 = prop2[2],
-        d1 = ((r1 * r1 - r2 * r2) / d + d) * 0.5,
-        h = Math.sqrt(r1 * r1 - d1 * d1),
-        dx = prop2[0] - prop1[0],
-        dy = prop2[1] - prop1[1],
-        c1 = [ prop1[0] + (dx * d1 - dy * h) / d, prop1[1] + (dy * d1 + dx * h) / d ],
-        c2 = [ prop1[0] + (dx * d1 + dy * h) / d, prop1[1] + (dy * d1 - dx * h) / d ];
+      prop2 = obj.prop(),
+      d = Math.sqrt(Geom.dist2(prop1, prop2)),
+      r1 = prop1[2],
+      r2 = prop2[2],
+      d1 = ((r1 * r1 - r2 * r2) / d + d) * 0.5,
+      h = Math.sqrt(r1 * r1 - d1 * d1),
+      dx = prop2[0] - prop1[0],
+      dy = prop2[1] - prop1[1],
+      c1 = [ prop1[0] + (dx * d1 - dy * h) / d, prop1[1] + (dy * d1 + dx * h) / d ],
+      c2 = [ prop1[0] + (dx * d1 + dy * h) / d, prop1[1] + (dy * d1 - dx * h) / d ];
     return [ c1, c2 ];
   }
 };
 
 GBCircle.prototype.crossTest = function (l, t, r, b) {
   var prop = this.prop(),
-      ps = [ [ l, b ], [ l, t ], [ r, t ], [ r, b ] ],
-      ds = $.map(ps, function (v, k) { return Geom.dist2(v, prop); }),
-      r2 = prop[2] * prop[2];
+    ps = [
+      [ l, b ],
+      [ l, t ],
+      [ r, t ],
+      [ r, b ]
+    ],
+    ds = $.map(ps, function (v, k) {
+      return Geom.dist2(v, prop);
+    }),
+    r2 = prop[2] * prop[2];
   if (ds[0] < r2 && ds[1] < r2 && ds[2] < r2 && ds[3] < r2)
     return false;
   if (ds[0] > r2 && ds[1] > r2 && ds[2] > r2 && ds[3] > r2) {
@@ -157,10 +166,10 @@ GBCircle.prototype.randPoint = function () {
 };
 
 GBCircle.prototype.getInstruction = function (context) {
-  return 'function ' + this.id + '(arg) { var p1 = ' + this.getParent(0).getInstructionRef(0, context) + 
-  ', p2 = ' + this.getParent(1).getInstructionRef(0, context) + ',' +
-  ' r = Math.sqrt(Geom.dist(p1, p2));'+
-  'return [ p1[0] + Math.cos(arg) * r, p1[1] + Math.sin(arg) * r ]; }';
+  return 'function ' + this.id + '(arg) { var p1 = ' + this.getParent(0).getInstructionRef(0, context) +
+    ', p2 = ' + this.getParent(1).getInstructionRef(0, context) + ',' +
+    ' r = Math.sqrt(Geom.dist(p1, p2));' +
+    'return [ p1[0] + Math.cos(arg) * r, p1[1] + Math.sin(arg) * r ]; }';
 };
 
 GBCircle.prototype.getInstructionRef = function (arg, context) {
@@ -169,10 +178,10 @@ GBCircle.prototype.getInstructionRef = function (arg, context) {
 };
 
 GBCircle.prototype.getInstruction = function (context) {
-  return 'function ' + this.id + '(arg) { var p1 = ' + this.getParent(0).getInstructionRef(0, context) + 
-  ', p2 = ' + this.getParent(1).getInstructionRef(0, context) + ',' +
-  ' r = Math.sqrt(Geom.dist(p1, p2));'+
-  'return [ p1[0] + Math.cos(arg) * r, p1[1] + Math.sin(arg) * r ]; }';
+  return 'function ' + this.id + '(arg) { var p1 = ' + this.getParent(0).getInstructionRef(0, context) +
+    ', p2 = ' + this.getParent(1).getInstructionRef(0, context) + ',' +
+    ' r = Math.sqrt(Geom.dist(p1, p2));' +
+    'return [ p1[0] + Math.cos(arg) * r, p1[1] + Math.sin(arg) * r ]; }';
 };
 
 GBCircle.prototype.getInstructionRefStatic = function (arg) {
@@ -185,7 +194,7 @@ GBCircle.prototype.getIntersInstruction = function (obj, context, idx) {
     return obj.getIntersInstruction(this, context);
   } else {
     if (idx >= 2) return '[NaN, NaN]';
-    var res= [
+    var res = [
       'function() {',
       'var p1 = ' + this.getParent(0).getInstructionRef(0, context) + ',',
       'p2 = ' + obj.getParent(0).getInstructionRef(0, context) + ',',
@@ -197,7 +206,7 @@ GBCircle.prototype.getIntersInstruction = function (obj, context, idx) {
       'dx = p2[0] - p1[0],',
       'dy = p2[1] - p1[1];',
       idx == 0 ? 'return [ p1[0] + (dx * d1 - dy * h) / d, p1[1] + (dy * d1 + dx * h) / d ],' :
-      'return [ p1[0] + (dx * d1 + dy * h) / d, p1[1] + (dy * d1 - dx * h) / d ];',
+        'return [ p1[0] + (dx * d1 + dy * h) / d, p1[1] + (dy * d1 - dx * h) / d ];',
       '}'
     ];
     return res.join('\n');
