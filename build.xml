@@ -18,7 +18,7 @@
     <copy file="src/res/jq.js" todir="build/scripts" verbose="false"/>
     <copy file="src/res/cache.manifest" todir="build/" verbose="false"/>
     <copy todir="build/images/">
-      <fileset dir="src/res/images/">
+      <fileset dir="images/">
         <include name="*.png"/>
       </fileset>
     </copy>
