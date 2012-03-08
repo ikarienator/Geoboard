@@ -1,7 +1,7 @@
 * {
     margin: 0px;
     padding: 0px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Verdana, Helvetica, Arial, sans-serif;
     font-size: 14px;
     z-index: auto;
     -webkit-user-select: none;
@@ -268,4 +268,29 @@ input[type="text"] {
     color: white;
     float: left;
     margin: -1px;
+}
+
+#footer {
+    font-family: 'Crimson Text', Verdana;
+    position: absolute;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 7px;
+    height: 23px;
+    z-index: 100000;
+    text-align: right;
+    padding-right: 7px;
+    color: black;
+}
+
+#footer span {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    padding: 3px 10px;
+}
+
+#footer * {
+    color: black;
+    font-family: 'Crimson Text', Verdana;
 }

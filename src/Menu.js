@@ -1,7 +1,7 @@
 gb.menu = {};
 gb.menu.file = {
   text : '<span class="ud">F</span>ile',
-  items : [ 'news', 'down', '-', 'prop', 'help' ],
+  items : [ 'news' ], //, 'down', '-', 'prop', 'help' ],
   news : {
     text : 'New Sketch',
     shortcutKey : new ShortcutKey(78, ShortcutKey.CTRL, 'gb.menu.file.news'),
@@ -10,19 +10,19 @@ gb.menu.file = {
       doc.active();
       doc.save();
     }
-  },
-  down : {
-    shortcutKey : new ShortcutKey(83, ShortcutKey.CTRL, 'gb.menu.file.down'),
-    text : 'Download...'
-  },
-  prop : {
-    shortcutKey : new ShortcutKey(188, ShortcutKey.CTRL, 'gb.menu.file.props'),
-    text : 'Properties'
-  },
-  help : {
-    shortcutKey : new ShortcutKey(112, 0, 'gb.menu.file.help'),
-    text : 'Help...'
-  }
+  }// ,
+//  down : {
+//    shortcutKey : new ShortcutKey(83, ShortcutKey.CTRL, 'gb.menu.file.down'),
+//    text : 'Download...'
+//  },
+//  prop : {
+//    shortcutKey : new ShortcutKey(188, ShortcutKey.CTRL, 'gb.menu.file.props'),
+//    text : 'Properties'
+//  },
+//  help : {
+//    shortcutKey : new ShortcutKey(112, 0, 'gb.menu.file.help'),
+//    text : 'Help...'
+//  }
 };
 
 gb.menu.edit = {
