@@ -1,9 +1,0 @@
-<?xml version="1.0" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" baseProfile="full" viewBox="-9 -9 33 34">
-	<ellipse cx="9" cy="9" rx="13" ry="13" stroke="#999"
-		stroke-width="2"></ellipse>
-	<ellipse cx="9" cy="9" rx="12" ry="12" fill="#fff" stroke="black"
-		stroke-width="2"></ellipse>
-	<path d="M 5.5 9 L 12.5 9" stroke="#d22" stroke-width="0.7"></path>
-	<path d="M 9 5.5 L 9 12.5" stroke="#d22" stroke-width="0.7"></path>
-</svg>
