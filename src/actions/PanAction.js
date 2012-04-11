@@ -3,17 +3,17 @@
  * @extends Action
  */
 function PanAction() {
-  this.init();
+    this.init();
 }
 
 PanAction.prototype = new Action();
 
 PanAction.reset = function () {
-  this.lastPosition = null;
+    this.lastPosition = null;
 };
 
 PanAction.mouseDown = function (gdoc, x, y) {
-  this.lastPosition = [x, y];
+    this.lastPosition = [x, y];
 };
 
 PanAction.mouseMove = function (gdoc, x, y) {

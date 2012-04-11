@@ -1,6 +1,6 @@
 function RenameLabel(obj, label) {
-  this.obj = obj;
-  this.label = label;
+    this.obj = obj;
+    this.label = label;
 }
 
 RenameLabel.prototype = new Command();
@@ -11,8 +11,8 @@ RenameLabel.prototype = new Command();
  * @return {Boolean}
  */
 RenameLabel.canDo = function (gdoc) {
-  var me = this, ok = true;
-  return me.obj.isLabeled;
+    var me = this, ok = true;
+    return me.obj.isLabeled;
 };
 
 /**
@@ -20,8 +20,8 @@ RenameLabel.canDo = function (gdoc) {
  * @param {GDoc} gdoc
  */
 RenameLabel.exec = function (gdoc) {
-  this.lastLabel = this.obj.name;
-  this.redo(gdoc);
+    this.lastLabel = this.obj.name;
+    this.redo(gdoc);
 };
 
 /**
@@ -29,7 +29,7 @@ RenameLabel.exec = function (gdoc) {
  * @param {GDoc} gdoc
  */
 RenameLabel.undo = function (gdoc) {
-  this.obj.name = this.lastLabel;
+    this.obj.name = this.lastLabel;
 };
 
 /**
@@ -37,5 +37,5 @@ RenameLabel.undo = function (gdoc) {
  * @param {GDoc} gdoc
  */
 RenameLabel.redo = function (gdoc) {
-  this.obj.name = this.label;
+    this.obj.name = this.label;
 };
