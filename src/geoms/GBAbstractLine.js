@@ -348,16 +348,16 @@ GBAbstractLine.prototype.getIntersInstructionLC = function (obj, context, idx, i
     var pc = obj.getParent(0).getInstructionRef(0, context), p2 = obj.getParent(1).getInstructionRef(0, context);
     var res = ['function () {',
         'if (' + intId + '_revision == revision) return ' + intId + '_cache;',
-        this.id + '_revision = revision; ',
-        'var prop = ' + pc + ', r2 = Geom.dist(prop, ' + p2 + '),',
+        intId + '_revision = revision; ',
+        'var prop = ' + pc + ', r2 = Geom.dist2(prop, ' + p2 + '),',
         'p1 = ' + this.getInstructionRef(0, context) + ', p2 = ' + this.getInstructionRef(1, context) + ',',
         'arg = Geom.projArg(p1, p2, prop),',
         'mp = [ p1[0] + (p2[0] - p1[0]) * arg, p1[1] + (p2[1] - p1[1]) * arg ],',
-        'dist2 = Math.sqrt((r2 - Geom.dist(mp, prop)) / Geom.dist(p1, p2)),',
+        'dist2 = Math.sqrt((r2 - Geom.dist2(mp, prop)) / Geom.dist2(p1, p2));',
         'if (' + this.legalArgInstructionRef(idx == 0 ? '(arg - dist2)' : '(arg + dist2)', context) + ') ',
         'return ' + intId + '_cache = ' + this.getInstructionRef(idx == 0 ? '(arg - dist2)' : '(arg + dist2)', context) + ';',
         'else',
-        'return ' + intId + '_cache = [ NaN, NaN ]);',
+        'return ' + intId + '_cache = [ NaN, NaN ];',
         '}'
     ];
     return res.join('\n');

@@ -9,7 +9,7 @@
     *          on
  * @constructor
  */
-function GBCircle(document, center, on) {
+function GBCircle (document, center, on) {
     LabeledGeom.apply(this, [ document, [ center, on ] ]);
 }
 
@@ -173,7 +173,7 @@ GBCircle.prototype.randPoint = function () {
 GBCircle.prototype.getInstruction = function (context) {
     return 'function ' + this.id + '(arg) { var p1 = ' + this.getParent(0).getInstructionRef(0, context) +
         ', p2 = ' + this.getParent(1).getInstructionRef(0, context) + ',' +
-        ' r = Math.sqrt(Geom.dist(p1, p2));' +
+        ' r = Math.sqrt(Geom.dist2(p1, p2));' +
         'return [ p1[0] + Math.cos(arg) * r, p1[1] + Math.sin(arg) * r ]; }';
 };
 
@@ -187,7 +187,7 @@ GBCircle.prototype.getInstructionRef = function (arg, context) {
 GBCircle.prototype.getInstruction = function (context) {
     return 'function ' + this.id + '(arg) { var p1 = ' + this.getParent(0).getInstructionRef(0, context) +
         ', p2 = ' + this.getParent(1).getInstructionRef(0, context) + ',' +
-        ' r = Math.sqrt(Geom.dist(p1, p2));' +
+        ' r = Math.sqrt(Geom.dist2(p1, p2));' +
         'return [ p1[0] + Math.cos(arg) * r, p1[1] + Math.sin(arg) * r ]; }';
 };
 
@@ -196,9 +196,9 @@ GBCircle.prototype.getInstructionRefStatic = function (arg) {
     return '[' + prop[0] + '+Math.cos(' + arg + ')*' + prop[2] + ',' + prop[1] + '+Math.sin(' + arg + ')*' + prop[2] + ']';
 };
 
-GBCircle.prototype.getIntersInstruction = function (obj, context, idx) {
+GBCircle.prototype.getIntersInstruction = function (obj, context, idx, intId) {
     if (obj.isLine) {
-        return obj.getIntersInstruction(this, context);
+        return obj.getIntersInstruction(this, context, idx, intId);
     } else {
         if (idx >= 2) {
             return '[NaN, NaN]';
@@ -207,14 +207,14 @@ GBCircle.prototype.getIntersInstruction = function (obj, context, idx) {
             'function() {',
             'var p1 = ' + this.getParent(0).getInstructionRef(0, context) + ',',
             'p2 = ' + obj.getParent(0).getInstructionRef(0, context) + ',',
-            'd = Math.sqrt(Geom.dist(p1, p2)),',
-            'r1 = Geom.dist(p1, ' + this.getParent(1).getInstructionRef(0, context) + '),',
-            'r2 = Geom.dist(p2, ' + obj.getParent(1).getInstructionRef(0, context) + '),',
+            'd = Math.sqrt(Geom.dist2(p1, p2)),',
+            'r1 = Geom.dist2(p1, ' + this.getParent(1).getInstructionRef(0, context) + '),',
+            'r2 = Geom.dist2(p2, ' + obj.getParent(1).getInstructionRef(0, context) + '),',
             'd1 = ((r1 - r2) / d + d) * 0.5,',
             'h = Math.sqrt(r1- d1 * d1),',
             'dx = p2[0] - p1[0],',
             'dy = p2[1] - p1[1];',
-            idx == 0 ? 'return [ p1[0] + (dx * d1 - dy * h) / d, p1[1] + (dy * d1 + dx * h) / d ],' :
+            idx == 0 ? 'return [ p1[0] + (dx * d1 - dy * h) / d, p1[1] + (dy * d1 + dx * h) / d ];' :
                 'return [ p1[0] + (dx * d1 + dy * h) / d, p1[1] + (dy * d1 - dx * h) / d ];',
             '}'
         ];

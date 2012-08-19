@@ -25,8 +25,8 @@ GBAngleBisectorMark.prototype.getInstruction = function (context) {
         'var p1 = ' + this.getParent(0).getInstructionRef(0, context) + ';' ,
         'var p2 = ' + this.getParent(1).getInstructionRef(0, context) + ';' ,
         'var ang = ' + this.getParent(2).getInstructionRef(0, context) + ';' ,
-        'var d1 = Math.sqrt(Geom.dist(ang, p1));',
-        'var d2 = Math.sqrt(Geom.dist(ang, p2));',
+        'var d1 = Math.sqrt(Geom.dist2(ang, p1));',
+        'var d2 = Math.sqrt(Geom.dist2(ang, p2));',
         'var arg = d1 / (d1 + d2);',
         'return [(p2[0] - p1[0]) * arg + p1[0], (p2[1] - p1[1]) * arg + p1[1]];',
         '}'].join('\n');
